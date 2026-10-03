@@ -1608,7 +1608,7 @@ footer p { margin: 0; max-width: 90ch; }
     const how = window.VCC_LOCAL
       ? 'Fetch new results to update this page. Fetching everything again also picks up corrections to older scorecards and takes a few minutes. Publish the page again afterwards so the captains see it.'
       : SITE && SITE.refresh
-        ? 'New results are fetched every night. To fetch sooner, or after fixing a scorecard, press "Reload all data" at the top of the page: it downloads every scorecard again and takes a few minutes. One reload runs at a time, at most one every 10 minutes.'
+        ? 'New results are fetched every night. To fetch sooner, or after fixing a scorecard, press "Reload all data" at the top of the page: it downloads every scorecard again and takes about a minute. One reload runs at a time, at most one every 10 minutes.'
         : SITE
           ? `This page fetches new results every night. To fetch now, open <a href="${esc(SITE.actions)}" target="_blank" rel="noopener">Refresh data on GitHub</a> and press "Run workflow" (needs write access to the repository); the page updates a few minutes later.`
           : `To fetch the data again, run <code>node scripts/serve.mjs ${esc(D.season)}</code> in the project folder and use the fetch buttons on the page it opens, then publish the page again.`;
@@ -1671,7 +1671,7 @@ footer p { margin: 0; max-width: 90ch; }
       btn.disabled = false;
       if (res.state === 'cooldown') return siteMessage(`The data was reloaded less than 10 minutes ago. You can reload again in ${res.cooldownMin} minute${res.cooldownMin === 1 ? '' : 's'}.`);
       if (res.state === 'limit') return siteMessage('The data has been reloaded often today already. It is reloaded again tonight.');
-      await watchSite(res.state === 'running' ? 'Someone else just started a reload. Waiting for it to finish…' : 'Downloading every scorecard from the Matchcentre. This takes a few minutes; the page reloads by itself.');
+      await watchSite(res.state === 'running' ? 'Someone else just started a reload. Waiting for it to finish…' : 'Downloading every scorecard from the Matchcentre. This takes about a minute; the page reloads by itself.');
     } catch (e) {
       siteMessage(`The reload didn't work. ${e.message.includes('Failed to fetch') ? 'Check the internet connection and try again.' : e.message}`, true);
       btn.disabled = false;
