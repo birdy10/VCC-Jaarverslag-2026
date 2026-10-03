@@ -62,6 +62,19 @@ button, input { font: inherit; color: inherit; }
 .eyebrow { margin: 0 0 2px; font: 700 11px/1.2 var(--font-display); letter-spacing: .14em; text-transform: uppercase; opacity: .8; }
 .mast h1 { margin: 0; font: 800 clamp(24px, 4.4vw, 36px)/1.05 var(--font-display); letter-spacing: -.01em; text-wrap: balance; }
 .mast h1 span { color: #c9cbf3; }
+.mast-data { margin-left: auto; display: flex; flex-direction: column; align-items: flex-end; gap: 6px; text-align: right; max-width: 340px; }
+.mast-btn { display: inline-flex; align-items: center; gap: 8px; border: 0; border-radius: 999px; padding: 9px 16px; background: #fff; color: #2f337d; font: 700 14px/1 var(--font-display); cursor: pointer; }
+.mast-btn:hover { background: #e6e7fb; }
+.mast-btn:focus-visible { outline: 3px solid #fff; outline-offset: 3px; }
+.mast-btn:disabled { opacity: .7; cursor: progress; }
+.mast-btn svg { width: 16px; height: 16px; }
+.mast-btn:disabled svg { animation: spin 1.2s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.mast-status { margin: 0; font-size: 13px; line-height: 1.35; opacity: .9; }
+.mast-status.err { opacity: 1; color: #ffd0da; font-weight: 600; }
+.mast-status button { border: 0; padding: 0; background: none; color: inherit; font: inherit; font-weight: 700; text-decoration: underline; cursor: pointer; }
+@media (max-width: 719px) { .mast-in { flex-wrap: wrap; } .mast-data { margin-left: 0; align-items: flex-start; text-align: left; flex-basis: 100%; max-width: none; } }
+@media (prefers-reduced-motion: reduce) { .mast-btn:disabled svg { animation: none; } }
 .tabs { display: flex; gap: 26px; }
 .tab { background: none; border: 0; color: rgba(255,255,255,.75); font: 700 12px/1 var(--font-display); letter-spacing: .08em; text-transform: uppercase; padding: 12px 0 11px; border-bottom: 3px solid transparent; cursor: pointer; }
 .tab:hover { color: #fff; }
@@ -361,6 +374,10 @@ footer p { margin: 0; max-width: 90ch; }
     <div>
       <p class="eyebrow">Voorburg Cricket Club · Jaarverslag</p>
       <h1>Season facts <span id="season-year">2026</span></h1>
+    </div>
+    <div class="mast-data" id="mast-data" hidden>
+      <button class="mast-btn" data-fetch="site"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a9 9 0 1 1-2.64-6.36"/><path d="M21 3v6h-6"/></svg>Reload all data</button>
+      <p class="mast-status" id="mast-status" role="status" aria-live="polite"></p>
     </div>
   </div>
   <nav class="wrap tabs" role="tablist" aria-label="Views">
@@ -1563,7 +1580,7 @@ footer p { margin: 0; max-width: 90ch; }
         <p class="itotal"><span><strong>${n0(list.length)}</strong> shown</span><span><strong>${n0(inTeams.length)}</strong> in total${teamsOn.size ? ' for the picked teams' : ''}</span>${teamsOn.size ? `<span><strong>${n0(all.length)}</strong> for all teams</span>` : ''}</p>
         ${filtersHtml}
       </div>
-      <p class="sub">${hidden.length ? `Hidden: ${hidden.join(', ')}. ` : ''}Gaps and mistakes in the Matchcentre scorecards that make the numbers above less complete. Fix them in the Matchcentre, then fetch the data again.</p>
+      <p class="sub">${hidden.length ? `Hidden: ${hidden.join(', ')}. ` : ''}Gaps and mistakes in the Matchcentre scorecards that make the numbers above less complete. Fix them in the Resultsvault/Matchcentre, then fetch the data again.</p>
       ${list.length ? `<div class="dgroups">${groups}</div>` : '<p class="empty">No issues with these settings. Switch on more issue types or include the opponents.</p>'}`;
   }
 
@@ -1591,15 +1608,13 @@ footer p { margin: 0; max-width: 90ch; }
     const how = window.VCC_LOCAL
       ? 'Fetch new results to update this page. Fetching everything again also picks up corrections to older scorecards and takes a few minutes. Publish the page again afterwards so the captains see it.'
       : SITE && SITE.refresh
-        ? 'New results are fetched every night. Anyone can fetch them sooner: it takes about two minutes, one fetch runs at a time, and at most one every 10 minutes.'
+        ? 'New results are fetched every night. To fetch sooner, or after fixing a scorecard, press "Reload all data" at the top of the page: it downloads every scorecard again and takes a few minutes. One reload runs at a time, at most one every 10 minutes.'
         : SITE
           ? `This page fetches new results every night. To fetch now, open <a href="${esc(SITE.actions)}" target="_blank" rel="noopener">Refresh data on GitHub</a> and press "Run workflow" (needs write access to the repository); the page updates a few minutes later.`
           : `To fetch the data again, run <code>node scripts/serve.mjs ${esc(D.season)}</code> in the project folder and use the fetch buttons on the page it opens, then publish the page again.`;
     const tools = window.VCC_LOCAL
       ? `<div class="head-tools"><button class="btn" data-fetch="new">Fetch new results</button><button class="btn" data-fetch="all">Fetch everything again</button></div>`
-      : SITE && SITE.refresh
-        ? '<div class="head-tools"><button class="btn" data-fetch="site">Fetch latest results</button></div>'
-        : '';
+      : '';
     $('#data-updates').innerHTML = `<div class="card-head"><h2 id="h-updates">Data updates</h2>${tools}</div>
       <p class="sub">${esc(status)} ${how}</p>
       <p class="fetch-status" id="fetch-status" role="status" aria-live="polite" hidden></p>
@@ -1626,10 +1641,12 @@ footer p { margin: 0; max-width: 90ch; }
     }
   }
 
-  // The GitHub Pages copy: refresh-service/Code.gs starts the "Refresh data" workflow, which fetches,
-  // rebuilds and republishes this page. It runs one fetch at a time, at most one every 10 minutes.
+  // The GitHub Pages copy: the "Reload all data" button at the top asks refresh-service/Code.gs to start the
+  // "Refresh data" workflow, which downloads every scorecard again, rebuilds and republishes this page.
+  // It runs one reload at a time, at most one every 10 minutes.
   const SITE = window.VCC_SITE;
   const fmtTime = ms => new Date(ms).toLocaleString('en-GB', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });
+  const dataStamp = () => `Data of ${fmtTime(new Date(D.generated).getTime())}`;
 
   async function siteCall(method) {
     const r = await fetch(SITE.refresh + (method === 'GET' ? '?action=status' : ''), method === 'POST' ? { method, body: 'refresh' } : {});
@@ -1640,8 +1657,7 @@ footer p { margin: 0; max-width: 90ch; }
   }
 
   function siteMessage(text, err) {
-    const out = $('#fetch-status');
-    out.hidden = false;
+    const out = $('#mast-status');
     out.classList.toggle('err', !!err);
     out.textContent = text;
   }
@@ -1649,14 +1665,15 @@ footer p { margin: 0; max-width: 90ch; }
   async function siteFetch() {
     const btn = $('[data-fetch="site"]');
     btn.disabled = true;
-    siteMessage('Asking for new results…');
+    siteMessage('Starting the reload…');
     try {
       const res = await siteCall('POST');
-      if (res.state === 'cooldown') return siteMessage(`New results were fetched less than 10 minutes ago. You can fetch again in ${res.cooldownMin} minute${res.cooldownMin === 1 ? '' : 's'}.`);
-      if (res.state === 'limit') return siteMessage('The page has been refreshed often today already. New results will be fetched tonight.');
-      await watchSite(res.state === 'running' ? 'Someone else just started a fetch. Waiting for it to finish…' : 'Fetching new results from the Matchcentre. This takes about two minutes…');
+      btn.disabled = false;
+      if (res.state === 'cooldown') return siteMessage(`The data was reloaded less than 10 minutes ago. You can reload again in ${res.cooldownMin} minute${res.cooldownMin === 1 ? '' : 's'}.`);
+      if (res.state === 'limit') return siteMessage('The data has been reloaded often today already. It is reloaded again tonight.');
+      await watchSite(res.state === 'running' ? 'Someone else just started a reload. Waiting for it to finish…' : 'Downloading every scorecard from the Matchcentre. This takes a few minutes; the page reloads by itself.');
     } catch (e) {
-      siteMessage(`The fetch didn't start. ${e.message.includes('Failed to fetch') ? 'Check the internet connection and try again.' : e.message}`, true);
+      siteMessage(`The reload didn't work. ${e.message.includes('Failed to fetch') ? 'Check the internet connection and try again.' : e.message}`, true);
       btn.disabled = false;
     }
   }
@@ -1675,27 +1692,29 @@ footer p { margin: 0; max-width: 90ch; }
         siteMessage('Done. Reloading with the new data…');
         return reloadFresh();
       }
-      throw new Error('The fetch failed on GitHub. The page keeps the data it had.');
+      throw new Error('It failed on GitHub; the page keeps the data it had.');
     }
-    throw new Error('The fetch is taking longer than expected. Reload the page later.');
+    throw new Error('It is taking longer than expected. Reload the page later.');
   }
 
   function reloadFresh() {
     location.replace(`${location.pathname}?t=${Date.now()}${location.hash}`);
   }
 
-  // On load: join a fetch someone else started, or offer a newer copy than this (cached) one.
+  // On load: show the button, join a reload someone else started, or offer a newer copy than this (cached) one.
   async function checkSite() {
+    $('#mast-data').hidden = false;
+    siteMessage(dataStamp());
     try {
       const s = await siteCall('GET');
-      if (s.busy) return await watchSite('Someone is fetching new results right now. This page reloads when they are in…');
+      if (s.busy) return await watchSite('Someone is reloading the data right now. This page reloads by itself when it is done…');
       const done = s.run && s.run.conclusion === 'success' ? Date.parse(s.run.updated) : 0;
       if (done - new Date(D.generated).getTime() > 5 * 60000) {
-        siteMessage(`Newer results were fetched at ${fmtTime(done)}. Reload the page to see them.`);
+        $('#mast-status').innerHTML = `Newer data from ${esc(fmtTime(done))} is ready. <button type="button" data-reload-page>Show it</button>`;
       }
     } catch (e) {
       const btn = $('[data-fetch="site"]');
-      if (btn && btn.disabled) { siteMessage(e.message, true); btn.disabled = false; }
+      if (btn && btn.disabled) { siteMessage(`The reload didn't work. ${e.message}`, true); btn.disabled = false; }
     }
   }
 
@@ -1835,6 +1854,7 @@ footer p { margin: 0; max-width: 90ch; }
     if (t.hasAttribute('data-clear-cond')) { state.finder.cond[state.finder.ds] = {}; state.finder.chips[state.finder.ds] = {}; return render(); }
     if (t.dataset.copy) return doCopy(t.dataset.copy);
     if (t.dataset.fetch) return t.dataset.fetch === 'site' ? siteFetch() : runFetch(t.dataset.fetch === 'all');
+    if (t.hasAttribute('data-reload-page')) return reloadFresh();
     if (t.dataset.issueAll) {
       const keys = ISSUE_GROUPS[+t.dataset.issueAll][1].map(x => x[0]);
       state.issueOff = t.dataset.on === '1' ? state.issueOff.filter(k => !keys.includes(k)) : [...new Set(state.issueOff.concat(keys))];

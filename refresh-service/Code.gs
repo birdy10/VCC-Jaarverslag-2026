@@ -1,4 +1,5 @@
-// Lets anyone on the season page start the "Refresh data" workflow, without a GitHub account.
+// Lets anyone on the season page reload all data ("Refresh data" workflow, every scorecard downloaded again),
+// without a GitHub account.
 // Runs as a Google Apps Script web app (Execute as: me, Who has access: Anyone).
 // Script property GITHUB_TOKEN: a fine-grained GitHub token for this repository only, with "Actions: Read and write".
 //
@@ -40,7 +41,8 @@ function refresh_() {
     if (s.cooldownMin > 0) return { state: 'cooldown', ...s };
     if (s.leftToday <= 0) return { state: 'limit', ...s };
 
-    gh_('post', `/actions/workflows/${WORKFLOW}/dispatches`, { ref: 'main' });
+    // Download every scorecard again, so fixes made in the Resultsvault/Matchcentre come through too.
+    gh_('post', `/actions/workflows/${WORKFLOW}/dispatches`, { ref: 'main', inputs: { refresh: 'true' } });
     const props = PropertiesService.getScriptProperties();
     props.setProperties({ lastDispatch: String(Date.now()), day: today_(), count: String(DAILY_MAX - s.leftToday + 1) });
     CacheService.getScriptCache().remove('run');

@@ -48,7 +48,7 @@ jobs:
 
       - name: Fetch results
         if: github.event_name != 'push'
-        run: node scripts/fetch-data.mjs "$SEASON" ${{ inputs.refresh && '--refresh' || '' }}
+        run: node scripts/fetch-data.mjs "$SEASON" ${{ (inputs.refresh == true || inputs.refresh == 'true') && '--refresh' || '' }}
 
       - name: Build page
         run: node scripts/build.mjs "$SEASON" --site "${{ github.server_url }}/${{ github.repository }}/actions/workflows/refresh.yml" --refresh-url "${{ vars.REFRESH_URL }}"
