@@ -1,0 +1,1812 @@
+<title>VCC Season Facts 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Source+Sans+3:wght@400;600;700&display=swap">
+<style>
+/* Layout: club masthead with tabs, one filter panel shared by all tabs, then report-style cards. */
+:root {
+  --brand: #2f337d;      /* VCC blue (season report header) */
+  --brand-ink: #2f337d;  /* blue used as text on the page ground */
+  --red: #9c0f2f;        /* VCC red (season report rules) */
+  --red-ink: #9c0f2f;
+  --win: #1d7447;
+  --draw: #6b6f8c;
+  --bg: #f2f3f8;
+  --surface: #ffffff;
+  --surface-2: #f7f8fc;
+  --line: #e0e2ee;
+  --fg: #1c1e3b;
+  --muted: #62658a;
+  --chip: #ffffff;
+  --on-brand: #ffffff;
+  --focus: #5b61d6;
+  /* chart series, validated for colour-blind separation on both surfaces */
+  --s1: #4a51b8; --s2: #d0654a; --s3: #8f95e3; --s4: #b08a12; --s0: #c3c6d8;
+  --barfill: rgba(74, 81, 184, .13);
+  --grid: #e7e8f1;
+  --font-display: 'Montserrat', 'Segoe UI', system-ui, sans-serif;
+  --font-body: 'Source Sans 3', 'Segoe UI', system-ui, -apple-system, sans-serif;
+  --radius: 6px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --brand: #2f337d; --brand-ink: #b4b8ff; --red: #b8203f; --red-ink: #f08ba0; --win: #2f9e66; --draw: #8a8eab;
+    --bg: #0f1126; --surface: #181b38; --surface-2: #1e2244; --line: #2d3260; --fg: #e9eaf6; --muted: #a3a6c8;
+    --chip: #181b38; --focus: #9aa0ff; color-scheme: dark;
+    --s1: #7a80e6; --s2: #d36a4f; --s3: #5a61d0; --s4: #a8850f; --s0: #4a4f78; --barfill: rgba(122, 128, 230, .2); --grid: #262a52;
+  }
+}
+:root[data-theme="dark"] {
+  --brand: #2f337d; --brand-ink: #b4b8ff; --red: #b8203f; --red-ink: #f08ba0; --win: #2f9e66; --draw: #8a8eab;
+  --bg: #0f1126; --surface: #181b38; --surface-2: #1e2244; --line: #2d3260; --fg: #e9eaf6; --muted: #a3a6c8;
+  --chip: #181b38; --focus: #9aa0ff; color-scheme: dark;
+  --s1: #7a80e6; --s2: #d36a4f; --s3: #5a61d0; --s4: #a8850f; --s0: #4a4f78; --barfill: rgba(122, 128, 230, .2); --grid: #262a52;
+}
+
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body { background: var(--bg); color: var(--fg); font: 400 15px/1.45 var(--font-body); margin: 0; }
+button, input { font: inherit; color: inherit; }
+:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; border-radius: 3px; }
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.wrap { max-width: 1640px; margin: 0 auto; padding-inline: 16px; }
+@media (min-width: 720px) { .wrap { padding-inline: 28px; } }
+
+/* ---- masthead ---- */
+.mast { background: var(--brand); color: var(--on-brand); }
+.mast-in { display: flex; align-items: center; gap: 18px; padding-block: 22px 14px; }
+.crest { flex: none; width: 58px; height: 58px; border-radius: 50%; border: 2px solid rgba(255,255,255,.85); display: grid; place-items: center; position: relative; font: 800 15px/1 var(--font-display); letter-spacing: .04em; }
+.crest::before, .crest::after { content: ""; position: absolute; top: 8px; bottom: 8px; width: 12px; border: 1.5px dashed rgba(255,255,255,.45); border-block: 0; }
+.crest::before { left: 5px; border-right: 0; border-radius: 50% 0 0 50%; }
+.crest::after { right: 5px; border-left: 0; border-radius: 0 50% 50% 0; }
+.eyebrow { margin: 0 0 2px; font: 700 11px/1.2 var(--font-display); letter-spacing: .14em; text-transform: uppercase; opacity: .8; }
+.mast h1 { margin: 0; font: 800 clamp(24px, 4.4vw, 36px)/1.05 var(--font-display); letter-spacing: -.01em; text-wrap: balance; }
+.mast h1 span { color: #c9cbf3; }
+.tabs { display: flex; gap: 26px; }
+.tab { background: none; border: 0; color: rgba(255,255,255,.75); font: 700 12px/1 var(--font-display); letter-spacing: .08em; text-transform: uppercase; padding: 12px 0 11px; border-bottom: 3px solid transparent; cursor: pointer; }
+.tab:hover { color: #fff; }
+.tab[aria-selected="true"] { color: #fff; border-bottom-color: #fff; }
+.stripe { height: 7px; background: linear-gradient(var(--red) 0 3px, var(--bg) 3px 4px, var(--red) 4px 7px); }
+
+/* Filters in a sticky left column, the report in the middle, section links in a sticky right column.
+   Narrower screens drop the section links, then stack the filters on top. */
+.layout { display: grid; gap: 18px; padding-block: 22px 48px; align-items: start; }
+.main { display: grid; gap: 18px; min-width: 0; }
+.main > * { min-width: 0; }
+.side-l, .side-r { min-width: 0; }
+.side-r { display: none; }
+.card, .scope { scroll-margin-top: calc(env(safe-area-inset-top, 0px) + 14px); }
+@media (min-width: 1000px) {
+  .layout { grid-template-columns: 300px minmax(0, 1fr); gap: 22px; }
+  .side-l { position: sticky; top: calc(env(safe-area-inset-top, 0px) + 14px); }
+  .side-l .filters { max-height: calc(100vh - 28px - env(safe-area-inset-top, 0px)); overflow-y: auto; overscroll-behavior: contain; padding: 18px; scrollbar-width: thin; }
+  .side-l .frow { grid-template-columns: 1fr; }
+  .side-l .flabel { padding-top: 0; }
+  .side-l .frow-inline { gap: 12px; }
+  .side-l .tgroup > b { min-width: 0; flex-basis: 100%; }
+  .side-l .seg { border-radius: 16px; }
+}
+@media (min-width: 1360px) {
+  .layout { grid-template-columns: 300px minmax(0, 1fr) 190px; }
+  .side-r { display: block; position: sticky; top: calc(env(safe-area-inset-top, 0px) + 14px); }
+}
+.toc { max-height: calc(100vh - 28px - env(safe-area-inset-top, 0px)); overflow-y: auto; scrollbar-width: thin; padding: 4px 0; }
+.toc .mini { margin: 0 0 8px 12px; }
+.toc ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 1px; border-left: 2px solid var(--line); }
+.toc button { display: block; width: 100%; text-align: left; background: none; border: 0; margin-left: -2px; border-left: 2px solid transparent; padding: 5px 8px 5px 12px; font-size: 13.5px; line-height: 1.3; color: var(--muted); cursor: pointer; }
+.toc button:hover { color: var(--fg); }
+.toc button[aria-current="true"] { color: var(--brand-ink); border-left-color: var(--red); font-weight: 700; }
+.toc .toc-sep { margin-top: 8px; padding-top: 8px; border-top: 1px solid var(--line); }
+
+/* ---- cards & headings ---- */
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 20px; min-width: 0; }
+@media (min-width: 720px) { .card { padding: 22px 24px; } }
+.card-head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px 16px; margin-bottom: 14px; }
+h2 { margin: 0; font: 800 19px/1.2 var(--font-display); color: var(--brand-ink); text-transform: uppercase; letter-spacing: .01em; }
+h3 { margin: 0 0 10px; font: 800 11.5px/1.3 var(--font-display); color: var(--brand-ink); text-transform: uppercase; letter-spacing: .07em; }
+h3 > span.u { display: inline-block; padding-bottom: 3px; border-bottom: 2px solid var(--red); }
+.sub { color: var(--muted); font-size: 13.5px; margin: -8px 0 14px; max-width: 70ch; }
+.grid2 { display: grid; gap: 24px 32px; }
+.grid3 { display: grid; gap: 24px 28px; }
+@media (min-width: 860px) { .grid2 { grid-template-columns: 1fr 1fr; } .grid3 { grid-template-columns: 1fr 1fr 1fr; } }
+.grid2 > *, .grid3 > * { min-width: 0; }
+.head-tools { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+
+/* ---- controls: segmented radios & toggle chips ---- */
+fieldset { border: 0; margin: 0; padding: 0; min-width: 0; }
+.seg { display: inline-flex; flex-wrap: wrap; border: 1px solid var(--line); border-radius: 999px; padding: 2px; background: var(--surface-2); gap: 2px; }
+.seg label, .chips label { position: relative; cursor: pointer; }
+.seg input, .chips input { position: absolute; opacity: 0; inset: 0; margin: 0; cursor: pointer; }
+.seg span { display: block; padding: 5px 12px; border-radius: 999px; font-weight: 600; font-size: 13.5px; color: var(--muted); white-space: nowrap; }
+.seg input:checked + span { background: var(--brand); color: var(--on-brand); }
+.seg input:focus-visible + span, .chips input:focus-visible + span { outline: 2px solid var(--focus); outline-offset: 1px; }
+.seg label:hover input:not(:checked) + span { color: var(--fg); }
+.seg.sm span { padding: 3px 10px; font-size: 12.5px; }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.chips span { display: flex; align-items: baseline; gap: 6px; padding: 5px 11px; border: 1px solid var(--line); border-radius: 999px; background: var(--chip); font-weight: 600; font-size: 13.5px; white-space: nowrap; }
+.chips span small { font-weight: 400; color: var(--muted); font-size: 12px; }
+.chips input:checked + span { background: var(--brand); border-color: var(--brand); color: var(--on-brand); }
+.chips input:checked + span small { color: #d4d6f7; }
+.chips label:hover input:not(:checked) + span { border-color: var(--brand-ink); }
+.chips input:disabled + span { opacity: .4; cursor: default; }
+
+.btn { display: inline-flex; align-items: center; gap: 6px; border: 1px solid var(--line); background: var(--surface); border-radius: 999px; padding: 5px 12px; font-weight: 600; font-size: 13px; cursor: pointer; color: var(--brand-ink); }
+.btn:hover { border-color: var(--brand-ink); }
+.btn svg { width: 14px; height: 14px; }
+.link { background: none; border: 0; padding: 0; color: var(--brand-ink); font-weight: 600; text-decoration: underline; text-underline-offset: 2px; cursor: pointer; }
+
+/* ---- filter panel ---- */
+.filters { display: grid; gap: 14px; }
+.frow { display: grid; gap: 6px 16px; align-items: start; }
+@media (min-width: 720px) { .frow { grid-template-columns: 150px 1fr; } }
+.flabel { font: 700 11px/1.2 var(--font-display); letter-spacing: .09em; text-transform: uppercase; color: var(--muted); padding-top: 7px; }
+.flabel em { display: block; font: 400 12.5px/1.3 var(--font-body); letter-spacing: 0; text-transform: none; font-style: normal; margin-top: 3px; }
+.tgroups { display: grid; gap: 8px; }
+.tgroup { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; }
+.tgroup > b { font: 600 12.5px/1 var(--font-body); color: var(--muted); min-width: 118px; }
+.frow-inline { display: flex; flex-wrap: wrap; gap: 12px 26px; }
+.frow-inline > div { display: grid; gap: 6px; }
+.mini { font: 700 10.5px/1.2 var(--font-display); letter-spacing: .09em; text-transform: uppercase; color: var(--muted); }
+.player-pick { position: relative; max-width: 360px; }
+.player-pick input { width: 100%; border: 1px solid var(--line); background: var(--surface-2); border-radius: 999px; padding: 6px 14px; }
+.player-pick input::placeholder { color: var(--muted); }
+.suggest { position: absolute; z-index: 5; left: 0; right: 0; top: calc(100% + 4px); margin: 0; padding: 4px; list-style: none; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); box-shadow: 0 8px 24px rgba(16, 18, 50, .14); }
+.suggest button { display: flex; justify-content: space-between; gap: 10px; width: 100%; text-align: left; background: none; border: 0; padding: 6px 10px; border-radius: 4px; cursor: pointer; }
+.suggest button:hover, .suggest button[aria-selected="true"] { background: var(--surface-2); }
+.suggest small { color: var(--muted); }
+.pchip { display: inline-flex; align-items: center; gap: 8px; background: var(--brand); color: var(--on-brand); border-radius: 999px; padding: 5px 6px 5px 13px; font-weight: 600; }
+.pchip button { background: rgba(255,255,255,.18); border: 0; color: inherit; border-radius: 999px; width: 22px; height: 22px; cursor: pointer; line-height: 1; }
+details.more > summary { cursor: pointer; color: var(--brand-ink); font-weight: 600; list-style: none; display: inline-flex; gap: 6px; align-items: center; padding-top: 5px; }
+details.more > summary::-webkit-details-marker { display: none; }
+details.more > summary::before { content: "+"; font-weight: 700; width: 1em; }
+details.more[open] > summary::before { content: "–"; }
+details.more > .chips { margin-top: 8px; }
+.filters-toggle { display: none; }
+@media (max-width: 719px) {
+  .filters-toggle { display: flex; justify-content: space-between; width: 100%; }
+  .filters.collapsed > :not(.filters-toggle) { display: none; }
+}
+
+.scope { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 14px; margin: -4px 2px 0; color: var(--muted); font-size: 14px; }
+.scope strong { color: var(--fg); }
+
+/* ---- overview ---- */
+.ov { display: grid; gap: 18px; }
+.record { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 6px 22px; }
+.big { font: 800 clamp(48px, 9vw, 72px)/.9 var(--font-display); color: var(--brand-ink); letter-spacing: -.02em; font-variant-numeric: tabular-nums; }
+.big small { font-size: .42em; color: var(--muted); letter-spacing: 0; margin-left: 6px; }
+.record p { margin: 0 0 4px; color: var(--muted); }
+.form { display: flex; flex-wrap: wrap; gap: 5px; }
+.form a { width: 26px; height: 26px; display: grid; place-items: center; border-radius: 4px; font: 800 11px/1 var(--font-display); color: #fff; text-decoration: none; background: var(--draw); }
+.form a.W { background: var(--win); } .form a.L { background: var(--red); }
+.form a:hover { filter: brightness(1.12); }
+.tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; }
+.tile { border: 1px solid var(--line); border-top: 3px solid var(--red); border-radius: var(--radius); padding: 10px 14px 12px; min-width: 0; }
+.tile b { display: block; font: 700 10.5px/1.2 var(--font-display); letter-spacing: .09em; text-transform: uppercase; color: var(--muted); }
+.tile strong { display: block; font: 800 24px/1.2 var(--font-display); color: var(--brand-ink); margin-top: 6px; font-variant-numeric: tabular-nums; }
+.tile small { display: block; color: var(--muted); font-size: 12.5px; margin-top: 2px; }
+
+/* ---- tables ---- */
+.tw { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; font-size: 14px; }
+th { text-align: left; font-weight: 600; font-size: 12px; color: var(--muted); padding: 4px 6px 7px; border-bottom: 1px solid var(--line); white-space: nowrap; vertical-align: bottom; }
+th button { background: none; border: 0; padding: 0; font: inherit; color: inherit; cursor: pointer; display: inline-flex; gap: 3px; align-items: center; }
+th button:hover { color: var(--fg); }
+th[aria-sort] button { color: var(--brand-ink); }
+th[aria-sort="descending"] button::after { content: "↓"; }
+th[aria-sort="ascending"] button::after { content: "↑"; }
+td { padding: 7px 6px; border-bottom: 1px solid var(--line); vertical-align: top; }
+td.n, th.n { text-align: right; }
+th.n button { flex-direction: row-reverse; }
+tbody tr:first-child td { font-weight: 700; }
+tbody tr:first-child td .ctx { font-weight: 400; }
+.pl { background: none; border: 0; padding: 0; font: inherit; color: inherit; cursor: pointer; text-align: left; }
+.pl:hover { color: var(--brand-ink); text-decoration: underline; text-underline-offset: 2px; }
+.club { color: var(--muted); font-weight: 400; font-size: 12.5px; margin-left: 4px; }
+.ctx { display: block; color: var(--muted); font-size: 12px; line-height: 1.3; margin-top: 1px; }
+.ctx a { color: inherit; }
+.note { color: var(--muted); font-size: 12.5px; margin: 8px 0 0; }
+.empty { color: var(--muted); padding: 10px 0; margin: 0; }
+.morebar { display: flex; gap: 14px; margin-top: 10px; }
+@media (max-width: 560px) { .opt { display: none; } }
+
+.res { display: inline-block; min-width: 22px; text-align: center; padding: 1px 6px; border-radius: 3px; color: #fff; font: 800 11px/1.5 var(--font-display); background: var(--draw); }
+.res.W { background: var(--win); } .res.L { background: var(--red); }
+
+/* ---- records & oddities ---- */
+.facts { display: grid; gap: 10px; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); }
+.fact { border: 1px solid var(--line); border-radius: var(--radius); padding: 12px 14px; min-width: 0; }
+.fact b { display: block; font: 800 12.5px/1.3 var(--font-display); text-transform: uppercase; letter-spacing: .04em; color: var(--brand-ink); text-wrap: balance; }
+.fact p { margin: 5px 0 0; font-size: 14px; color: var(--fg); }
+.fact p small { color: var(--muted); font-size: 12.5px; }
+
+/* ---- fact finder ---- */
+.finder-controls { display: grid; gap: 14px; }
+.conds { display: flex; flex-wrap: wrap; gap: 10px 18px; align-items: end; }
+.cond { display: grid; gap: 4px; }
+.cond span { font-size: 12.5px; color: var(--muted); font-weight: 600; }
+.cond input { width: 104px; border: 1px solid var(--line); background: var(--surface-2); border-radius: var(--radius); padding: 5px 9px; font-variant-numeric: tabular-nums; }
+.count { font: 800 15px/1.2 var(--font-display); color: var(--brand-ink); }
+
+/* ---- charts ---- */
+.s1 { background: var(--s1); } .s2 { background: var(--s2); } .s3 { background: var(--s3); } .s4 { background: var(--s4); } .s0 { background: var(--s0); }
+.chart-title { margin: 0 0 4px; font: 700 13px/1.3 var(--font-body); color: var(--fg); }
+.chart-sub { margin: 0 0 12px; font-size: 12.5px; color: var(--muted); }
+td.bar { min-width: 72px; background-image: linear-gradient(var(--barfill), var(--barfill)); background-repeat: no-repeat; background-position: right center; background-size: var(--w) 64%; }
+.hbars { display: grid; gap: 2px; }
+.hb { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(50px, 2fr) auto; gap: 10px; align-items: center; padding: 3px 0; font-size: 13.5px; }
+.hb-l { min-width: 0; overflow-wrap: anywhere; }
+.hb-l small { display: block; color: var(--muted); font-size: 11.5px; line-height: 1.25; }
+.hb-t { height: 10px; }
+.hb-b { display: block; height: 100%; min-width: 2px; border-radius: 0 4px 4px 0; }
+.hb-v { font-variant-numeric: tabular-nums; font-weight: 600; text-align: right; white-space: nowrap; }
+.hb.pair .hb-t { display: grid; gap: 2px; height: auto; } .hb.pair .hb-b { height: 6px; }
+.stack { display: flex; gap: 2px; height: 22px; margin: 4px 0 10px; }
+.stack span { min-width: 2px; }
+.stack span:first-child { border-radius: 4px 0 0 4px; } .stack span:last-child { border-radius: 0 4px 4px 0; } .stack span:only-child { border-radius: 4px; }
+.mini-stack { height: 7px; margin: 8px 0 0; gap: 2px; }
+.legend { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 4px 16px; font-size: 13px; color: var(--muted); }
+.legend li { display: inline-flex; align-items: center; gap: 6px; }
+.legend i { width: 10px; height: 10px; border-radius: 2px; display: inline-block; }
+.legend b { color: var(--fg); font-weight: 600; font-variant-numeric: tabular-nums; }
+.cc { display: grid; grid-template-columns: auto 1fr; gap: 0 8px; }
+.cc-y { position: relative; height: var(--h); width: 28px; font-size: 11px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.cc-y span { position: absolute; right: 0; transform: translateY(50%); }
+.cc-plot { position: relative; height: var(--h); border-bottom: 1px solid var(--muted); }
+.cc-grid { position: absolute; left: 0; right: 0; border-top: 1px solid var(--grid); }
+.cc-cols { position: absolute; inset: 0; display: flex; align-items: flex-end; gap: 4px; }
+.cc-col { flex: 1; height: 100%; display: flex; flex-direction: column; justify-content: flex-end; align-items: center; min-width: 0; }
+.cc-val { font-size: 11px; font-weight: 600; color: var(--fg); line-height: 1.4; font-variant-numeric: tabular-nums; }
+.cc-stack { width: min(24px, 80%); display: flex; flex-direction: column-reverse; gap: 2px; border-radius: 4px 4px 0 0; overflow: hidden; }
+.cc-stack span { display: block; }
+.cc-x { grid-column: 2; display: flex; gap: 4px; font-size: 11px; color: var(--muted); margin-top: 4px; }
+.cc-x span { flex: 1; text-align: center; min-width: 0; overflow: hidden; white-space: nowrap; }
+.db-col { flex: 1; height: 100%; position: relative; min-width: 0; }
+.db-line { position: absolute; left: 50%; width: 2px; margin-left: -1px; background: var(--s0); }
+.db-dot { position: absolute; left: 50%; width: 10px; height: 10px; margin: 0 0 -5px -5px; border-radius: 50%; box-shadow: 0 0 0 2px var(--surface); }
+.spark { display: inline-flex; align-items: flex-end; gap: 1px; height: 18px; vertical-align: middle; }
+.spark i { display: block; width: 3px; min-height: 1px; background: var(--s1); border-radius: 1px 1px 0 0; }
+.spark i.o { background: var(--s0); }
+.tf-grid { display: grid; gap: 10px; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); }
+.charts { display: grid; gap: 28px 32px; }
+@media (min-width: 860px) { .charts { grid-template-columns: 1fr 1fr; } .charts .wide { grid-column: 1 / -1; } }
+.charts > * { min-width: 0; }
+.rf { border: 1px solid var(--line); border-radius: var(--radius); padding: 14px 16px; min-width: 0; display: grid; gap: 4px; align-content: start; }
+.rf h4 { margin: 0; font: 800 12.5px/1.3 var(--font-display); text-transform: uppercase; letter-spacing: .04em; color: var(--brand-ink); text-wrap: balance; }
+.rf .chart-sub { margin: 0 0 6px; }
+.rfs { display: grid; gap: 12px; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); }
+.squads { display: grid; gap: 18px 32px; }
+@media (min-width: 860px) { .squads { grid-template-columns: 1fr 1fr; } }
+.squad h3 small { font: 400 12.5px var(--font-body); color: var(--muted); text-transform: none; letter-spacing: 0; margin-left: 6px; }
+.squad p { margin: 0; line-height: 1.6; max-width: 75ch; }
+#tip { position: fixed; z-index: 20; pointer-events: none; background: var(--fg); color: var(--bg); padding: 6px 10px; border-radius: 4px; font-size: 12.5px; line-height: 1.35; max-width: 280px; white-space: pre-line; }
+
+/* ---- data updates & issues ---- */
+.dgroups { display: grid; gap: 22px; }
+.dgroup > h3 { margin-bottom: 4px; }
+.dcats { display: grid; gap: 2px; }
+details.dcat { border-bottom: 1px solid var(--line); }
+details.dcat > summary { cursor: pointer; list-style: none; display: grid; grid-template-columns: 1.2em minmax(0, 1fr) auto; gap: 4px 8px; align-items: baseline; padding: 8px 0; }
+details.dcat > summary::-webkit-details-marker { display: none; }
+details.dcat > summary::before { content: "+"; font-weight: 700; color: var(--brand-ink); }
+details.dcat[open] > summary::before { content: "–"; }
+details.dcat > summary b { font-weight: 700; }
+details.dcat > summary small { display: block; color: var(--muted); font-size: 12.5px; font-weight: 400; }
+.dcount { font: 800 15px/1 var(--font-display); color: var(--red-ink); font-variant-numeric: tabular-nums; }
+.dlist { list-style: none; margin: 0 0 12px; padding: 0 0 0 calc(1.2em + 8px); display: grid; gap: 8px; }
+.dlist li { display: grid; gap: 1px; font-size: 14px; min-width: 0; overflow-wrap: anywhere; }
+.dlist .ctx { margin: 0; }
+.dlist ul { margin: 2px 0 0; padding-left: 18px; color: var(--fg); display: grid; gap: 3px; }
+.dlist ul li { display: list-item; }
+.side-tag { display: inline-block; font: 700 10px/1.5 var(--font-display); letter-spacing: .06em; text-transform: uppercase; padding: 0 5px; border-radius: 3px; border: 1px solid var(--line); color: var(--muted); margin-right: 6px; vertical-align: 1px; }
+.side-tag.v { border-color: var(--brand-ink); color: var(--brand-ink); }
+.kind { display: inline-block; font: 700 10px/1.5 var(--font-display); letter-spacing: .06em; text-transform: uppercase; padding: 0 6px; border-radius: 3px; color: #fff; background: var(--draw); margin-right: 6px; vertical-align: 1px; }
+.kind.new { background: var(--win); } .kind.removed { background: var(--red); } .kind.changed { background: var(--s1); }
+.itotal { display: flex; flex-wrap: wrap; gap: 4px 22px; margin: -4px 0 12px; color: var(--muted); font-size: 14px; }
+.itotal strong { font: 800 22px/1 var(--font-display); color: var(--brand-ink); margin-right: 4px; font-variant-numeric: tabular-nums; }
+.itotal span:first-child strong { color: var(--red-ink); }
+.itop { display: grid; gap: 10px; margin-bottom: 12px; }
+.itop .itotal { margin: 0; }
+.ifilter > summary { list-style: none; cursor: pointer; display: flex; flex-wrap: wrap; align-items: center; gap: 6px 12px; }
+.ifilter > summary::-webkit-details-marker { display: none; }
+.ifilter > summary .btn::after { content: "▾"; font-size: 11px; margin-left: 2px; }
+.ifilter[open] > summary .btn::after { content: "▴"; }
+.ifilter > summary:focus-visible { outline: none; }
+.ifilter > summary:focus-visible .btn { outline: 2px solid var(--focus); outline-offset: 2px; }
+.ifsum { color: var(--muted); font-size: 13px; }
+.ifbody { margin-top: 10px; padding: 14px 16px; background: var(--surface-2); border: 1px solid var(--line); border-radius: var(--radius); display: grid; gap: 14px; }
+.ifside { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 12px; }
+.igrid { display: grid; gap: 14px 22px; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); }
+.icol { display: grid; gap: 1px; align-content: start; }
+.icol legend { padding: 0; margin-bottom: 2px; font: 700 10.5px/1.3 var(--font-display); letter-spacing: .09em; text-transform: uppercase; color: var(--muted); display: flex; align-items: center; gap: 6px; }
+.ilinks { display: flex; gap: 12px; font-size: 12.5px; margin-bottom: 4px; }
+.icheck { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 8px; align-items: baseline; font-size: 13.5px; padding: 2px 0; cursor: pointer; }
+.icheck input { margin: 0; accent-color: var(--brand); position: relative; top: 2px; }
+.icheck small { color: var(--muted); font-variant-numeric: tabular-nums; }
+.icheck:has(input:not(:checked)) span { color: var(--muted); }
+.dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; flex: none; }
+.dot.g0 { background: var(--red); } .dot.g1 { background: var(--s1); } .dot.g2 { background: var(--s4); } .dot.g3 { background: var(--s0); }
+/* issue rows: the issue sentence first, where and what kind underneath */
+.ilist { list-style: none; margin: 0 0 10px; padding: 0 0 0 calc(1.2em + 8px); display: grid; }
+.ilist ul { list-style: none; margin: 0; padding: 0; display: grid; }
+.iss { padding: 8px 0; border-top: 1px solid var(--line); min-width: 0; }
+.ilist > .iss:first-child, .iss-match ul .iss:first-child { border-top: 0; }
+.iss-t { margin: 0; font-size: 15px; line-height: 1.4; color: var(--fg); overflow-wrap: anywhere; }
+.iss-m { margin: 3px 0 0; display: flex; flex-wrap: wrap; align-items: center; gap: 2px 12px; font-size: 12.5px; color: var(--muted); }
+.iss-m a, .iss-mh a { color: inherit; text-underline-offset: 2px; }
+.iss-type { display: inline-flex; align-items: center; gap: 6px; }
+.iss-side { font-weight: 700; color: var(--brand-ink); }
+.iss-side.o { color: var(--red-ink); }
+.iss-match { padding-top: 10px; }
+.iss-match + .iss-match { border-top: 1px solid var(--line); margin-top: 4px; }
+.iss-mh { margin: 0 0 2px; font: 700 13px/1.3 var(--font-body); color: var(--brand-ink); }
+.iss-mh a { text-decoration: none; }
+.iss-mh a:hover { text-decoration: underline; }
+.fetch-status { margin: -4px 0 14px; font-weight: 600; color: var(--brand-ink); white-space: pre-line; }
+.fetch-status.err { color: var(--red-ink); }
+.btn:disabled { opacity: .5; cursor: progress; }
+code { font-size: 12.5px; background: var(--surface-2); border: 1px solid var(--line); border-radius: 3px; padding: 0 4px; overflow-wrap: anywhere; }
+
+footer { color: var(--muted); font-size: 12.5px; display: grid; gap: 4px; padding-top: 4px; }
+footer p { margin: 0; max-width: 90ch; }
+
+#toast { position: fixed; left: 50%; bottom: calc(18px + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%) translateY(20px); opacity: 0; pointer-events: none; background: var(--fg); color: var(--bg); padding: 9px 16px; border-radius: 999px; font-weight: 600; font-size: 14px; transition: opacity .18s, transform .18s; max-width: calc(100% - 32px); }
+#toast.on { opacity: 1; transform: translateX(-50%) translateY(0); }
+@media (prefers-reduced-motion: reduce) { #toast { transition: none; } }
+</style>
+
+<header class="mast">
+  <div class="wrap mast-in">
+    <div class="crest" aria-hidden="true">VCC</div>
+    <div>
+      <p class="eyebrow">Voorburg Cricket Club · Jaarverslag</p>
+      <h1>Season facts <span id="season-year">2026</span></h1>
+    </div>
+  </div>
+  <nav class="wrap tabs" role="tablist" aria-label="Views">
+    <button class="tab" role="tab" id="tab-highlights" aria-controls="view-highlights" data-tab="highlights">Highlights</button>
+    <button class="tab" role="tab" id="tab-finder" aria-controls="view-finder" data-tab="finder">Fact finder</button>
+    <button class="tab" role="tab" id="tab-matches" aria-controls="view-matches" data-tab="matches">Matches</button>
+  </nav>
+</header>
+<div class="stripe" aria-hidden="true"></div>
+
+<div class="wrap layout">
+<aside class="side-l">
+  <section class="card filters" id="filters" aria-label="Filters">
+    <button class="btn filters-toggle" id="filters-toggle" aria-expanded="true" aria-controls="filters"><span>Filters</span><span id="filters-count"></span></button>
+    <div class="frow">
+      <div class="flabel">Teams<em>Pick one team, or several to combine them.</em></div>
+      <div class="tgroups" id="f-teams"></div>
+    </div>
+    <div class="frow">
+      <div class="flabel">Matches</div>
+      <div class="frow-inline" id="f-match"></div>
+    </div>
+    <div class="frow">
+      <div class="flabel">Month</div>
+      <div id="f-months"></div>
+    </div>
+    <div class="frow">
+      <div class="flabel">Opponent</div>
+      <div id="f-opps"></div>
+    </div>
+    <div class="frow">
+      <div class="flabel">Player</div>
+      <div id="f-player"></div>
+    </div>
+    <div class="frow">
+      <div class="flabel">Show</div>
+      <div class="frow-inline" id="f-show"></div>
+    </div>
+  </section>
+</aside>
+
+<main class="main">
+  <p class="scope" id="scope" aria-live="polite"></p>
+
+  <div id="view-highlights" role="tabpanel" aria-labelledby="tab-highlights"></div>
+  <div id="view-finder" role="tabpanel" aria-labelledby="tab-finder" hidden>
+    <section class="card">
+      <div class="card-head"><h2>Fact finder</h2></div>
+      <p class="sub">Choose what to look through, then set the conditions. Click a column heading to sort, or a name to see only that player's matches.</p>
+      <div class="finder-controls" id="finder-controls"></div>
+    </section>
+    <section class="card" id="finder-results" data-toc="Results" style="margin-top:18px"></section>
+  </div>
+  <div id="view-matches" role="tabpanel" aria-labelledby="tab-matches" hidden></div>
+
+  <section class="card" id="data-issues" aria-labelledby="h-issues"></section>
+  <section class="card" id="data-updates" aria-labelledby="h-updates"></section>
+
+  <footer>
+    <p id="data-note"></p>
+    <p>Partnerships are worked out from the fall-of-wicket scores. ~ means a batter retired during the stand and the scorecard doesn't say at what score. Lowest totals leave out successful run chases.</p>
+  </footer>
+</main>
+
+<nav class="side-r" aria-label="Sections on this page">
+  <div class="toc">
+    <p class="mini">On this page</p>
+    <ul id="toc"></ul>
+  </div>
+</nav>
+</div>
+<div id="toast" role="status" aria-live="polite"></div>
+<div id="tip" hidden></div>
+
+<script>/*__STATS__*/</script>
+<script>window.SEASON_DATA = /*__DATA__*/null;</script>
+<script>
+(function () {
+  'use strict';
+  const V = window.VCCStats;
+  const S = V.prepare(window.SEASON_DATA);
+  const D = S.data;
+  const $ = s => document.querySelector(s);
+  const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+  const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  const nf = new Intl.NumberFormat('en-GB');
+  const n0 = x => (x == null ? '–' : nf.format(x));
+  const n1 = x => (x == null ? '–' : x.toFixed(1));
+  const n2 = x => (x == null ? '–' : x.toFixed(2));
+  const ord = n => n + (['th', 'st', 'nd', 'rd'][(n % 100 - 20) % 10] || ['th', 'st', 'nd', 'rd'][n % 100] || 'th');
+  const plural = (n, one, many) => `${n} ${n === 1 ? one : (many || one + 's')}`;
+  const times = n => (n === 1 ? 'once' : n === 2 ? 'twice' : `${n} times`);
+  const fmtDate = ms => new Date(ms).toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short' });
+  const scorecard = m => `https://matchcentre.kncb.nl/match/134453-${m.id}/scorecard/`;
+
+  // ---- state ---------------------------------------------------------------
+  const DEFAULT = {
+    tab: 'highlights', teams: [], result: 'all', venue: 'all', toss: 'all', months: [], opps: [], player: null,
+    side: 'v', names: 'short', top: 5, ms: { runs: 50, pship: 75, catches: 3, wkts: 5, total: 200, econ: 3, sruns: 250, swkts: 15 }, squadCounts: 'no', issueGroup: 'type', issueOpp: false, issueOff: ['no-runout-fielder'], issueFilterOpen: false,
+    finder: { ds: 'innings', cond: {}, chips: {} }, sorts: {}, limits: {},
+  };
+  let state = JSON.parse(JSON.stringify(DEFAULT));
+  try {
+    const saved = JSON.parse(localStorage.getItem('vcc-facts-' + D.season) || 'null');
+    if (saved) state = Object.assign(state, saved, { ms: Object.assign({}, DEFAULT.ms, saved.ms), finder: Object.assign({}, DEFAULT.finder, saved.finder) });
+  } catch (e) {}
+  const save = () => { try { localStorage.setItem('vcc-facts-' + D.season, JSON.stringify(state)); } catch (e) {} };
+  const hashTab = location.hash.replace('#', '');
+  if (['highlights', 'finder', 'matches'].includes(hashTab)) state.tab = hashTab;
+
+  const playedTeams = D.teams.filter(t => S.matches.some(m => m.team === t.id && m.played));
+  state.teams = state.teams.filter(id => playedTeams.some(t => t.id === id));
+  const filter = () => ({
+    teams: new Set(state.teams), result: state.result, venue: state.venue, toss: state.toss,
+    months: new Set(state.months), opponents: new Set(state.opps), side: state.side, player: state.player,
+  });
+
+  const name = pid => (state.names === 'full' ? S.fullName(pid) : S.name(pid));
+  const teamOf = m => m.teamObj;
+  const multiTeam = () => state.teams.length !== 1;
+  // Where a performance happened, from the performer's side.
+  function ctx(m, side) {
+    const t = teamOf(m).label;
+    const when = m.round && /^\d+$/.test(m.round) ? `round ${m.round}` : fmtDate(m.date);
+    const head = side === 'o' ? `for ${m.opp} v ${t}` : (multiTeam() ? `${t} v ${m.opp}` : `v ${m.opp}`);
+    return `${head}, ${when}`;
+  }
+  const ctxHtml = (m, side) => `<span class="ctx"><a href="${scorecard(m)}" target="_blank" rel="noopener">${esc(ctx(m, side))}</a></span>`;
+  const clubTag = (row) => (row.side === 'o' && state.side !== 'o' ? `<span class="club">${esc(row.m ? row.m.oppClub : '')}</span>` : '');
+  const playerBtn = pid => `<button class="pl" data-pid="${pid}" title="Show only ${esc(S.fullName(pid))}'s matches">${esc(name(pid))}</button>`;
+
+  // ---- copy registry ---------------------------------------------------------
+  const copyReg = {};
+  function copyBtn(key, label) {
+    return `<button class="btn" data-copy="${key}" title="Copy for Word or Excel"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><rect x="5" y="5" width="9" height="9" rx="1.5"/><path d="M11 5V3.5A1.5 1.5 0 0 0 9.5 2h-6A1.5 1.5 0 0 0 2 3.5v6A1.5 1.5 0 0 0 3.5 11H5"/></svg>${label || 'Copy'}</button>`;
+  }
+  async function doCopy(key) {
+    const c = copyReg[key];
+    if (!c) return;
+    let text, html;
+    if (c.tables) {
+      text = c.tables.map(t => [t.title, t.head.join('\t'), ...t.body.map(r => r.join('\t'))].join('\n')).join('\n\n');
+      html = c.tables.map(t => `<p><b>${esc(t.title)}</b></p><table border="1" cellpadding="4" style="border-collapse:collapse"><tr>${t.head.map(h => `<th>${esc(h)}</th>`).join('')}</tr>${t.body.map(r => `<tr>${r.map(v => `<td>${esc(v)}</td>`).join('')}</tr>`).join('')}</table>`).join('');
+    } else {
+      text = c.lines.join('\n');
+      html = `<ul>${c.lines.map(l => `<li>${esc(l)}</li>`).join('')}</ul>`;
+    }
+    try {
+      if (window.ClipboardItem && navigator.clipboard && navigator.clipboard.write) {
+        await navigator.clipboard.write([new ClipboardItem({ 'text/html': new Blob([html], { type: 'text/html' }), 'text/plain': new Blob([text], { type: 'text/plain' }) })]);
+      } else {
+        await navigator.clipboard.writeText(text);
+      }
+      toast(`Copied ${c.what}. Paste it into Word or Excel.`);
+    } catch (e) {
+      const ta = document.createElement('textarea');
+      ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.select();
+      const ok = document.execCommand && document.execCommand('copy');
+      ta.remove();
+      toast(ok ? `Copied ${c.what}.` : 'Copying is blocked here. Select the table and press Ctrl+C instead.');
+    }
+  }
+  let toastTimer;
+  function toast(msg) {
+    const t = $('#toast'); t.textContent = msg; t.classList.add('on');
+    clearTimeout(toastTimer); toastTimer = setTimeout(() => t.classList.remove('on'), 2600);
+  }
+
+  // ---- table helper ----------------------------------------------------------
+  // col: { k, label, title, num, asc, get(r), html(r), text(r), opt, copyOnly }
+  const cmp = (a, b) => (a == null && b == null ? 0 : a == null ? 1 : b == null ? -1 : typeof a === 'string' ? a.localeCompare(b) : a - b);
+  function sortRows(key, cols, rows, def) {
+    const st = state.sorts[key] || def;
+    if (!st) return rows;
+    const c = cols.find(x => x.k === st.k);
+    if (!c) return rows;
+    const tie = def && def.tie;
+    return [...rows].sort((a, b) => {
+      const va = c.get(a), vb = c.get(b);
+      if (va == null || vb == null) return cmp(va, vb);
+      return cmp(va, vb) * st.dir || (tie ? tie(a, b) : 0);
+    });
+  }
+  const colReg = {};
+  function table(key, cols, rows, opts = {}) {
+    colReg[key] = cols;
+    const st = state.sorts[key] || opts.sort;
+    const sorted = sortRows(key, cols, rows, opts.sort);
+    const lim = state.limits[key] || opts.limit || 0;
+    const shown = lim ? sorted.slice(0, lim) : sorted;
+    const vis = cols.filter(c => !c.copyOnly);
+    copyReg[key] = {
+      what: opts.what || 'the table',
+      tables: [{ title: opts.title || '', head: cols.map(c => c.label), body: shown.map(r => cols.map(c => (c.text ? c.text(r) : String(c.get(r) ?? '')))) }],
+    };
+    if (!rows.length) return `<p class="empty">${opts.empty || 'Nothing matches the current filters.'}</p>`;
+    const head = vis.map(c => {
+      const sortAttr = st && st.k === c.k ? ` aria-sort="${st.dir < 0 ? 'descending' : 'ascending'}"` : '';
+      const lab = c.title ? `<abbr title="${esc(c.title)}" style="text-decoration:none">${esc(c.label)}</abbr>` : esc(c.label);
+      return `<th class="${c.num ? 'n' : ''} ${c.opt ? 'opt' : ''}"${sortAttr}><button data-sort="${key}" data-k="${c.k}">${lab}</button></th>`;
+    }).join('');
+    // Subtle data bars behind the columns that compare players (scaled to the column maximum).
+    const barMax = {};
+    vis.filter(c => c.bar).forEach(c => { barMax[c.k] = Math.max(0, ...rows.map(r => +c.get(r) || 0)); });
+    const cell = (c, r) => {
+      const bar = c.bar && barMax[c.k] ? ` style="--w:${pct(+c.get(r) || 0, barMax[c.k]).toFixed(1)}%"` : '';
+      return `<td class="${c.num ? 'n' : ''} ${c.opt ? 'opt' : ''} ${bar ? 'bar' : ''}"${bar}>${c.html ? c.html(r) : esc(c.num && typeof c.get(r) === 'number' ? n0(c.get(r)) : c.get(r) ?? '–')}</td>`;
+    };
+    const body = shown.map(r => `<tr>${vis.map(c => cell(c, r)).join('')}</tr>`).join('');
+    let more = '';
+    if (opts.paged && sorted.length > shown.length) {
+      more = `<div class="morebar"><button class="btn" data-more="${key}" data-step="${opts.limit}">Show ${Math.min(opts.limit, sorted.length - shown.length)} more</button><button class="link" data-more="${key}" data-step="all">Show all ${sorted.length}</button></div>`;
+    }
+    return `<div class="tw"><table><thead><tr>${head}</tr></thead><tbody>${body}</tbody></table></div>${more}`;
+  }
+
+  // ---- chart helpers (plain HTML, so text never scales with the chart) ----------
+  const pct = (v, max) => (max > 0 ? Math.max(0, Math.min(100, (v / max) * 100)) : 0);
+  const sum = (arr, f) => arr.reduce((s, x) => s + (f ? f(x) : x), 0);
+  function niceTicks(max, count = 4) {
+    if (max <= 0) return { top: 1, ticks: [0, 1] };
+    const raw = max / count, mag = 10 ** Math.floor(Math.log10(raw));
+    const step = [1, 2, 2.5, 5, 10].map(s => s * mag).find(s => s >= raw);
+    const top = Math.ceil(max / step) * step;
+    const ticks = [];
+    for (let v = 0; v <= top + 1e-9; v += step) ticks.push(+v.toFixed(6));
+    return { top, ticks };
+  }
+  // Ranked horizontal bars. items: { label | labelHtml, value, valueText?, note?, tip?, cls? }
+  function hbars(items, { fmt = n0, cls = 's1', max } = {}) {
+    if (!items.length) return '';
+    const mx = max ?? Math.max(...items.map(i => i.value));
+    return `<div class="hbars">${items.map(i => `<div class="hb" tabindex="0" data-tip="${esc(i.tip || `${i.label}: ${i.valueText ?? fmt(i.value)}`)}"><span class="hb-l">${i.labelHtml || esc(i.label)}${i.note ? `<small>${esc(i.note)}</small>` : ''}</span><span class="hb-t"><span class="hb-b ${i.cls || cls}" style="width:${pct(i.value, mx)}%"></span></span><span class="hb-v">${esc(i.valueText ?? fmt(i.value))}</span></div>`).join('')}</div>`;
+  }
+  // Two series per row (e.g. received vs given away). rows: { label, a, b }
+  function pairBars(rows, la, lb) {
+    const mx = Math.max(1, ...rows.flatMap(r => [r.a, r.b]));
+    return `<div class="hbars">${rows.map(r => `<div class="hb pair" tabindex="0" data-tip="${esc(`${r.label}\n${la}: ${n0(r.a)}\n${lb}: ${n0(r.b)}`)}"><span class="hb-l">${esc(r.label)}</span><span class="hb-t"><span class="hb-b s1" style="width:${pct(r.a, mx)}%"></span><span class="hb-b s2" style="width:${pct(r.b, mx)}%"></span></span><span class="hb-v">${n0(r.a)} · ${n0(r.b)}</span></div>`).join('')}</div>
+      <ul class="legend" style="margin-top:8px"><li><i class="s1"></i>${esc(la)}</li><li><i class="s2"></i>${esc(lb)}</li></ul>`;
+  }
+  // 100% stacked bar with a legend that carries the values. segs: { label, value, cls }
+  function stackBar(segs, { mini = false, legend = true, unit = '' } = {}) {
+    const tot = sum(segs, s => s.value);
+    if (!tot) return '';
+    const p = v => Math.round((v / tot) * 100);
+    const bar = `<div class="stack${mini ? ' mini-stack' : ''}">${segs.filter(s => s.value > 0).map(s => `<span class="${s.cls}" style="flex:${s.value}" tabindex="0" data-tip="${esc(`${s.label}: ${n0(s.value)}${unit} (${p(s.value)}%)`)}"></span>`).join('')}</div>`;
+    return bar + (legend ? `<ul class="legend">${segs.map(s => `<li><i class="${s.cls}"></i>${esc(s.label)} <b>${n0(s.value)}</b> ${p(s.value)}%</li>`).join('')}</ul>` : '');
+  }
+  // Stacked column chart. cols: { label, segs:[{ value, cls }], tip }
+  function columns(cols, { height = 150, legend = '' } = {}) {
+    if (!cols.length) return '';
+    const totals = cols.map(c => sum(c.segs, s => s.value));
+    const { top, ticks } = niceTicks(Math.max(...totals));
+    return `<div class="cc" style="--h:${height}px">
+      <div class="cc-y">${ticks.map(t => `<span style="bottom:${pct(t, top)}%">${n0(t)}</span>`).join('')}</div>
+      <div class="cc-plot">${ticks.slice(1).map(t => `<div class="cc-grid" style="bottom:${pct(t, top)}%"></div>`).join('')}
+        <div class="cc-cols">${cols.map((c, i) => `<div class="cc-col" tabindex="0" data-tip="${esc(c.tip)}"><span class="cc-val">${totals[i] ? n0(Math.round(totals[i] * 10) / 10) : ''}</span><div class="cc-stack" style="height:${pct(totals[i], top)}%">${c.segs.filter(s => s.value > 0).map(s => `<span class="${s.cls}" style="flex:${s.value}"></span>`).join('')}</div></div>`).join('')}</div>
+      </div>
+      <div class="cc-x">${cols.map(c => `<span>${esc(c.label)}</span>`).join('')}</div>
+    </div>${legend}`;
+  }
+  // Match by match: VCC total and opponent total per match, joined by a line.
+  function dumbbell(ms) {
+    const pts = ms.map(m => {
+      const ours = m.innings.filter(i => i.side === 'v'), theirs = m.innings.filter(i => i.side === 'o');
+      return { m, a: sum(ours, i => i.runs || 0), b: sum(theirs, i => i.runs || 0),
+        at: ours.map(i => `${i.runs}${i.wkts >= 10 ? '' : '/' + i.wkts}`).join(' & '), bt: theirs.map(i => `${i.runs}${i.wkts >= 10 ? '' : '/' + i.wkts}`).join(' & ') };
+    });
+    const { top, ticks } = niceTicks(Math.max(1, ...pts.flatMap(p => [p.a, p.b])));
+    return `<div class="cc" style="--h:170px">
+      <div class="cc-y">${ticks.map(t => `<span style="bottom:${pct(t, top)}%">${n0(t)}</span>`).join('')}</div>
+      <div class="cc-plot">${ticks.slice(1).map(t => `<div class="cc-grid" style="bottom:${pct(t, top)}%"></div>`).join('')}
+        <div class="cc-cols">${pts.map(p => `<div class="db-col" tabindex="0" data-tip="${esc(`${fmtDate(p.m.date)} · ${teamOf(p.m).label} v ${p.m.opp}\nVCC ${p.at || '–'}\n${p.m.oppClub} ${p.bt || '–'}\n${p.m.leader}`)}">
+          <span class="db-line" style="bottom:${pct(Math.min(p.a, p.b), top)}%;height:${pct(Math.abs(p.a - p.b), top)}%"></span>
+          <span class="db-dot s2" style="bottom:${pct(p.b, top)}%"></span><span class="db-dot s1" style="bottom:${pct(p.a, top)}%"></span></div>`).join('')}</div>
+      </div>
+      <div class="cc-x">${pts.map(p => `<span>${p.m.result === 'W' || p.m.result === 'L' ? p.m.result : '·'}</span>`).join('')}</div>
+    </div><ul class="legend" style="margin-top:8px"><li><i class="s1" style="border-radius:50%"></i>VCC total</li><li><i class="s2" style="border-radius:50%"></i>Opponent total</li><li>W / L under each match</li></ul>`;
+  }
+  function spark(rows) {
+    const tip = 'Runs per innings: ' + rows.map(batScore).join(', ');
+    return `<span class="spark" tabindex="0" data-tip="${esc(tip)}">${rows.map(r => `<i class="${r.out ? '' : 'o'}" style="height:${Math.max(6, pct(Math.min(r.runs, 100), 100))}%"></i>`).join('')}</span>`;
+  }
+
+  // Column builders reused across views
+  const C = {
+    player: (label = 'Player') => ({ k: 'name', label, get: r => name(r.pid), html: r => playerBtn(r.pid) + clubTag(r) }),
+    playerCtx: (label = 'Player') => ({ k: 'name', label, get: r => name(r.pid), html: r => playerBtn(r.pid) + clubTag(r) + ctxHtml(r.m, r.side) }),
+    match: () => ({ k: 'match', label: 'Match', copyOnly: true, get: r => ctx(r.m, r.side) }),
+    num: (k, label, get, o = {}) => Object.assign({ k, label, num: true, get }, o),
+  };
+  const batScore = r => `${r.runs}${r.out ? '' : '*'}`;
+  const pairCell = r => `${playerBtn(r.a)} &amp; ${playerBtn(r.b)}${clubTag(r)}${ctxHtml(r.m, r.side)}`;
+  const pairText = r => `${name(r.a)} & ${name(r.b)}`;
+  const pshipRuns = r => `${r.approx ? '~' : ''}${r.runs}${r.unbroken ? '*' : ''}`;
+
+  // ---- filters UI --------------------------------------------------------------
+  function seg(nameAttr, options, value, label, cls = '') {
+    return `<fieldset class="seg ${cls}"><legend class="sr">${esc(label)}</legend>${options.map(([v, t]) =>
+      `<label><input type="radio" name="${nameAttr}" value="${esc(v)}"${String(v) === String(value) ? ' checked' : ''}><span>${t}</span></label>`).join('')}</fieldset>`;
+  }
+  function chips(nameAttr, options, selected, label) {
+    return `<fieldset class="chips"><legend class="sr">${esc(label)}</legend>${options.map(([v, t, dis]) =>
+      `<label><input type="checkbox" name="${nameAttr}" value="${esc(v)}"${selected.includes(v) ? ' checked' : ''}${dis ? ' disabled' : ''}><span>${t}</span></label>`).join('')}</fieldset>`;
+  }
+
+  function renderTeamFilter() {
+    const groups = [...new Set(playedTeams.map(t => t.group))];
+    const all = `<div class="tgroup">${chips('team-all', [['all', 'All VCC teams']], state.teams.length ? [] : ['all'], 'All teams')}</div>`;
+    $('#f-teams').innerHTML = all + groups.map(g => `<div class="tgroup"><b>${esc(g)}</b>${chips('team',
+      playedTeams.filter(t => t.group === g).map(t => [t.id, `${esc(t.label)} <small>${esc(shortGrade(t))}</small>`]), state.teams, g)}</div>`).join('');
+  }
+  function shortGrade(t) {
+    return t.grade.replace(/ Men$/, '').replace(/^Inspire Women's /, '').replace('The Next Communications ', '').replace('Dutch Lionesses Friendlies', 'Lionesses friendly').replace('Friendly Matches', 'Friendly');
+  }
+  function renderMatchFilter() {
+    $('#f-match').innerHTML =
+      `<div><span class="mini">Result</span>${seg('result', [['all', 'All'], ['W', 'Won'], ['L', 'Lost'], ['other', 'Tied, drawn or abandoned']], state.result, 'Result')}</div>` +
+      `<div><span class="mini">Ground</span>${seg('venue', [['all', 'Home &amp; away'], ['home', 'Home'], ['away', 'Away']], state.venue, 'Ground')}</div>` +
+      `<div><span class="mini">VCC batted</span>${seg('toss', [['all', 'Either'], ['first', 'First'], ['chase', 'Second']], state.toss, 'VCC batted')}</div>`;
+    $('#f-show').innerHTML =
+      `<div><span class="mini">Performances by</span>${seg('side', [['v', 'VCC players'], ['o', 'Opponents'], ['both', 'Both teams']], state.side, 'Performances by')}</div>` +
+      `<div><span class="mini">Names</span>${seg('names', [['short', 'K Marthi'], ['full', 'Full names']], state.names, 'Names')}</div>`;
+  }
+  function baseMatches() {
+    // Matches for the chosen teams only, so month and opponent chips only offer what exists.
+    return S.matches.filter(m => m.played && (!state.teams.length || state.teams.includes(m.team)));
+  }
+  function renderMonthOppFilter() {
+    const base = baseMatches();
+    const months = [...new Set(base.map(m => m.month))].sort((a, b) => a - b);
+    $('#f-months').innerHTML = chips('month', months.map(i => [i, MONTHS[i]]), state.months, 'Month');
+    const clubs = [...new Set(base.map(m => m.oppClub))].sort((a, b) => a.localeCompare(b));
+    state.opps = state.opps.filter(o => clubs.includes(o));
+    const label = state.opps.length ? `${plural(state.opps.length, 'opponent')} chosen` : `All opponents (${clubs.length})`;
+    const wasOpen = $('#f-opps details') && $('#f-opps details').open;
+    $('#f-opps').innerHTML = `<details class="more"${wasOpen || state.opps.length ? ' open' : ''}><summary>${label}</summary>${chips('opp', clubs.map(c => [c, esc(c)]), state.opps, 'Opponent')}</details>`;
+  }
+  function renderPlayerFilter() {
+    const box = $('#f-player');
+    if (state.player) {
+      box.innerHTML = `<span class="pchip">${esc(S.fullName(state.player))}<button data-clear-player aria-label="Remove player filter">×</button></span>`;
+      return;
+    }
+    box.innerHTML = `<div class="player-pick"><label class="sr" for="player-q">Find a player</label><input id="player-q" type="search" autocomplete="off" placeholder="Type a name, e.g. Marthi" aria-autocomplete="list" aria-controls="player-suggest"><ul class="suggest" id="player-suggest" role="listbox" hidden></ul></div>`;
+  }
+
+  const playerIndex = (() => {
+    const seen = new Map();
+    for (const a of S.rows.apps) {
+      const k = a.pid + ':' + a.side;
+      if (!seen.has(k)) seen.set(k, { pid: a.pid, side: a.side, clubs: new Set(), n: 0 });
+      const e = seen.get(k); e.n++; if (a.side === 'o') e.clubs.add(a.m.oppClub); else e.clubs.add(a.m.teamObj.label);
+    }
+    return [...seen.values()];
+  })();
+  function suggestPlayers(q) {
+    q = q.trim().toLowerCase();
+    const list = $('#player-suggest');
+    if (q.length < 2) { list.hidden = true; return; }
+    const hits = playerIndex.filter(p => (state.side === 'both' || p.side === state.side) &&
+      (S.fullName(p.pid).toLowerCase().includes(q) || S.name(p.pid).toLowerCase().includes(q)))
+      .sort((a, b) => b.n - a.n).slice(0, 8);
+    list.innerHTML = hits.length
+      ? hits.map((p, i) => `<li><button role="option" data-pick="${p.pid}"${i === 0 ? ' aria-selected="true"' : ''}><span>${esc(S.fullName(p.pid))}</span><small>${esc([...p.clubs].slice(0, 2).join(', '))}</small></button></li>`).join('')
+      : `<li><span class="empty" style="display:block;padding:6px 10px">No ${state.side === 'o' ? 'opponent' : state.side === 'v' ? 'VCC' : ''} player called “${esc(q)}”.</span></li>`;
+    list.hidden = false;
+  }
+
+  function renderFilters() {
+    renderTeamFilter(); renderMatchFilter(); renderMonthOppFilter(); renderPlayerFilter();
+  }
+
+  // ---- scope sentence ------------------------------------------------------
+  function scopeLine(r) {
+    const parts = [];
+    const teams = state.teams.map(id => playedTeams.find(t => t.id === id));
+    const teamTxt = !teams.length ? 'all VCC teams' : teams.length <= 3 ? teams.map(t => `${t.label} (${shortGrade(t)})`).join(', ') : `${teams.length} teams`;
+    if (state.result !== 'all') parts.push({ W: 'wins', L: 'defeats', other: 'ties, draws and abandoned' }[state.result]);
+    if (state.venue !== 'all') parts.push(state.venue === 'home' ? 'at home' : 'away');
+    if (state.toss !== 'all') parts.push(state.toss === 'first' ? 'batting first' : 'batting second');
+    if (state.months.length) parts.push(state.months.slice().sort((a, b) => a - b).map(i => MONTHS[i]).join(', '));
+    if (state.opps.length) parts.push('v ' + (state.opps.length <= 3 ? state.opps.join(', ') : plural(state.opps.length, 'opponent')));
+    if (state.player) parts.push(`${S.fullName(state.player)}'s matches`);
+    const changed = JSON.stringify([state.teams, state.result, state.venue, state.toss, state.months, state.opps, state.player]) !== JSON.stringify([[], 'all', 'all', 'all', [], [], null]);
+    $('#scope').innerHTML = `<span><strong>${plural(r.matches.length, 'match', 'matches')}</strong> · ${esc(teamTxt)}${parts.length ? ' · ' + esc(parts.join(' · ')) : ''}</span>${changed ? '<button class="link" data-reset>Clear all filters</button>' : ''}`;
+    $('#filters-count').textContent = plural(r.matches.length, 'match', 'matches');
+  }
+
+  // ---- highlights ------------------------------------------------------------
+  const topOpts = () => (state.top === 'all' ? 0 : +state.top);
+
+  function overviewCard(r) {
+    const s = V.summary(r);
+    const title = state.teams.length === 1 ? `${playedTeams.find(t => t.id === state.teams[0]).label} in ${D.season}` : `VCC in ${D.season}`;
+    const tot = t => (t ? `${t.runs}${t.allOut ? '' : '/' + t.wkts}` : '–');
+    const totCtx = t => (t ? esc(ctx(t.m, 'v')) : '');
+    const formHtml = r.matches.map(m => `<a class="${m.result === 'W' || m.result === 'L' ? m.result : ''}" href="${scorecard(m)}" target="_blank" rel="noopener" title="${esc(fmtDate(m.date) + ' · ' + teamOf(m).label + ' v ' + m.opp + ' · ' + (m.leader || m.result))}">${m.result === 'A' ? 'A' : m.result}</a>`).join('');
+    let byTeam = '';
+    if (multiTeam()) {
+      const rows = playedTeams.filter(t => r.matches.some(m => m.team === t.id)).map(t => {
+        const ms = r.matches.filter(m => m.team === t.id);
+        return { t, p: ms.length, w: ms.filter(m => m.result === 'W').length, l: ms.filter(m => m.result === 'L').length, o: ms.filter(m => m.result !== 'W' && m.result !== 'L').length };
+      });
+      byTeam = `<div><h3><span class="u">Results by team</span></h3>${table('byteam', [
+        { k: 'team', label: 'Team', get: x => `${x.t.label} (${shortGrade(x.t)})`, html: x => `<button class="pl" data-team="${x.t.id}">${esc(x.t.label)}</button> <span class="club">${esc(shortGrade(x.t))}</span>` },
+        C.num('p', 'P', x => x.p, { title: 'Played' }), C.num('w', 'W', x => x.w, { title: 'Won' }), C.num('l', 'L', x => x.l, { title: 'Lost' }),
+        C.num('o', 'Other', x => x.o, { title: 'Tied, drawn or abandoned' }),
+        C.num('pct', 'Win %', x => (x.p ? Math.round((x.w / x.p) * 100) : null), { html: x => (x.p ? Math.round((x.w / x.p) * 100) + '%' : '–'), text: x => (x.p ? Math.round((x.w / x.p) * 100) + '%' : '') }),
+      ], rows, { sort: { k: 'p', dir: -1 }, title: 'Results by team', what: 'results by team' })}</div>`;
+    }
+    copyReg.overview = { what: 'the season summary', lines: [
+      `${title}: won ${s.won}, lost ${s.lost}${s.other ? `, ${s.other} other` : ''} (${plural(s.played, 'match', 'matches')})`,
+      `Runs scored: ${n0(s.runs)}`, `Wickets taken: ${s.wkts}`,
+      `Highest total: ${tot(s.highest)}${s.highest ? ' ' + ctx(s.highest.m, 'v') : ''}`,
+      `Lowest total: ${tot(s.lowest)}${s.lowest ? ' ' + ctx(s.lowest.m, 'v') : ''}`,
+      `Extras received: ${s.extrasFor}`,
+    ] };
+    return `<section class="card ov">
+      <div class="card-head" style="margin:0"><h2>${esc(title)}</h2>${copyBtn('overview')}</div>
+      <div class="record"><div class="big">${s.won}–${s.lost}${s.other ? `<small>+${s.other}</small>` : ''}</div>
+        <p>Won–lost from ${plural(s.played, 'match', 'matches')}${s.other ? `, plus ${s.other} tied, drawn or abandoned` : ''}</p></div>
+      ${r.matches.length <= 30 ? `<div class="form" aria-label="Results in date order">${formHtml}</div>` : ''}
+      <div class="tiles">
+        <div class="tile"><b>Runs scored</b><strong>${n0(s.runs)}</strong><small>${n0(s.runsAgainst)} conceded</small></div>
+        <div class="tile"><b>Wickets taken</b><strong>${s.wkts}</strong></div>
+        <div class="tile"><b>Highest total</b><strong>${tot(s.highest)}</strong><small>${totCtx(s.highest)}</small></div>
+        <div class="tile"><b>Lowest total</b><strong>${tot(s.lowest)}</strong><small>${totCtx(s.lowest)}</small></div>
+        <div class="tile"><b>Extras received</b><strong>${s.extrasFor}</strong><small>${s.extrasAgainst} given away</small></div>
+      </div>
+      ${overviewCharts(r)}
+      ${byTeam}
+    </section>`;
+  }
+
+  function overviewCharts(r) {
+    const months = [...new Set(r.matches.map(m => m.month))].sort((a, b) => a - b);
+    const monthCols = months.map(mo => {
+      const ms = r.matches.filter(m => m.month === mo);
+      const w = ms.filter(m => m.result === 'W').length, l = ms.filter(m => m.result === 'L').length, o = ms.length - w - l;
+      return { label: MONTHS[mo], segs: [{ value: w, cls: 's1' }, { value: l, cls: 's2' }, { value: o, cls: 's0' }], tip: `${MONTHS[mo]}: ${plural(ms.length, 'match', 'matches')}\nWon ${w} · Lost ${l}${o ? ` · Other ${o}` : ''}` };
+    });
+    const ourBat = S.rows.bat.filter(b => b.side === 'v' && r.matches.includes(b.m));
+    const ourInns = r.teamAll.filter(t => t.side === 'v');
+    const fours = sum(ourBat, b => b.fours) * 4, sixes = sum(ourBat, b => b.sixes) * 6;
+    const batRuns = sum(ourBat, b => b.runs), extras = sum(ourInns, t => t.extras);
+    const runsStack = stackBar([
+      { label: 'Fours', value: fours, cls: 's1' }, { label: 'Sixes', value: sixes, cls: 's2' },
+      { label: 'Running', value: Math.max(0, batRuns - fours - sixes), cls: 's3' }, { label: 'Extras', value: extras, cls: 's4' },
+    ], { unit: ' runs' });
+    const boundaries = sum(ourBat, b => b.fours + b.sixes);
+    return `<div class="charts">
+      <div><p class="chart-title">Results by month</p><p class="chart-sub">Matches won and lost in each month.</p>
+        ${columns(monthCols, { legend: '<ul class="legend" style="margin-top:8px"><li><i class="s1"></i>Won</li><li><i class="s2"></i>Lost</li><li><i class="s0"></i>Tied, drawn or abandoned</li></ul>' })}</div>
+      <div><p class="chart-title">How VCC scored its runs</p><p class="chart-sub">${n0(boundaries)} boundaries: ${n0(sum(ourBat, b => b.fours))} fours and ${n0(sum(ourBat, b => b.sixes))} sixes.</p>${runsStack}</div>
+      ${r.matches.length <= 30 ? `<div class="wide"><p class="chart-title">Match by match</p><p class="chart-sub">VCC's total against the opponent's in each match, in date order. Hover a match for the score.</p>${dumbbell(r.matches)}</div>` : ''}
+    </div>`;
+  }
+
+  // ---- team facts ------------------------------------------------------------
+  function teamFactsCard(r) {
+    const ms = r.matches;
+    const ours = r.teamAll.filter(t => t.side === 'v'), theirs = r.teamAll.filter(t => t.side === 'o');
+    const rec = arr => ({ p: arr.length, w: arr.filter(m => m.result === 'W').length, l: arr.filter(m => m.result === 'L').length });
+    const recTile = (label, arr) => {
+      const x = rec(arr);
+      if (!x.p) return '';
+      return `<div class="tile"><b>${label}</b><strong>${x.w}–${x.l}</strong><small>${plural(x.p, 'match', 'matches')} · ${Math.round((x.w / x.p) * 100)}% won</small>
+        ${stackBar([{ label: 'Won', value: x.w, cls: 's1' }, { label: 'Lost', value: x.l, cls: 's2' }, { label: 'Other', value: x.p - x.w - x.l, cls: 's0' }], { mini: true, legend: false, unit: '' })}</div>`;
+    };
+    const rr = arr => { const balls = sum(arr, t => t.balls); return balls ? sum(arr, t => t.runs) / (balls / 6) : null; };
+    const avg = arr => (arr.length ? sum(arr, t => t.runs) / arr.length : null);
+    const firstOurs = ours.filter(t => t.inn.order === 1), firstTheirs = theirs.filter(t => t.inn.order === 1);
+    const big = ours.filter(t => t.runs >= 200).length;
+    const tiles = [
+      recTile('Batting first', ms.filter(m => m.battedFirst === 'v')), recTile('Batting second', ms.filter(m => m.battedFirst === 'o')),
+      recTile('At home', ms.filter(m => m.home)), recTile('Away', ms.filter(m => !m.home)),
+      recTile('Won the toss', ms.filter(m => m.toss === 'v')), recTile('Lost the toss', ms.filter(m => m.toss === 'o')),
+      `<div class="tile"><b>Run rate</b><strong>${n2(rr(ours))}</strong><small>runs per over · opponents ${n2(rr(theirs))}</small></div>`,
+      `<div class="tile"><b>Average first-innings total</b><strong>${avg(firstOurs) == null ? '–' : Math.round(avg(firstOurs))}</strong><small>when VCC batted first · opponents ${avg(firstTheirs) == null ? '–' : Math.round(avg(firstTheirs))}</small></div>`,
+      `<div class="tile"><b>Bowled out</b><strong>${theirs.filter(t => t.allOut).length}×</strong><small>opponents all out · VCC all out ${ours.filter(t => t.allOut).length}×</small></div>`,
+      `<div class="tile"><b>Totals of 200+</b><strong>${big}</strong><small>conceded ${theirs.filter(t => t.runs >= 200).length} · under 100: ${ours.filter(t => t.runs < 100 && t.completed).length}</small></div>`,
+    ].join('');
+
+    const vBat = S.rows.bat.filter(b => r.matches.includes(b.m));
+    const howOut = side => {
+      const outs = vBat.filter(b => b.side === side && b.out);
+      const kinds = [[2, 'Caught'], [4, 'Bowled'], [3, 'LBW'], [6, 'Run out'], [5, 'Stumped'], [7, 'Hit wicket']];
+      return hbars(kinds.map(([d, l]) => { const n = outs.filter(b => b.did === d).length; return { label: l, value: n, valueText: `${n} · ${outs.length ? Math.round((n / outs.length) * 100) : 0}%` }; }).filter(i => i.value > 0));
+    };
+    const vPs = S.rows.pship.filter(p => p.side === 'v' && r.matches.includes(p.m));
+    const wktCols = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(w => {
+      const ps = vPs.filter(p => p.wkt === w);
+      const a = ps.length ? sum(ps, p => p.runs) / ps.length : 0;
+      return { label: ord(w), segs: [{ value: Math.round(a * 10) / 10, cls: 's1' }], tip: `${ord(w)} wicket: average ${n1(a)} from ${plural(ps.length, 'stand')}${ps.length ? `, best ${Math.max(...ps.map(p => p.runs))}` : ''}` };
+    });
+    const extras = [['Wides', 'wides'], ['No-balls', 'nb'], ['Byes', 'byes'], ['Leg byes', 'lb']]
+      .map(([label, k]) => ({ label, a: sum(ours, t => t[k]), b: sum(theirs, t => t[k]) }));
+
+    // record per opponent club
+    const clubs = [...new Set(ms.map(m => m.oppClub))];
+    const oppRows = clubs.map(c => {
+      const mm = ms.filter(m => m.oppClub === c);
+      const x = rec(mm);
+      return { c, ...x, pctW: x.p ? (x.w / x.p) * 100 : 0, rf: sum(mm, m => m.ourRuns), ra: sum(mm, m => m.theirRuns) };
+    });
+    const oppT = table('opp-rec', [
+      { k: 'c', label: 'Opponent', get: x => x.c, html: x => `<button class="pl" data-opp="${esc(x.c)}" title="Show only matches against ${esc(x.c)}">${esc(x.c)}</button>` },
+      C.num('p', 'P', x => x.p, { title: 'Played' }), C.num('w', 'W', x => x.w, { title: 'Won' }), C.num('l', 'L', x => x.l, { title: 'Lost' }),
+      C.num('pctW', 'Win %', x => x.pctW, { bar: true, html: x => Math.round(x.pctW) + '%', text: x => Math.round(x.pctW) + '%' }),
+      C.num('rf', 'Runs for', x => x.rf, { opt: true }), C.num('ra', 'Against', x => x.ra, { opt: true }),
+    ], oppRows, { sort: { k: 'p', dir: -1, tie: (a, b) => b.pctW - a.pctW }, title: 'Record against each opponent', what: 'the record per opponent' });
+
+    copyReg.teamfacts = { what: 'the team facts', lines: [...document.createRange().createContextualFragment(`<div>${tiles}</div>`).querySelectorAll('.tile')].map(t => `${t.querySelector('b').textContent}: ${t.querySelector('strong').textContent} (${t.querySelector('small').textContent})`) };
+    return `<section class="card"><div class="card-head"><h2>Team facts</h2>${copyBtn('teamfacts', 'Copy section')}</div>
+      <p class="sub">Always about the VCC team${multiTeam() ? 's in the filter, taken together' : ''}.</p>
+      <div class="tf-grid">${tiles}</div>
+      <div class="charts" style="margin-top:26px">
+        <div><p class="chart-title">How VCC batters were out</p><p class="chart-sub">Share of all VCC dismissals.</p>${howOut('v')}</div>
+        <div><p class="chart-title">How VCC took its wickets</p><p class="chart-sub">Share of all opponent dismissals.</p>${howOut('o')}</div>
+        <div><p class="chart-title">Average partnership per wicket</p><p class="chart-sub">Mean VCC stand for each wicket. Hover for the best one.</p>${columns(wktCols, { height: 140 })}</div>
+        <div><p class="chart-title">Extras</p><p class="chart-sub">Received by VCC batters against given away by VCC bowlers.</p>${pairBars(extras, 'Received', 'Given away')}</div>
+        <div class="wide"><p class="chart-title">Record against each opponent</p><p class="chart-sub">Click an opponent to see only those matches.</p>${oppT}</div>
+      </div></section>`;
+  }
+
+  function playerCard(r) {
+    if (!state.player) return '';
+    const pid = state.player;
+    const bat = V.batting(r.bat.filter(b => b.pid === pid), r.apps.filter(a => a.pid === pid))[0];
+    const bowl = V.bowling(r.bowl.filter(b => b.pid === pid))[0];
+    const fld = V.fielding(r.field.filter(f => f.pid === pid))[0];
+    const apps = new Set(r.apps.filter(a => a.pid === pid).map(a => a.m)).size;
+    const facts = [['Played', plural(apps, 'match', 'matches')]];
+    if (bat) facts.push(['Batting', `${n0(bat.runs)} runs in ${plural(bat.inns, 'innings', 'innings')}, best ${bat.hs}${bat.hsNo ? '*' : ''}, average ${n1(bat.avg)}, strike rate ${n1(bat.sr)}${bat.fifties ? `, ${plural(bat.fifties, 'fifty', 'fifties')}` : ''}${bat.hundreds ? `, ${plural(bat.hundreds, 'hundred')}` : ''}`]);
+    if (bowl) facts.push(['Bowling', `${plural(bowl.wkts, 'wicket')} from ${bowl.overs} overs, best ${bowl.best}, average ${n1(bowl.avg)}, economy ${n2(bowl.econ)}`]);
+    if (fld) facts.push(['Fielding', `${plural(fld.ct, 'catch', 'catches')}${fld.st ? `, ${plural(fld.st, 'stumping')}` : ''}${fld.ro ? `, ${plural(fld.ro, 'run out')}` : ''}`]);
+    copyReg.player = { what: 'the player summary', lines: [S.fullName(pid), ...facts.map(f => `${f[0]}: ${f[1]}`)] };
+    return `<section class="card"><div class="card-head"><h2>${esc(S.fullName(pid))}</h2><div class="head-tools">${copyBtn('player')}<button class="btn" data-clear-player>Show everyone</button></div></div>
+      <div class="facts">${facts.map(([b, l]) => `<div class="fact"><b>${b}</b><p>${esc(l)}</p></div>`).join('')}</div></section>`;
+  }
+
+  function leadersCard(r) {
+    const bat = V.batting(r.bat, r.apps), bowl = V.bowling(r.bowl), fld = V.fielding(r.field).filter(f => f.tot > 0);
+    const lim = topOpts();
+    const inningsOf = new Map();
+    [...r.bat].sort((a, b) => a.m.date - b.m.date).forEach(b => { if (!inningsOf.has(b.pid)) inningsOf.set(b.pid, []); inningsOf.get(b.pid).push(b); });
+    const runsT = table('lead-runs', [
+      C.player('Batter'),
+      { k: 'form', label: 'Form', opt: true, get: x => x.runs, text: x => (inningsOf.get(x.pid) || []).map(batScore).join(' '), html: x => spark(inningsOf.get(x.pid) || []) },
+      C.num('mat', 'M', x => x.mat, { title: 'Matches', opt: true }),
+      C.num('inns', 'Inn', x => x.inns, { title: 'Innings' }), C.num('no', 'NO', x => x.no, { title: 'Not outs', opt: true }),
+      C.num('runs', 'R', x => x.runs, { title: 'Runs', bar: true }),
+      C.num('hs', 'HS', x => x.hs, { title: 'Highest score', html: x => x.hs + (x.hsNo ? '*' : ''), text: x => x.hs + (x.hsNo ? '*' : '') }),
+      C.num('avg', 'Avg', x => x.avg, { title: 'Average', html: x => n1(x.avg), text: x => n1(x.avg) }),
+      C.num('sr', 'SR', x => x.sr, { title: 'Strike rate', html: x => n1(x.sr), text: x => n1(x.sr), opt: true }),
+      C.num('fifties', '50/100', x => x.fifties + x.hundreds * 100, { title: 'Fifties / hundreds', html: x => `${x.fifties}/${x.hundreds}`, text: x => `${x.fifties}/${x.hundreds}` }),
+      C.num('sixes', '6s', x => x.sixes, { title: 'Sixes', opt: true }),
+    ], bat, { sort: { k: 'runs', dir: -1, tie: (a, b) => cmp(b.avg, a.avg) }, limit: lim, title: 'Most runs', what: 'most runs' });
+    const wktsT = table('lead-wkts', [
+      C.player('Bowler'),
+      C.num('overs', 'O', x => x.balls, { title: 'Overs', html: x => x.overs, text: x => x.overs }),
+      C.num('maidens', 'M', x => x.maidens, { title: 'Maidens', opt: true }),
+      C.num('runs', 'R', x => x.runs, { title: 'Runs conceded' }), C.num('wkts', 'W', x => x.wkts, { title: 'Wickets', bar: true }),
+      C.num('best', 'Best', x => x.bestRow.wkts * 1000 - x.bestRow.runs, { title: 'Best bowling', html: x => x.best, text: x => x.best }),
+      C.num('avg', 'Avg', x => x.avg, { title: 'Average', asc: true, html: x => n1(x.avg), text: x => n1(x.avg) }),
+      C.num('econ', 'Econ', x => x.econ, { title: 'Runs per over', asc: true, html: x => n2(x.econ), text: x => n2(x.econ) }),
+    ], bowl.filter(b => b.wkts > 0 || state.player), { sort: { k: 'wkts', dir: -1, tie: (a, b) => cmp(a.avg, b.avg) }, limit: lim, title: 'Most wickets', what: 'most wickets' });
+    const fldT = table('lead-fld', [
+      C.player('Fielder'),
+      C.num('ct', 'Ct', x => x.ct, { title: 'Catches' }), C.num('st', 'St', x => x.st, { title: 'Stumpings' }),
+      C.num('ro', 'RO', x => x.ro, { title: 'Run outs' }), C.num('tot', 'Tot', x => x.tot, { title: 'Total dismissals', bar: true }),
+    ], fld, { sort: { k: 'tot', dir: -1, tie: (a, b) => b.ct - a.ct }, limit: lim, title: 'Most dismissals in the field', what: 'fielding leaders' });
+    const sixT = table('lead-six', [
+      C.player('Batter'), C.num('sixes', '6s', x => x.sixes, { title: 'Sixes', bar: true }), C.num('fours', '4s', x => x.fours, { title: 'Fours' }),
+      C.num('inns', 'Inn', x => x.inns, { title: 'Innings' }),
+    ], bat.filter(b => b.sixes + b.fours > 0), { sort: { k: 'sixes', dir: -1, tie: (a, b) => b.fours - a.fours }, limit: lim, title: 'Most sixes', what: 'most sixes' });
+    copyReg.leaders = { what: 'the season leaders', tables: ['lead-runs', 'lead-wkts', 'lead-fld', 'lead-six'].map(k => copyReg[k].tables[0]) };
+    return `<section class="card"><div class="card-head"><h2>Season leaders</h2><div class="head-tools">${seg('top', [[5, 'Top 5'], [10, 'Top 10'], ['all', 'Everyone']], state.top, 'How many', 'sm')}${copyBtn('leaders', 'Copy section')}</div></div>
+      <div class="grid2"><div><h3><span class="u">Most runs</span></h3>${runsT}</div><div><h3><span class="u">Most wickets</span></h3>${wktsT}</div>
+      <div><h3><span class="u">Most dismissals in the field</span></h3>${fldT}</div><div><h3><span class="u">Most sixes</span></h3>${sixT}</div></div></section>`;
+  }
+
+  function bestCard(r) {
+    const lim = topOpts();
+    const hs = table('best-hs', [
+      C.playerCtx('Batter'), C.match(),
+      C.num('runs', 'R', x => x.runs + (x.out ? 0 : 0.5), { html: batScore, text: batScore, bar: true }),
+      C.num('balls', 'B', x => x.balls, { title: 'Balls' }), C.num('sixes', '6s', x => x.sixes, { title: 'Sixes', opt: true }),
+      C.num('sr', 'SR', x => x.sr, { title: 'Strike rate', html: x => n1(x.sr), text: x => n1(x.sr) }),
+    ], r.bat.filter(b => b.runs > 0), { sort: { k: 'runs', dir: -1, tie: (a, b) => cmp(a.balls, b.balls) }, limit: lim, title: 'Highest scores', what: 'highest scores' });
+    const bb = table('best-bb', [
+      C.playerCtx('Bowler'), C.match(),
+      C.num('overs', 'O', x => x.balls, { title: 'Overs', html: x => x.overs, text: x => String(x.overs) }),
+      C.num('maidens', 'M', x => x.maidens, { title: 'Maidens', opt: true }),
+      C.num('fig', 'Fig', x => x.wkts * 1000 - x.runs, { title: 'Figures', html: x => `${x.wkts}-${x.runs}`, text: x => `${x.wkts}-${x.runs}` }),
+      C.num('econ', 'Econ', x => x.econ, { title: 'Runs per over', asc: true, html: x => n2(x.econ), text: x => n2(x.econ) }),
+    ], r.bowl.filter(b => b.wkts > 0), { sort: { k: 'fig', dir: -1 }, limit: lim, title: 'Best bowling', what: 'best bowling' });
+    const ps = table('best-ps', [
+      C.num('wkt', 'Wkt', x => x.wkt, { title: 'Wicket', html: x => ord(x.wkt), text: x => ord(x.wkt) }),
+      { k: 'pair', label: 'Batters', get: pairText, html: pairCell }, C.match(),
+      C.num('runs', 'R', x => x.runs, { html: pshipRuns, text: pshipRuns, bar: true }),
+    ], r.pship.filter(p => p.runs > 0), { sort: { k: 'runs', dir: -1 }, limit: lim, title: 'Biggest partnerships', what: 'biggest partnerships' });
+    const byMatch = V.fieldingByMatch(r.field).filter(f => f.tot >= 2);
+    const fm = table('best-fm', [
+      C.playerCtx('Fielder'), C.match(),
+      C.num('ct', 'Ct', x => x.ct, { title: 'Catches' }), C.num('st', 'St', x => x.st, { title: 'Stumpings' }),
+      C.num('ro', 'RO', x => x.ro, { title: 'Run outs' }), C.num('tot', 'Tot', x => x.tot, { title: 'Total' }),
+    ], byMatch, { sort: { k: 'tot', dir: -1, tie: (a, b) => b.ct - a.ct || a.m.date - b.m.date }, limit: lim, title: 'Most dismissals in a match', what: 'most dismissals in a match', empty: 'Nobody made two or more dismissals in a match.' });
+    const approx = r.pship.some(p => p.approx);
+    copyReg.best = { what: 'best in a match', tables: ['best-hs', 'best-bb', 'best-ps', 'best-fm'].map(k => copyReg[k].tables[0]) };
+    return `<section class="card"><div class="card-head"><h2>Best in a match</h2><div class="head-tools">${seg('top', [[5, 'Top 5'], [10, 'Top 10'], ['all', 'Everyone']], state.top, 'How many', 'sm')}${copyBtn('best', 'Copy section')}</div></div>
+      <div class="grid3"><div><h3><span class="u">Highest scores</span></h3>${hs}</div><div><h3><span class="u">Best bowling</span></h3>${bb}</div>
+      <div><h3><span class="u">Biggest partnerships</span></h3>${ps}${approx ? '<p class="note">~ A batter retired during the stand; the scorecard doesn’t say at what score. * Unbroken.</p>' : ''}</div></div>
+      <div class="grid2" style="margin-top:24px"><div><h3><span class="u">Most dismissals in a match</span></h3>${fm}</div></div></section>`;
+  }
+
+  function milestonesCard(r) {
+    const ms = state.ms;
+    const thr = (key, opts, label) => seg('ms-' + key, opts.map(v => [v, v + '+']), ms[key], label, 'sm');
+    const inn = table('ms-runs', [
+      C.playerCtx('Batter'), C.match(),
+      C.num('runs', 'R', x => x.runs + (x.out ? 0 : 0.5), { html: batScore, text: batScore, bar: true }),
+      C.num('balls', 'B', x => x.balls, { title: 'Balls' }), C.num('fours', '4s', x => x.fours, { title: 'Fours', opt: true }),
+      C.num('sixes', '6s', x => x.sixes, { title: 'Sixes', opt: true }),
+      C.num('sr', 'SR', x => x.sr, { title: 'Strike rate', html: x => n1(x.sr), text: x => n1(x.sr) }),
+    ], r.bat.filter(b => b.runs >= ms.runs), { sort: { k: 'runs', dir: -1 }, title: `Innings of ${ms.runs} or more`, what: `innings of ${ms.runs}+`, empty: `No innings of ${ms.runs} or more.` });
+    const ps = table('ms-ps', [
+      C.num('wkt', 'Wkt', x => x.wkt, { title: 'Wicket', html: x => ord(x.wkt), text: x => ord(x.wkt) }),
+      { k: 'pair', label: 'Batters', get: pairText, html: pairCell }, C.match(),
+      C.num('runs', 'R', x => x.runs, { html: pshipRuns, text: pshipRuns, bar: true }),
+    ], r.pship.filter(p => p.runs >= ms.pship), { sort: { k: 'runs', dir: -1 }, title: `Partnerships of ${ms.pship} or more`, what: `partnerships of ${ms.pship}+`, empty: `No partnerships of ${ms.pship} or more.` });
+    const ct = table('ms-ct', [
+      C.playerCtx('Fielder'), C.match(), C.num('ct', 'Ct', x => x.ct, { title: 'Catches' }),
+    ], V.fieldingByMatch(r.field).filter(f => f.ct >= ms.catches), { sort: { k: 'ct', dir: -1, tie: (a, b) => a.m.date - b.m.date }, title: `${ms.catches} or more catches in a match`, what: `${ms.catches}+ catches in a match`, empty: `Nobody took ${ms.catches} or more catches in a match.` });
+    const wk = table('ms-wk', [
+      C.playerCtx('Bowler'), C.match(),
+      C.num('overs', 'O', x => x.balls, { title: 'Overs', html: x => x.overs, text: x => String(x.overs) }),
+      C.num('maidens', 'M', x => x.maidens, { title: 'Maidens' }),
+      C.num('fig', 'Fig', x => x.wkts * 1000 - x.runs, { title: 'Figures', html: x => `${x.wkts}-${x.runs}`, text: x => `${x.wkts}-${x.runs}` }),
+      C.num('econ', 'Econ', x => x.econ, { title: 'Runs per over', asc: true, html: x => n2(x.econ), text: x => n2(x.econ) }),
+    ], r.bowl.filter(b => b.wkts >= ms.wkts), { sort: { k: 'fig', dir: -1 }, title: `${ms.wkts} or more wickets in an innings`, what: `${ms.wkts}+ wicket hauls`, empty: `Nobody took ${ms.wkts} or more wickets in an innings.` });
+    const tot = table('ms-tot', [
+      { k: 'team', label: 'Team', get: x => teamOf(x.m).label, html: x => `${esc(teamOf(x.m).label)}${ctxHtml(x.m, 'v')}` }, C.match(),
+      C.num('runs', 'Total', x => x.runs, { bar: true, html: x => `${x.runs}${x.allOut ? '' : '/' + x.wkts}`, text: x => `${x.runs}${x.allOut ? '' : '/' + x.wkts}` }),
+      C.num('balls', 'Overs', x => x.balls, { html: x => String(x.overs ?? '–'), text: x => String(x.overs ?? '') }),
+      { k: 'res', label: 'Result', get: x => x.m.result, html: x => `<span class="res ${x.m.result}" title="${esc(x.m.leader)}">${x.m.result}</span>` },
+    ], r.teamAll.filter(t => t.side === 'v' && t.runs >= ms.total), { sort: { k: 'runs', dir: -1 }, title: `VCC totals of ${ms.total} or more`, what: `totals of ${ms.total}+`, empty: `No VCC totals of ${ms.total} or more.` });
+    const eco = table('ms-eco', [
+      C.playerCtx('Bowler'), C.match(),
+      C.num('overs', 'O', x => x.balls, { title: 'Overs', html: x => x.overs, text: x => String(x.overs) }),
+      C.num('maidens', 'M', x => x.maidens, { title: 'Maidens' }),
+      C.num('fig', 'Fig', x => x.wkts * 1000 - x.runs, { title: 'Figures', html: x => `${x.wkts}-${x.runs}`, text: x => `${x.wkts}-${x.runs}` }),
+      C.num('econ', 'Econ', x => x.econ, { title: 'Runs per over', asc: true, html: x => n2(x.econ), text: x => n2(x.econ) }),
+    ], r.bowl.filter(b => b.balls >= 24 && b.econ < ms.econ), { sort: { k: 'econ', dir: 1 }, title: `Spells of 4+ overs under ${ms.econ} an over`, what: 'economical spells', empty: `No spell of 4 or more overs went for under ${ms.econ} an over.` });
+    const bat = V.batting(r.bat, r.apps), bowl = V.bowling(r.bowl);
+    const sr = table('ms-sruns', [
+      C.player('Batter'), C.num('runs', 'R', x => x.runs, { bar: true }), C.num('inns', 'Inn', x => x.inns, { title: 'Innings' }),
+      C.num('avg', 'Avg', x => x.avg, { html: x => n1(x.avg), text: x => n1(x.avg) }),
+    ], bat.filter(b => b.runs >= ms.sruns), { sort: { k: 'runs', dir: -1 }, title: `${ms.sruns}+ runs in the season`, what: `${ms.sruns}+ season runs`, empty: `Nobody reached ${ms.sruns} runs.` });
+    const sw = table('ms-swkts', [
+      C.player('Bowler'), C.num('wkts', 'W', x => x.wkts, { bar: true }), C.num('balls', 'O', x => x.balls, { title: 'Overs', html: x => x.overs, text: x => x.overs }),
+      C.num('avg', 'Avg', x => x.avg, { asc: true, html: x => n1(x.avg), text: x => n1(x.avg) }),
+    ], bowl.filter(b => b.wkts >= ms.swkts), { sort: { k: 'wkts', dir: -1, tie: (a, b) => cmp(a.avg, b.avg) }, title: `${ms.swkts}+ wickets in the season`, what: `${ms.swkts}+ season wickets`, empty: `Nobody reached ${ms.swkts} wickets.` });
+    copyReg.milestones = { what: 'the milestones', tables: ['ms-runs', 'ms-ps', 'ms-ct', 'ms-wk', 'ms-tot', 'ms-eco', 'ms-sruns', 'ms-swkts'].map(k => copyReg[k].tables[0]) };
+    const h = (txt, ctl) => `<div class="card-head" style="margin-bottom:8px"><h3 style="margin:0"><span class="u">${txt}</span></h3>${ctl}</div>`;
+    return `<section class="card"><div class="card-head"><h2>Milestones</h2>${copyBtn('milestones', 'Copy section')}</div>
+      <p class="sub">Change the thresholds to go wider or narrower.</p>
+      <div class="grid2">
+        <div>${h('Innings of', thr('runs', [30, 50, 100], 'Runs'))}${inn}</div>
+        <div>${h('Partnerships of', thr('pship', [50, 75, 100], 'Partnership runs'))}${ps}</div>
+        <div>${h('Catches in a match', thr('catches', [2, 3, 4], 'Catches'))}${ct}</div>
+        <div>${h('Wickets in an innings', thr('wkts', [3, 4, 5], 'Wickets'))}${wk}</div>
+        <div>${h('VCC totals of', thr('total', [150, 200, 250], 'Team total'))}${tot}</div>
+        <div>${h('4+ overs at under', seg('ms-econ', [2, 3, 4].map(v => [v, `${v} an over`]), ms.econ, 'Economy', 'sm'))}${eco}</div>
+        <div>${h('Season runs', thr('sruns', [100, 250, 500], 'Season runs'))}${sr}</div>
+        <div>${h('Season wickets', thr('swkts', [10, 15, 20], 'Season wickets'))}${sw}</div>
+      </div></section>`;
+  }
+
+  // ---- records & oddities ----------------------------------------------------
+  function oddities(r) {
+    const F = [];
+    const add = (title, text, m, side) => F.push({ title, text, m, side });
+    const ourBat = r.bat, ourBowl = r.bowl;
+    const vccMatches = r.matches;
+    const ctxT = (row) => ctx(row.m, row.side);
+
+    const hundreds = ourBat.filter(b => b.runs >= 100).sort((a, b) => b.runs - a.runs);
+    if (hundreds.length) add(hundreds.length === 1 ? 'Century' : `${hundreds.length} centuries`, hundreds.map(b => `${name(b.pid)} ${batScore(b)} (${b.balls ?? '?'}) ${ctxT(b)}`).join('; '));
+    const nineties = ourBat.filter(b => b.runs >= 90 && b.runs < 100);
+    if (nineties.length) add('Nervous nineties', nineties.map(b => `${name(b.pid)} ${batScore(b)} ${ctxT(b)}`).join('; '));
+    const fivers = ourBowl.filter(b => b.wkts >= 5).sort((a, b) => b.wkts - a.wkts || a.runs - b.runs);
+    if (fivers.length) add(fivers.length === 1 ? 'Five-wicket haul' : `${fivers.length} five-wicket hauls`, fivers.map(b => `${name(b.pid)} ${b.wkts}-${b.runs} in ${b.overs} overs ${ctxT(b)}`).join('; '));
+
+    const wins = vccMatches.filter(m => m.result === 'W'), losses = vccMatches.filter(m => m.result === 'L');
+    const byRuns = (arr) => arr.filter(m => m.marginRuns != null).sort((a, b) => b.marginRuns - a.marginRuns);
+    const byWk = (arr) => arr.filter(m => m.marginWkts != null).sort((a, b) => b.marginWkts - a.marginWkts);
+    const mctx = m => ctx(m, 'v');
+    const bw = byRuns(wins)[0]; if (bw) add(`Biggest win: ${bw.marginRuns} runs`, mctx(bw), bw);
+    const bc = byWk(wins)[0]; if (bc) {
+      const same = byWk(wins).filter(m => m.marginWkts === bc.marginWkts);
+      add(`Biggest chase win: ${plural(bc.marginWkts, 'wicket')}`, same.slice(0, 3).map(mctx).join(' and '), same.length === 1 ? bc : null);
+    }
+    const hl = byRuns(losses)[0]; if (hl) add(`Heaviest defeat: ${hl.marginRuns} runs`, mctx(hl), hl);
+    const close = [...wins, ...losses].map(m => ({ m, s: m.marginRuns != null ? m.marginRuns / 10 : m.marginWkts != null ? m.marginWkts / 2 : 99 }))
+      .filter(x => x.s <= 1).sort((a, b) => a.s - b.s)[0];
+    if (close) add('Closest finish', `${close.m.leader}${multiTeam() ? ` (${teamOf(close.m).label})` : ''}, ${/^\d+$/.test(close.m.round) ? 'round ' + close.m.round : fmtDate(close.m.date)}`, close.m);
+    const ties = vccMatches.filter(m => m.result === 'T');
+    if (ties.length) add(ties.length === 1 ? 'A tie' : `${ties.length} ties`, ties.map(mctx).join('; '));
+
+    // winning streak
+    let best = 0, cur = 0, end = null;
+    vccMatches.forEach(m => { if (m.result === 'W') { cur++; if (cur > best) { best = cur; end = m; } } else if (m.result === 'L' || m.result === 'T') cur = 0; });
+    if (best >= 3) add(`Longest winning run: ${best}`, `${best} wins in a row, ending ${fmtDate(end.date)}${multiTeam() ? ' (all selected teams together)' : ''}`);
+
+    // top scorer most often
+    const tops = new Map();
+    ourBat.filter(b => b.topScore && b.side !== 'o').forEach(b => tops.set(b.pid, (tops.get(b.pid) || 0) + 1));
+    const topList = [...tops].sort((a, b) => b[1] - a[1]);
+    if (topList.length && topList[0][1] >= 2) {
+      const lead = topList.filter(t => t[1] === topList[0][1]);
+      add('Top scorer most often', `${lead.map(t => name(t[0])).join(', ')}, in ${topList[0][1]} of ${vccMatches.length} matches`);
+    }
+
+    const bat = V.batting(ourBat, r.apps), bowl = V.bowling(ourBowl);
+    const bowlBy = new Map(bowl.map(b => [b.pid, b]));
+    const allr = bat.map(b => ({ b, w: bowlBy.get(b.pid) })).filter(x => x.w && x.w.wkts > 0 && x.b.runs > 0);
+    if (allr.length) {
+      const maxR = Math.max(...allr.map(x => x.b.runs)), maxW = Math.max(...allr.map(x => x.w.wkts));
+      const ar = allr.sort((a, b) => (b.b.runs / maxR + b.w.wkts / maxW) - (a.b.runs / maxR + a.w.wkts / maxW))[0];
+      add('All-rounder', `${name(ar.b.pid)}: ${ar.b.runs} runs and ${plural(ar.w.wkts, 'wicket')}`);
+    }
+
+    const six = ourBat.filter(b => b.sixes > 0).sort((a, b) => b.sixes - a.sixes || b.runs - a.runs)[0];
+    if (six && six.sixes >= 2) add(`Most sixes in an innings: ${six.sixes}`, `${name(six.pid)} (${batScore(six)}) ${ctxT(six)}`, six.m, six.side);
+    const fast = ourBat.filter(b => b.runs >= 20 && b.balls).sort((a, b) => b.sr - a.sr)[0];
+    if (fast) add('Fastest innings (20+ runs)', `${name(fast.pid)} ${batScore(fast)} off ${fast.balls}, strike rate ${n1(fast.sr)}, ${ctxT(fast)}`, fast.m, fast.side);
+    const slow = ourBat.filter(b => b.balls >= 30).sort((a, b) => a.sr - b.sr)[0];
+    if (slow) add('Most patient innings (30+ balls)', `${name(slow.pid)} ${batScore(slow)} off ${slow.balls}, ${ctxT(slow)}`, slow.m, slow.side);
+    const tight = ourBowl.filter(b => b.balls >= 24).sort((a, b) => a.econ - b.econ || b.wkts - a.wkts)[0];
+    if (tight) add('Tightest spell (4+ overs)', `${name(tight.pid)} ${tight.overs}-${tight.maidens}-${tight.runs}-${tight.wkts}, ${n2(tight.econ)} an over, ${ctxT(tight)}`, tight.m, tight.side);
+    const dear = ourBowl.filter(b => b.balls >= 12).sort((a, b) => b.econ - a.econ)[0];
+    if (dear) add('Most expensive spell (2+ overs)', `${name(dear.pid)} ${dear.overs}-${dear.maidens}-${dear.runs}-${dear.wkts}, ${ctxT(dear)}`, dear.m, dear.side);
+    const maidenSpell = ourBowl.filter(b => b.maidens >= 2).sort((a, b) => b.maidens - a.maidens)[0];
+    if (maidenSpell) add(`Most maidens in a spell: ${maidenSpell.maidens}`, `${name(maidenSpell.pid)} ${maidenSpell.overs}-${maidenSpell.maidens}-${maidenSpell.runs}-${maidenSpell.wkts}, ${ctxT(maidenSpell)}`, maidenSpell.m, maidenSpell.side);
+
+    // carried the bat: an opener not out when the innings was all out
+    const carried = ourBat.filter(b => b.pos <= 2 && !b.out && b.inn.wkts >= 10);
+    if (carried.length) add('Carried the bat', carried.map(b => `${name(b.pid)} ${batScore(b)} out of ${b.inn.runs}, ${ctxT(b)}`).join('; '));
+
+    // biggest share of a total
+    const share = ourBat.filter(b => b.inn.runs >= 60 && b.runs >= 30).map(b => ({ b, p: b.runs / b.inn.runs })).sort((a, b) => b.p - a.p)[0];
+    if (share && share.p >= 0.4) add('Biggest share of a total', `${name(share.b.pid)} made ${batScore(share.b)} of ${share.b.inn.runs} (${Math.round(share.p * 100)}%), ${ctxT(share.b)}`, share.b.m, share.b.side);
+
+    const low = ourBat.filter(b => b.pos >= 8 && b.pos <= 11).sort((a, b) => b.runs - a.runs)[0];
+    if (low && low.runs >= 20) add('Best from number 8 or lower', `${name(low.pid)} ${batScore(low)} batting at ${low.pos}, ${ctxT(low)}`, low.m, low.side);
+    const tail = r.pship.filter(p => p.wkt >= 8).sort((a, b) => b.runs - a.runs)[0];
+    if (tail && tail.runs >= 20) add(`Best tail stand: ${tail.runs}${tail.unbroken ? '*' : ''}`, `${pairText(tail)} for the ${ord(tail.wkt)} wicket, ${ctx(tail.m, tail.side)}`, tail.m, tail.side);
+
+    // extras
+    const s = V.summary(r);
+    if (s.extrasFor) {
+      const ahead = bat.filter(b => b.side === 'v' && b.runs > s.extrasFor).map(b => name(b.pid));
+      add(`Extras: ${s.extrasFor} runs`, ahead.length === 0 ? 'More than any VCC batter scored.' : ahead.length <= 3 ? `Only ${ahead.join(', ')} scored more for VCC.` : `Only ${ahead.length} VCC batters scored more.`);
+    }
+    const ourBowlTeam = r.teamAll.filter(t => t.side === 'o');
+    const wides = ourBowlTeam.reduce((a, t) => a + t.wides, 0), nbs = ourBowlTeam.reduce((a, t) => a + t.nb, 0);
+    if (wides + nbs) add('Extras given away', `${s.extrasAgainst} in total, including ${plural(wides, 'wide')} and ${plural(nbs, 'no-ball')}`);
+    const allOut = ourBowlTeam.filter(t => t.allOut).length;
+    if (allOut) add(`Bowled the opposition out ${times(allOut)}`, `in ${plural(vccMatches.length, 'match', 'matches')}`);
+
+    // ducks
+    const ducks = bat.filter(b => b.ducks >= 2).sort((a, b) => b.ducks - a.ducks);
+    if (ducks.length) add('Duck club', ducks.slice(0, 4).map(b => `${name(b.pid)}, out for 0 ${times(b.ducks)}`).join('; '));
+    const golden = ourBat.filter(b => b.golden);
+    if (golden.length) add(`Golden ducks: ${golden.length}`, golden.length <= 3 ? golden.map(b => `${name(b.pid)} ${ctxT(b)}`).join('; ') : 'Out first ball ' + times(golden.length) + '.');
+
+    // appearances
+    const apps = new Map();
+    r.apps.forEach(a => { const k = a.pid; if (!apps.has(k)) apps.set(k, new Set()); apps.get(k).add(a.m); });
+    const appList = [...apps].map(([pid, set]) => [pid, set.size]).sort((a, b) => b[1] - a[1]);
+    if (appList.length && state.side !== 'o') {
+      const ever = appList.filter(a => a[1] === vccMatches.length);
+      if (vccMatches.length > 3 && ever.length) add('Ever-present', `${ever.slice(0, 5).map(a => name(a[0])).join(', ')}${ever.length > 5 ? ` and ${ever.length - 5} more` : ''} played all ${vccMatches.length} matches`);
+      else add('Most appearances', `${name(appList[0][0])}, ${plural(appList[0][1], 'match', 'matches')}`);
+      add('Players used', `${appList.length} different players`);
+    }
+
+    // toss
+    const tossWon = vccMatches.filter(m => m.toss === 'v');
+    if (tossWon.length >= 3) add(`Won the toss ${times(tossWon.length)}`, `and won ${tossWon.filter(m => m.result === 'W').length} of those matches`);
+
+    const ro = V.fielding(r.field).filter(f => f.ro > 0).sort((a, b) => b.ro - a.ro)[0];
+    if (ro && ro.ro >= 2) add('Run-out specialist', `${name(ro.pid)}, involved in ${plural(ro.ro, 'run out')}`);
+    const st = V.fielding(r.field).filter(f => f.st > 0).sort((a, b) => b.st - a.st)[0];
+    if (st) add('Quick hands', `${name(st.pid)}, ${plural(st.st, 'stumping')}`);
+    // One player, bat and ball in the same match
+    const bowlByMatch = new Map(ourBowl.map(b => [b.m.id + ':' + b.pid, b]));
+    const allRound = ourBat.map(b => ({ b, w: bowlByMatch.get(b.m.id + ':' + b.pid) })).filter(x => x.w && x.b.runs >= 40 && x.w.wkts >= 3);
+    if (allRound.length) add('Match-winning double', allRound.slice(0, 3).map(x => `${name(x.b.pid)} ${batScore(x.b)} and ${x.w.wkts}-${x.w.runs} ${ctxT(x.b)}`).join('; '));
+    const redemption = ourBat.map(b => ({ b, w: bowlByMatch.get(b.m.id + ':' + b.pid) })).filter(x => x.w && x.b.duck && x.w.wkts >= 3);
+    if (redemption.length) add('A duck, then a haul', redemption.slice(0, 3).map(x => `${name(x.b.pid)} made 0 but took ${x.w.wkts}-${x.w.runs} ${ctxT(x.b)}`).join('; '));
+    const sixInn = [...new Set(ourBat.map(b => b.inn))].map(inn => ({ inn, b: ourBat.find(x => x.inn === inn), n: sum(ourBat.filter(x => x.inn === inn), x => x.sixes) })).sort((a, b) => b.n - a.n)[0];
+    if (sixInn && sixInn.n >= 5) add(`Most sixes in a team innings: ${sixInn.n}`, ctx(sixInn.b.m, sixInn.b.side), sixInn.b.m);
+    const centuryStands = r.pship.filter(p => p.runs >= 100);
+    if (centuryStands.length) add(`Century stands: ${centuryStands.length}`, centuryStands.slice(0, 3).map(p => `${pairText(p)} ${pshipRuns(p)} (${ord(p.wkt)} wkt)`).join('; '));
+    const conceded = ourBowlTeam.sort((a, b) => b.runs - a.runs)[0];
+    if (conceded) add('Highest total against', `${conceded.runs}${conceded.allOut ? '' : '/' + conceded.wkts} by ${conceded.m.opp}, ${mctx(conceded.m)}`, conceded.m);
+    return F;
+  }
+
+  function oddCard(r) {
+    const F = oddities(r);
+    copyReg.odd = { what: 'the records and oddities', lines: F.map(f => `${f.title}: ${f.text}`) };
+    return `<section class="card"><div class="card-head"><h2>Records and oddities</h2>${copyBtn('odd', 'Copy section')}</div>
+      ${F.length ? `<div class="facts">${F.map(f => `<div class="fact"><b>${esc(f.title)}</b><p>${esc(f.text)}${f.m ? ` <small><a href="${scorecard(f.m)}" target="_blank" rel="noopener">Scorecard</a></small>` : ''}</p></div>`).join('')}</div>` : '<p class="empty">Nothing stands out yet for these filters.</p>'}</section>`;
+  }
+
+  // ---- remarkable facts: things you only see by joining the scorecards ---------
+  function remarkable(r) {
+    const out = [];
+    const ms = new Set(r.matches);
+    const sideTxt = { v: 'VCC', o: 'opponent', both: '' }[state.side];
+    const otherSide = s => (s === 'v' ? 'o' : 'v');
+    const clubOf = (m, side) => (side === 'v' ? teamOf(m).label : m.oppClub);
+    const tally = (rows, key, val = () => 1) => {
+      const t = new Map();
+      for (const x of rows) { const k = key(x); if (k == null) continue; const e = t.get(k) || { k, v: 0, rows: [] }; e.v += val(x); e.rows.push(x); t.set(k, e); }
+      return [...t.values()].sort((a, b) => b.v - a.v);
+    };
+    const pItem = (pid, v, valueText, note) => ({ label: name(pid), labelHtml: playerBtn(pid), value: v, valueText, note });
+    const add = (title, sub, items) => { if (items.length) out.push({ title, sub, items }); };
+
+    // How batters get out
+    const outs = r.bat.filter(b => b.out);
+    const how = (did, title, word) => {
+      const all = outs.filter(b => b.did === did);
+      const l = tally(all, b => b.pid).filter(e => e.v >= 2).slice(0, 5);
+      add(title, `${outs.length ? Math.round((all.length / outs.length) * 100) : 0}% of all ${sideTxt} dismissals were ${word}.`, l.map(e => pItem(e.k, e.v, times(e.v))));
+    };
+    how(2, 'Caught out most often', 'catches');
+    how(4, 'Bowled most often', 'bowled');
+    how(3, 'LBW most often', 'lbw');
+    how(6, 'Run out most often', 'run outs');
+    const nos = tally(r.bat.filter(b => !b.out), b => b.pid).filter(e => e.v >= 2).slice(0, 5);
+    add('Hardest to get out', 'Most innings finished not out.', nos.map(e => pItem(e.k, e.v, times(e.v), `${e.rows.length} not-out innings, ${sum(e.rows, b => b.runs)} runs`)));
+
+    // Bowlers who got the selected batters out most
+    const nemesis = tally(outs.filter(b => b.bowler && [2, 3, 4, 5, 7].includes(b.did)), b => b.bowler).filter(e => e.v >= 3).slice(0, 5);
+    add(state.side === 'v' ? 'Opponent bowlers who hurt VCC most' : state.side === 'o' ? 'VCC bowlers who hurt opponents most' : 'Most dismissals as a bowler',
+      'Wickets taken against the batters in this selection.',
+      nemesis.map(e => pItem(e.k, e.v, plural(e.v, 'wicket'), clubOf(e.rows[0].m, otherSide(e.rows[0].side)))));
+
+    // Same bowler, same batter
+    const theirOuts = S.rows.bat.filter(b => ms.has(b.m) && b.out && b.bowler && (state.side === 'both' || b.side !== state.side));
+    const victims = tally(theirOuts.filter(b => [2, 3, 4, 5, 7].includes(b.did) && (!state.player || b.bowler === state.player)), b => b.bowler + '|' + b.pid).filter(e => e.v >= 2).slice(0, 5);
+    add('Favourite victims', 'The same bowler dismissing the same batter more than once.',
+      victims.map(e => { const [bw, bt] = e.k.split('|').map(Number); return { label: `${name(bw)} → ${name(bt)}`, labelHtml: `${playerBtn(bw)} → ${esc(name(bt))}`, value: e.v, valueText: times(e.v), note: clubOf(e.rows[0].m, e.rows[0].side) }; }));
+
+    // Catcher and bowler working together
+    const combos = tally(theirOuts.filter(b => b.did === 2 && b.fielder && b.fielder !== b.bowler && (!state.player || b.fielder === state.player || b.bowler === state.player)), b => b.fielder + '|' + b.bowler).filter(e => e.v >= 2).slice(0, 5);
+    add('Catcher and bowler double acts', 'Most wickets as “caught X, bowled Y”.',
+      combos.map(e => { const [f, bw] = e.k.split('|').map(Number); return { label: `c ${name(f)} b ${name(bw)}`, labelHtml: `c ${playerBtn(f)} b ${playerBtn(bw)}`, value: e.v, valueText: plural(e.v, 'wicket') }; }));
+
+    // Batting pairs over the whole season
+    const pairs = tally(r.pship, p => [p.a, p.b].sort((x, y) => x - y).join('|'), p => p.runs).filter(e => e.v >= 50).slice(0, 5);
+    add('Best batting pairs', 'Most runs added together over the season, all stands combined.',
+      pairs.map(e => { const [a, b] = e.k.split('|').map(Number); return { label: `${name(a)} & ${name(b)}`, labelHtml: `${playerBtn(a)} &amp; ${playerBtn(b)}`, value: e.v, valueText: `${n0(e.v)} runs`, note: `${plural(e.rows.length, 'stand')}, best ${Math.max(...e.rows.map(p => p.runs))}` }; }));
+
+    // Against one opponent
+    const vsRuns = tally(r.bat, b => b.pid + '|' + clubOf(b.m, otherSide(b.side)), b => b.runs).filter(e => e.v >= 50).slice(0, 5);
+    add('Most runs against one opponent', 'Runs by one batter against the same club, all matches added up.',
+      vsRuns.map(e => { const pid = +e.k.split('|')[0]; return pItem(pid, e.v, `${n0(e.v)} runs`, `v ${e.k.split('|')[1]} · ${plural(e.rows.length, 'innings', 'innings')}`); }));
+    const vsWkts = tally(r.bowl, b => b.pid + '|' + clubOf(b.m, otherSide(b.side)), b => b.wkts).filter(e => e.v >= 4).slice(0, 5);
+    add('Most wickets against one opponent', 'Wickets by one bowler against the same club.',
+      vsWkts.map(e => pItem(+e.k.split('|')[0], e.v, plural(e.v, 'wicket'), `v ${e.k.split('|')[1]}`)));
+
+    // Wins and defeats
+    const lostFor = b => (b.side === 'v' ? b.m.result === 'L' : b.m.result === 'W');
+    const wonFor = b => (b.side === 'v' ? b.m.result === 'W' : b.m.result === 'L');
+    const lostRuns = tally(r.bat.filter(lostFor), b => b.pid, b => b.runs).filter(e => e.v >= 50).slice(0, 5);
+    add('Runs in a losing cause', 'Most runs in matches their team lost.', lostRuns.map(e => pItem(e.k, e.v, `${n0(e.v)} runs`, `in ${plural(new Set(e.rows.map(b => b.m)).size, 'defeat')}`)));
+    const winWkts = tally(r.bowl.filter(wonFor), b => b.pid, b => b.wkts).filter(e => e.v >= 5).slice(0, 5);
+    add('Wickets that won matches', 'Most wickets in matches their team won.', winWkts.map(e => pItem(e.k, e.v, plural(e.v, 'wicket'), `in ${plural(new Set(e.rows.map(b => b.m)).size, 'win')}`)));
+
+    // Bowling style read from the dismissals
+    const bowl = V.bowling(r.bowl).filter(b => b.wkts >= 6);
+    const unassisted = new Map();
+    theirOuts.filter(b => b.did === 3 || b.did === 4).forEach(b => unassisted.set(b.bowler, (unassisted.get(b.bowler) || 0) + 1));
+    const stumps = bowl.map(b => ({ b, n: unassisted.get(b.pid) || 0 })).filter(x => x.n >= 3).map(x => ({ ...x, p: (x.n / x.b.wkts) * 100 })).sort((a, b) => b.p - a.p).slice(0, 5);
+    add('Hits the stumps', 'Share of a bowler’s wickets that were bowled or lbw (6+ wickets).', stumps.map(x => pItem(x.b.pid, x.p, `${Math.round(x.p)}%`, `${x.n} of ${x.b.wkts} wickets`)));
+    const wides = V.bowling(r.bowl).filter(b => b.wides >= 5).sort((a, b) => b.wides - a.wides).slice(0, 5);
+    add('Most wides', 'Wides bowled over the season.', wides.map(b => pItem(b.pid, b.wides, `${b.wides}`, `${b.overs} overs`)));
+
+    // Batting style
+    const bat = V.batting(r.bat, r.apps).filter(b => b.runs >= 100);
+    const bnd = bat.map(b => ({ b, p: ((b.fours * 4 + b.sixes * 6) / b.runs) * 100 }));
+    add('Boundary hunters', 'Share of runs that came in fours and sixes (100+ runs).',
+      [...bnd].sort((a, b) => b.p - a.p).slice(0, 5).map(x => pItem(x.b.pid, x.p, `${Math.round(x.p)}%`, `${x.b.fours} fours, ${x.b.sixes} sixes`)));
+    add('Busy between the wickets', 'Lowest share of runs from boundaries (100+ runs).',
+      [...bnd].sort((a, b) => a.p - b.p).slice(0, 5).map(x => pItem(x.b.pid, 100 - x.p, `${Math.round(100 - x.p)}% run`, `${x.b.runs} runs`)));
+
+    const byPlayer = tally(r.bat, b => b.pid);
+    const reliable = byPlayer.filter(e => e.rows.length >= 5).map(e => ({ e, p: (e.rows.filter(b => b.runs >= 10).length / e.rows.length) * 100 })).sort((a, b) => b.p - a.p).slice(0, 5);
+    add('Reaches double figures', 'Share of innings with 10 or more runs (5+ innings).', reliable.map(x => pItem(x.e.k, x.p, `${Math.round(x.p)}%`, `${x.e.rows.filter(b => b.runs >= 10).length} of ${x.e.rows.length} innings`)));
+    // Scorecards use 99 for a batter without a listed spot; only count real positions 1-11.
+    const spots = e => [...new Set(e.rows.map(b => b.pos).filter(p => p >= 1 && p <= 11))].sort((a, b) => a - b);
+    const hoppers = byPlayer.filter(e => e.rows.length >= 4).map(e => ({ e, s: spots(e) })).filter(x => x.s.length >= 4).sort((a, b) => b.s.length - a.s.length).slice(0, 5);
+    add('Moved up and down the order', 'Most different batting positions.', hoppers.map(x => pItem(x.e.k, x.s.length, `${x.s.length} spots`, `batted at ${x.s.join(', ')}`)));
+    const finish = byPlayer.filter(e => e.rows.length >= 6).map(e => {
+      const rs = [...e.rows].sort((a, b) => a.m.date - b.m.date), h = Math.floor(rs.length / 2);
+      const per = arr => sum(arr, b => b.runs) / arr.length;
+      return { e, a: per(rs.slice(0, h)), b: per(rs.slice(h)) };
+    }).filter(x => x.b - x.a >= 5).sort((a, b) => (b.b - b.a) - (a.b - a.a)).slice(0, 5);
+    add('Strong second half', 'Biggest rise in runs per innings from the first half of their season to the second (6+ innings).',
+      finish.map(x => pItem(x.e.k, x.b - x.a, `+${n1(x.b - x.a)}`, `${n1(x.a)} → ${n1(x.b)} per innings`)));
+    const venue = byPlayer.map(e => {
+      const h = e.rows.filter(b => b.side === 'v' ? b.m.home : !b.m.home), a = e.rows.filter(b => b.side === 'v' ? !b.m.home : b.m.home);
+      return { e, h: h.length >= 3 ? sum(h, b => b.runs) / h.length : null, a: a.length >= 3 ? sum(a, b => b.runs) / a.length : null };
+    }).filter(x => x.h != null && x.a != null);
+    add('Prefers their home ground', 'Biggest gap in runs per innings, home above away (3+ innings each).',
+      venue.filter(x => x.h - x.a >= 5).sort((a, b) => (b.h - b.a) - (a.h - a.a)).slice(0, 5).map(x => pItem(x.e.k, x.h - x.a, `+${n1(x.h - x.a)}`, `home ${n1(x.h)}, away ${n1(x.a)}`)));
+    add('Travels well', 'Biggest gap in runs per innings, away above home (3+ innings each).',
+      venue.filter(x => x.a - x.h >= 5).sort((a, b) => (b.a - b.h) - (a.a - a.h)).slice(0, 5).map(x => pItem(x.e.k, x.a - x.h, `+${n1(x.a - x.h)}`, `away ${n1(x.a)}, home ${n1(x.h)}`)));
+
+    // Players with more wickets than runs
+    const allBat = new Map(V.batting(r.bat, r.apps).map(b => [b.pid, b]));
+    const wFirst = V.bowling(r.bowl).filter(b => b.wkts >= 5 && b.wkts > (allBat.get(b.pid)?.runs || 0)).sort((a, b) => b.wkts - a.wkts).slice(0, 5);
+    add('More wickets than runs', 'Bowlers first, batters second.', wFirst.map(b => pItem(b.pid, b.wkts, `${b.wkts} wkts`, `${allBat.get(b.pid)?.runs || 0} runs`)));
+    return out;
+  }
+
+  function remarkableCard(r) {
+    const F = remarkable(r);
+    copyReg.remarkable = { what: 'the remarkable facts', lines: F.map(f => `${f.title}: ${f.items.map(i => `${i.label} (${i.valueText})`).join(', ')}`) };
+    return `<section class="card"><div class="card-head"><h2>Remarkable facts</h2>${copyBtn('remarkable', 'Copy section')}</div>
+      <p class="sub">Patterns you only find by putting all scorecards side by side. Use “Performances by” in the filters to turn these around for opponents.</p>
+      ${F.length ? `<div class="rfs">${F.map(f => `<div class="rf"><h4>${esc(f.title)}</h4><p class="chart-sub">${esc(f.sub)}</p>${hbars(f.items)}</div>`).join('')}</div>` : '<p class="empty">Too few matches in this selection for patterns to show.</p>'}</section>`;
+  }
+
+  // ---- squads: every player who appeared, per team, as plain text --------------
+  const PARTICLES = /^(van|de|der|den|het|te|ter|ten|'t|op|in)$/i;
+  const surnameKey = full => { const w = full.split(' '); let i = w.length - 1; while (i > 1 && PARTICLES.test(w[i - 1])) i--; return w.slice(i).join(' ').toLowerCase() + ' ' + full.toLowerCase(); };
+  function squadsCard(r) {
+    const ms = new Set(r.matches);
+    const by = new Map();
+    S.rows.apps.filter(a => a.side === 'v' && ms.has(a.m)).forEach(a => {
+      if (!by.has(a.m.team)) by.set(a.m.team, new Map());
+      const t = by.get(a.m.team), set = t.get(a.pid) || new Set(); set.add(a.m.id); t.set(a.pid, set);
+    });
+    const teams = playedTeams.filter(t => by.has(t.id));
+    const withCounts = state.squadCounts === 'yes';
+    const blocks = teams.map(t => {
+      const ps = [...by.get(t.id)].map(([pid, set]) => ({ pid, n: set.size, full: S.fullName(pid) })).sort((a, b) => surnameKey(a.full).localeCompare(surnameKey(b.full)));
+      const text = ps.map(p => withCounts ? `${p.full} (${p.n})` : p.full).join(', ');
+      return { t, ps, text };
+    });
+    copyReg.squads = { what: 'the player lists', lines: blocks.map(b => `${b.t.label} (${shortGrade(b.t)}): ${b.text}`) };
+    return `<section class="card"><div class="card-head"><h2>Who played</h2><div class="head-tools">${seg('squadCounts', [['no', 'Names only'], ['yes', 'With matches played']], state.squadCounts, 'Player list style', 'sm')}${copyBtn('squads', 'Copy all')}</div></div>
+      <p class="sub">Everyone who played at least one match in the current filters, sorted by surname.</p>
+      <div class="squads">${blocks.map(b => `<div class="squad"><h3><span class="u">${esc(b.t.label)}</span><small>${esc(shortGrade(b.t))} · ${plural(b.ps.length, 'player')}</small></h3><p>${esc(b.text)}.</p></div>`).join('')}</div></section>`;
+  }
+
+  function renderHighlights(r) {
+    if (!r.matches.length) {
+      $('#view-highlights').innerHTML = `<section class="card"><p class="empty">No matches fit these filters. Remove one to see results. <button class="link" data-reset>Clear all filters</button></p></section>`;
+      return;
+    }
+    $('#view-highlights').innerHTML = `<div style="display:grid;gap:18px">${playerCard(r)}${overviewCard(r)}${teamFactsCard(r)}${leadersCard(r)}${bestCard(r)}${milestonesCard(r)}${remarkableCard(r)}${oddCard(r)}${squadsCard(r)}</div>`;
+  }
+
+  // ---- fact finder ---------------------------------------------------------
+  const HOWS = [['notout', 'Not out'], ['2', 'Caught'], ['4', 'Bowled'], ['3', 'LBW'], ['5', 'Stumped'], ['6', 'Run out'], ['duck', 'Duck']];
+  const POS = [['1-2', 'Openers'], ['3-5', '3 to 5'], ['6-8', '6 to 8'], ['9-11', '9 to 11']];
+  const inRange = (v, s) => { const [a, b] = s.split('-').map(Number); return v >= a && v <= b; };
+  const DS = {
+    innings: {
+      label: 'Batting innings', noun: ['innings', 'innings'], rows: r => r.bat,
+      conds: [['runs', 'Runs at least', '>='], ['balls', 'Balls at least', '>='], ['fours', 'Fours at least', '>='], ['sixes', 'Sixes at least', '>='], ['sr', 'Strike rate at least', '>='], ['srMax', 'Strike rate at most', '<=', 'sr']],
+      chips: [['how', 'How out', HOWS, (r, v) => (v === 'notout' ? !r.out : v === 'duck' ? r.duck : String(r.did) === v)], ['pos', 'Batting at', POS, (r, v) => inRange(r.pos, v)]],
+      cols: () => [C.playerCtx('Batter'), C.match(),
+        C.num('runs', 'R', x => x.runs + (x.out ? 0 : 0.5), { html: batScore, text: batScore, bar: true }), C.num('balls', 'B', x => x.balls, { title: 'Balls' }),
+        C.num('fours', '4s', x => x.fours, { title: 'Fours', opt: true }), C.num('sixes', '6s', x => x.sixes, { title: 'Sixes', opt: true }),
+        C.num('sr', 'SR', x => x.sr, { title: 'Strike rate', html: x => n1(x.sr), text: x => n1(x.sr) }),
+        C.num('pos', 'Pos', x => (x.pos <= 11 ? x.pos : null), { title: 'Batting position', asc: true, opt: true }),
+        { k: 'how', label: 'Out', get: x => x.text || '', html: x => `<span class="ctx" style="margin:0">${esc(x.text || '')}</span>`, opt: true }],
+      sort: { k: 'runs', dir: -1 },
+    },
+    spells: {
+      label: 'Bowling spells', noun: ['spell', 'spells'], rows: r => r.bowl,
+      conds: [['wkts', 'Wickets at least', '>='], ['balls', 'Overs at least', '>=', 'balls', v => v * 6], ['econ', 'Economy at most', '<='], ['maidens', 'Maidens at least', '>='], ['runs', 'Runs conceded at least', '>='], ['wides', 'Wides at least', '>=']],
+      chips: [],
+      cols: () => [C.playerCtx('Bowler'), C.match(),
+        C.num('balls', 'O', x => x.balls, { title: 'Overs', html: x => x.overs, text: x => String(x.overs) }),
+        C.num('maidens', 'M', x => x.maidens, { title: 'Maidens' }), C.num('runs', 'R', x => x.runs, { title: 'Runs conceded' }),
+        C.num('wkts', 'W', x => x.wkts, { title: 'Wickets' }),
+        C.num('econ', 'Econ', x => x.econ, { title: 'Runs per over', asc: true, html: x => n2(x.econ), text: x => n2(x.econ) }),
+        C.num('wides', 'Wd', x => x.wides, { title: 'Wides', opt: true }), C.num('nb', 'Nb', x => x.nb, { title: 'No-balls', opt: true })],
+      sort: { k: 'wkts', dir: -1, tie: (a, b) => a.runs - b.runs },
+    },
+    fielding: {
+      label: 'Fielding in a match', noun: ['fielding display', 'fielding displays'], rows: r => V.fieldingByMatch(r.field),
+      conds: [['tot', 'Dismissals at least', '>='], ['ct', 'Catches at least', '>='], ['st', 'Stumpings at least', '>='], ['ro', 'Run outs at least', '>=']],
+      chips: [],
+      cols: () => [C.playerCtx('Fielder'), C.match(), C.num('ct', 'Ct', x => x.ct, { title: 'Catches' }), C.num('st', 'St', x => x.st, { title: 'Stumpings' }),
+        C.num('ro', 'RO', x => x.ro, { title: 'Run outs' }), C.num('tot', 'Tot', x => x.tot, { title: 'Total' })],
+      sort: { k: 'tot', dir: -1, tie: (a, b) => b.ct - a.ct },
+    },
+    pships: {
+      label: 'Partnerships', noun: ['partnership', 'partnerships'], rows: r => r.pship,
+      conds: [['runs', 'Runs at least', '>=']],
+      chips: [['wkt', 'For wicket', [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(i => [String(i), ord(i)]), (r, v) => String(r.wkt) === v], ['kind', 'Kind', [['unbroken', 'Unbroken'], ['exact', 'Exact scores only']], (r, v) => (v === 'unbroken' ? r.unbroken : !r.approx)]],
+      cols: () => [C.num('wkt', 'Wkt', x => x.wkt, { title: 'Wicket', asc: true, html: x => ord(x.wkt), text: x => ord(x.wkt) }),
+        { k: 'pair', label: 'Batters', get: pairText, html: pairCell }, C.match(), C.num('runs', 'R', x => x.runs, { html: pshipRuns, text: pshipRuns, bar: true })],
+      sort: { k: 'runs', dir: -1 },
+    },
+    team: {
+      label: 'Team totals', noun: ['team innings', 'team innings'], rows: r => r.team,
+      conds: [['runs', 'Runs at least', '>='], ['runsMax', 'Runs at most', '<=', 'runs'], ['wkts', 'Wickets lost at least', '>='], ['extras', 'Extras at least', '>=']],
+      chips: [['kind', 'Innings', [['allout', 'All out'], ['notout', 'Not all out'], ['won', 'Won the match'], ['lost', 'Lost the match']], (r, v) => (v === 'allout' ? r.allOut : v === 'notout' ? !r.allOut : v === 'won' ? r.won : !r.won && (r.m.result === 'W' || r.m.result === 'L'))]],
+      cols: () => [{ k: 'team', label: 'Team', get: x => (x.side === 'v' ? teamOf(x.m).label : x.m.opp), html: x => `${esc(x.side === 'v' ? teamOf(x.m).label : x.m.opp)}${ctxHtml(x.m, x.side)}` }, C.match(),
+        C.num('runs', 'Total', x => x.runs, { html: x => `${x.runs}${x.allOut ? '' : '/' + x.wkts}`, text: x => `${x.runs}${x.allOut ? '' : '/' + x.wkts}` }),
+        C.num('balls', 'Overs', x => x.balls, { html: x => String(x.overs ?? '–'), text: x => String(x.overs ?? '') }),
+        C.num('extras', 'Extras', x => x.extras, { opt: true }), C.num('wides', 'Wd', x => x.wides, { title: 'Wides', opt: true }),
+        { k: 'res', label: 'Result', get: x => x.m.result, html: x => `<span class="res ${x.m.result}" title="${esc(x.m.leader)}">${x.m.result}</span>` }],
+      sort: { k: 'runs', dir: -1 },
+    },
+    batSeason: {
+      label: 'Batting season totals', noun: ['batter', 'batters'], rows: r => V.batting(r.bat, r.apps),
+      conds: [['inns', 'Innings at least', '>='], ['runs', 'Runs at least', '>='], ['avg', 'Average at least', '>='], ['sr', 'Strike rate at least', '>='], ['sixes', 'Sixes at least', '>='], ['ducks', 'Ducks at least', '>=']],
+      chips: [],
+      cols: () => [C.player('Batter'), C.num('mat', 'M', x => x.mat, { title: 'Matches' }), C.num('inns', 'Inn', x => x.inns, { title: 'Innings' }),
+        C.num('no', 'NO', x => x.no, { title: 'Not outs', opt: true }), C.num('runs', 'R', x => x.runs, { title: 'Runs' }),
+        C.num('hs', 'HS', x => x.hs, { title: 'Highest score', html: x => x.hs + (x.hsNo ? '*' : ''), text: x => x.hs + (x.hsNo ? '*' : '') }),
+        C.num('avg', 'Avg', x => x.avg, { html: x => n1(x.avg), text: x => n1(x.avg) }), C.num('sr', 'SR', x => x.sr, { title: 'Strike rate', html: x => n1(x.sr), text: x => n1(x.sr) }),
+        C.num('fifties', '50s', x => x.fifties, { opt: true }), C.num('hundreds', '100s', x => x.hundreds, { opt: true }),
+        C.num('fours', '4s', x => x.fours, { opt: true }), C.num('sixes', '6s', x => x.sixes, { opt: true }), C.num('ducks', '0s', x => x.ducks, { title: 'Ducks', opt: true })],
+      sort: { k: 'runs', dir: -1 },
+    },
+    bowlSeason: {
+      label: 'Bowling season totals', noun: ['bowler', 'bowlers'], rows: r => V.bowling(r.bowl),
+      conds: [['wkts', 'Wickets at least', '>='], ['balls', 'Overs at least', '>=', 'balls', v => v * 6], ['econ', 'Economy at most', '<='], ['avg', 'Average at most', '<=']],
+      chips: [],
+      cols: () => [C.player('Bowler'), C.num('spells', 'Inn', x => x.spells, { title: 'Innings bowled', opt: true }),
+        C.num('balls', 'O', x => x.balls, { title: 'Overs', html: x => x.overs, text: x => x.overs }), C.num('maidens', 'M', x => x.maidens, { title: 'Maidens', opt: true }),
+        C.num('runs', 'R', x => x.runs, { title: 'Runs conceded' }), C.num('wkts', 'W', x => x.wkts, { title: 'Wickets' }),
+        C.num('best', 'Best', x => x.bestRow.wkts * 1000 - x.bestRow.runs, { html: x => x.best, text: x => x.best }),
+        C.num('avg', 'Avg', x => x.avg, { asc: true, html: x => n1(x.avg), text: x => n1(x.avg) }),
+        C.num('econ', 'Econ', x => x.econ, { title: 'Runs per over', asc: true, html: x => n2(x.econ), text: x => n2(x.econ) }),
+        C.num('sr', 'SR', x => x.sr, { title: 'Balls per wicket', asc: true, html: x => n1(x.sr), text: x => n1(x.sr), opt: true }),
+        C.num('wides', 'Wd', x => x.wides, { title: 'Wides', opt: true })],
+      sort: { k: 'wkts', dir: -1, tie: (a, b) => cmp(a.avg, b.avg) },
+    },
+  };
+  function renderFinderControls() {
+    const f = state.finder, ds = DS[f.ds];
+    const cond = f.cond[f.ds] || {}, ch = f.chips[f.ds] || {};
+    $('#finder-controls').innerHTML =
+      `<div><span class="mini">Look through</span><div style="margin-top:6px">${seg('ds', Object.entries(DS).map(([k, d]) => [k, d.label]), f.ds, 'Look through')}</div></div>
+       <div class="conds">${ds.conds.map(([k, label]) => `<label class="cond"><span>${label}</span><input type="number" min="0" step="any" inputmode="decimal" id="cond-${f.ds}-${k}" data-cond="${k}" value="${cond[k] ?? ''}"></label>`).join('')}
+       ${Object.keys(cond).some(k => cond[k] !== '' && cond[k] != null) || Object.values(ch).some(v => v.length) ? '<button class="link" data-clear-cond style="padding-bottom:6px">Clear conditions</button>' : ''}</div>
+       ${ds.chips.map(([k, label, opts]) => `<div><span class="mini">${label}</span><div style="margin-top:6px">${chips('chip-' + k, opts, ch[k] || [], label)}</div></div>`).join('')}`;
+  }
+  function renderFinderResults(r) {
+    const f = state.finder, ds = DS[f.ds];
+    const cond = f.cond[f.ds] || {}, ch = f.chips[f.ds] || {};
+    let rows = ds.rows(r);
+    for (const [k, , op, field, scale] of ds.conds) {
+      const raw = cond[k];
+      if (raw === '' || raw == null || isNaN(+raw)) continue;
+      const v = scale ? scale(+raw) : +raw, key = field || k;
+      rows = rows.filter(x => x[key] != null && (op === '>=' ? x[key] >= v : x[key] <= v));
+    }
+    for (const [k, , , test] of ds.chips) {
+      const sel = ch[k] || [];
+      if (sel.length) rows = rows.filter(x => sel.some(v => test(x, v)));
+    }
+    const key = 'finder-' + f.ds;
+    const cols = ds.cols();
+    const tbl = table(key, cols, rows, { sort: ds.sort, limit: 25, paged: true, title: ds.label, what: `${plural(rows.length, ds.noun[0], ds.noun[1])}`, empty: `No ${ds.noun[1]} match these conditions. Lower a minimum or widen the filters above.` });
+    $('#finder-results').innerHTML = `<div class="card-head"><span class="count">${plural(rows.length, ds.noun[0], ds.noun[1])}</span>${rows.length ? copyBtn(key, 'Copy shown rows') : ''}</div>${tbl}`;
+  }
+
+  // ---- matches -------------------------------------------------------------
+  function renderMatches(r) {
+    const cols = [
+      { k: 'date', label: 'Date', get: m => m.date, html: m => esc(fmtDate(m.date)), text: m => fmtDate(m.date) },
+      { k: 'team', label: 'Team', get: m => teamOf(m).label, html: m => `${esc(teamOf(m).label)} <span class="club">${esc(shortGrade(teamOf(m)))}</span>`, text: m => teamOf(m).label },
+      { k: 'opp', label: 'Opponent', get: m => m.opp, html: m => `${m.home ? '' : '<span class="club" style="margin:0 4px 0 0">at</span>'}${esc(m.opp)}`, text: m => (m.home ? '' : 'at ') + m.opp },
+      { k: 'res', label: 'Result', get: m => m.result, html: m => `<span class="res ${m.result}">${m.result}</span>`, text: m => m.result },
+      { k: 'score', label: 'Score', get: m => m.score, html: m => `${esc(m.leader)}<span class="ctx"><a href="${scorecard(m)}" target="_blank" rel="noopener">${esc(m.score)}</a></span>`, text: m => `${m.leader} (${m.score})` },
+    ];
+    $('#view-matches').innerHTML = `<section class="card"><div class="card-head"><h2>Matches</h2>${r.matches.length ? copyBtn('matches') : ''}</div>
+      <p class="sub">Every match in the current filters. Open a scorecard on the KNCB Matchcentre from the score line.</p>
+      ${table('matches', cols, r.matches, { sort: { k: 'date', dir: 1 }, limit: 30, paged: true, title: 'Matches', what: 'the match list', empty: 'No matches fit these filters.' })}</section>`;
+  }
+
+  // ---- data issues & updates -------------------------------------------------
+  const matchById = new Map(S.matches.map(m => [m.id, m]));
+  const matchLink = m => `<span class="ctx"><a href="${scorecard(m)}" target="_blank" rel="noopener">${esc(fmtDate(m.date))} · ${esc(teamOf(m).label)} v ${esc(m.opp)}</a></span>`;
+  const matchText = m => `${fmtDate(m.date)}, ${teamOf(m).label} v ${m.opp}`;
+  const fmtStamp = s => new Date(s).toLocaleString('en-GB', { day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+  const ISSUE_GROUPS = [
+    ['Who took the wicket', [
+      ['no-catcher', 'Catcher missing', 'Caught, but the catcher isn\'t recorded (often "c ? b ..."). The catch counts for nobody.'],
+      ['no-keeper', 'Wicketkeeper missing', 'Stumped, but the wicketkeeper isn\'t recorded. The stumping counts for nobody.'],
+      ['no-runout-fielder', 'Run-out fielder missing', 'Run out without a fielder.'],
+      ['no-bowler', 'Bowler missing', 'Bowled, caught, lbw or stumped without the bowler\'s name in the dismissal.'],
+      ['not-in-lineup', 'Credited player not in the team', 'A catch, stumping or wicket goes to someone who isn\'t in that side\'s team list for the match.'],
+    ]],
+    ['Who played', [
+      ['guest', 'Players without a Matchcentre profile', 'Entered by name only, with a match-only id such as -101. Counted here by name, so the same name in several matches adds up.'],
+      ['guest-registered', 'Entered as guest, but has a profile', 'The club has a registered player with this exact name. Counted as that player here.'],
+      ['guest-noname', 'Players without a proper name', 'Entries like "Player 1", "Speler, Extra" or a first name only. Each counts as a separate person.'],
+    ]],
+    ['Scorecard doesn\'t add up', [
+      ['bat-sum', 'Batting runs', 'Batters\' runs plus extras differ from the team total.'],
+      ['wkts', 'Wickets', 'The number of batters out differs from the wickets in the total.'],
+      ['bowl-sum', 'Bowling runs', 'Runs conceded by the bowlers plus byes and leg byes differ from the total.'],
+      ['bowl-overs', 'Bowling overs', 'The bowlers\' overs differ from the length of the innings.'],
+      ['bowl-wkts', 'Bowling wickets', 'The bowlers\' wickets differ from the number of batters out bowled, caught, lbw, stumped or hit wicket.'],
+    ]],
+    ['Details missing', [
+      ['no-fow', 'Fall of wicket', 'Out without a fall-of-wicket score, so partnerships in that innings are incomplete.'],
+      ['no-balls', 'Balls faced', 'Runs without balls faced, so there is no strike rate.'],
+      ['no-card', 'Whole scorecard', 'Only the total is entered.'],
+    ]],
+  ];
+  const dcat = (title, note, count, body) => `<details class="dcat"><summary><span><b>${esc(title)}</b>${note ? `<small>${esc(note)}</small>` : ''}</span><span class="dcount">${count}</span></summary>${body}</details>`;
+
+  function renderIssues() {
+    const teamsOn = new Set(state.teams);
+    const all = (D.issues || []).map(([id, side, type, text]) => ({ m: matchById.get(id), side, type, text })).filter(x => x.m);
+    const inTeams = all.filter(x => !teamsOn.size || teamsOn.has(x.m.team));
+    // Opponent-side issues and switched-off types (run-out fielder by default) are hidden unless asked for.
+    const sideOk = x => state.issueOpp || x.side === 'v';
+    const typeOn = k => !state.issueOff.includes(k);
+    const list = inTeams.filter(x => sideOk(x) && typeOn(x.type)).sort((a, b) => a.m.date - b.m.date);
+    const perType = {};
+    inTeams.filter(sideOk).forEach(x => { perType[x.type] = (perType[x.type] || 0) + 1; });
+    const hiddenSide = inTeams.filter(x => !sideOk(x)).length;
+    const hiddenType = inTeams.filter(x => sideOk(x) && !typeOn(x.type)).length;
+    const byTeam = state.issueGroup === 'team';
+    const typeOrder = ISSUE_GROUPS.flatMap(([group, types]) => types.map(([k, label]) => [k, label, group]));
+    const typeInfo = Object.fromEntries(typeOrder.map(([k, label, group], i) => [k, { label, group, i, gi: ISSUE_GROUPS.findIndex(g => g[0] === group) }]));
+    // Only worth saying whose figures it is when opponents are shown too.
+    const sideTag = x => (state.issueOpp ? `<span class="iss-side ${x.side}">${x.side === 'v' ? 'VCC' : 'Opponent'}</span>` : '');
+    const typeTag = x => `<span class="iss-type"><i class="dot g${typeInfo[x.type].gi}"></i>${esc(typeInfo[x.type].label)}</span>`;
+    const ext = (m, text) => `<a href="${scorecard(m)}" target="_blank" rel="noopener">${esc(text)}<span aria-hidden="true"> ↗</span></a>`;
+    const issueRow = (x, meta) => `<li class="iss"><p class="iss-t">${esc(x.text)}</p><p class="iss-m">${meta}</p></li>`;
+    const teamName = t => `${t.label} (${shortGrade(t)})`;
+    let groups;
+    if (byTeam) {
+      // One block per VCC team, its issues listed per match.
+      groups = playedTeams.map(t => {
+        const rows = list.filter(x => x.m.team === t.id).sort((a, b) => a.m.date - b.m.date || typeInfo[a.type].i - typeInfo[b.type].i);
+        if (!rows.length) return '';
+        const counts = {};
+        rows.forEach(x => { counts[typeInfo[x.type].label] = (counts[typeInfo[x.type].label] || 0) + 1; });
+        const note = Object.entries(counts).sort((a, b) => b[1] - a[1]).map(([l, n]) => `${l} ${n}`).join(' · ');
+        const ms = [...new Set(rows.map(x => x.m))];
+        const body = `<div class="ilist">${ms.map(m => `<div class="iss-match"><p class="iss-mh">${ext(m, `${fmtDate(m.date)} · v ${m.opp}`)}</p><ul>${rows.filter(x => x.m === m).map(x => issueRow(x, typeTag(x) + sideTag(x))).join('')}</ul></div>`).join('')}</div>`;
+        return dcat(teamName(t), note, rows.length, body);
+      }).join('');
+      groups = groups ? `<div class="dcats">${groups}</div>` : '';
+    } else {
+      groups = ISSUE_GROUPS.map(([title, types]) => {
+        const cats = types.map(([k, label, note]) => {
+          const rows = list.filter(x => x.type === k);
+          if (!rows.length) return '';
+          return dcat(label, note, rows.length, `<ul class="ilist">${rows.map(x => issueRow(x, ext(x.m, `${fmtDate(x.m.date)} · ${teamOf(x.m).label} v ${x.m.opp}`) + sideTag(x))).join('')}</ul>`);
+        }).join('');
+        return cats ? `<div class="dgroup"><h3><span class="u">${esc(title)}</span></h3><div class="dcats">${cats}</div></div>` : '';
+      }).join('');
+    }
+    const copyRows = [...list].sort(byTeam
+      ? (a, b) => playedTeams.indexOf(teamOf(a.m)) - playedTeams.indexOf(teamOf(b.m)) || a.m.date - b.m.date
+      : (a, b) => typeInfo[a.type].i - typeInfo[b.type].i || a.m.date - b.m.date);
+    copyReg.issues = { what: 'the data issues', tables: [{ title: 'Matchcentre data issues', head: ['Team', 'Issue', 'Match', 'Side', 'Detail', 'Scorecard'],
+      body: copyRows.map(x => [teamName(teamOf(x.m)), typeInfo[x.type].label, matchText(x.m), x.side === 'v' ? 'VCC' : x.m.opp, x.text, scorecard(x.m)]) }] };
+    const tools = list.length ? `<div class="head-tools">${seg('issueGroup', [['type', 'By issue'], ['team', 'By team']], byTeam ? 'team' : 'type', 'Group issues', 'sm')}${copyBtn('issues', 'Copy list')}</div>` : '';
+    const hidden = [hiddenSide && `${hiddenSide} on the opponents' side`, hiddenType && `${hiddenType} in switched-off types`].filter(Boolean);
+    const allTypes = typeOrder.map(t => t[0]);
+    const typesOn = allTypes.filter(typeOn).length;
+    // Filters sit in a folded panel: four short checkbox columns, one per kind of mistake.
+    const filtersHtml = `<details class="ifilter" id="issue-filter"${state.issueFilterOpen ? ' open' : ''}>
+        <summary><span class="btn">Filter issues</span><span class="ifsum">${typesOn === allTypes.length ? 'All' : `${typesOn} of ${allTypes.length}`} issue types · ${state.issueOpp ? 'VCC and opponents' : 'VCC only'}</span></summary>
+        <div class="ifbody">
+          <div class="ifside"><span class="mini">Whose figures</span>${seg('issueOpp', [['v', 'VCC only'], ['both', 'VCC and opponents']], state.issueOpp ? 'both' : 'v', 'Whose figures', 'sm')}</div>
+          <div class="igrid">${ISSUE_GROUPS.map(([title, types], gi) => `<fieldset class="icol"><legend><i class="dot g${gi}"></i>${esc(title)}</legend>
+            <div class="ilinks"><button class="link" data-issue-all="${gi}" data-on="1">All</button><button class="link" data-issue-all="${gi}" data-on="0">None</button></div>
+            ${types.map(([k, label, note]) => `<label class="icheck" title="${esc(note)}"><input type="checkbox" name="issueType" id="it-${k}" value="${k}"${typeOn(k) ? ' checked' : ''}><span>${esc(label)}</span><small>${perType[k] || 0}</small></label>`).join('')}
+          </fieldset>`).join('')}</div>
+        </div>
+      </details>`;
+    $('#data-issues').innerHTML = `<div class="card-head"><h2 id="h-issues">Matchcentre data issues</h2>${tools}</div>
+      <div class="itop">
+        <p class="itotal"><span><strong>${n0(list.length)}</strong> shown</span><span><strong>${n0(inTeams.length)}</strong> in total${teamsOn.size ? ' for the picked teams' : ''}</span>${teamsOn.size ? `<span><strong>${n0(all.length)}</strong> for all teams</span>` : ''}</p>
+        ${filtersHtml}
+      </div>
+      <p class="sub">${hidden.length ? `Hidden: ${hidden.join(', ')}. ` : ''}Gaps and mistakes in the Matchcentre scorecards that make the numbers above less complete. Fix them in the Matchcentre, then fetch the data again.</p>
+      ${list.length ? `<div class="dgroups">${groups}</div>` : '<p class="empty">No issues with these settings. Switch on more issue types or include the opponents.</p>'}`;
+  }
+
+  function renderUpdates() {
+    const log = D.changes || [];
+    const kindLabel = { new: 'New result', changed: 'Changed', removed: 'Removed', fixture: 'New fixture' };
+    const summaryOf = c => {
+      const n = k => c.matches.filter(x => x.kind === k).length;
+      const parts = [[n('new'), 'new result', 'new results'], [n('changed'), 'changed match', 'changed matches'], [n('removed'), 'removed match', 'removed matches'], [n('fixture'), 'new fixture', 'new fixtures'], [c.players.length, 'renamed player', 'renamed players'], [c.teams.length, 'new team', 'new teams']]
+        .filter(([k]) => k).map(([k, one, many]) => plural(k, one, many));
+      return parts.join(', ');
+    };
+    const entry = (c, open) => {
+      const ms = c.matches.map(x => ({ ...x, m: matchById.get(x.id) })).sort((a, b) => (a.m ? a.m.date : 0) - (b.m ? b.m.date : 0));
+      const items = ms.map(x => `<li>${x.m ? matchLink(x.m) : ''}<span><span class="kind ${x.kind}">${kindLabel[x.kind]}</span>${x.lines.length === 1 ? esc(x.lines[0]) : ''}</span>${x.lines.length > 1 ? `<ul>${x.lines.map(l => `<li>${esc(l)}</li>`).join('')}</ul>` : ''}</li>`)
+        .concat(c.players.map(([, from, to]) => `<li><span><span class="kind changed">Name</span>${esc(from)} → ${esc(to)}</span></li>`))
+        .concat(c.teams.map(t => `<li><span><span class="kind new">Team</span>${esc(t)}</span></li>`));
+      return `<details class="dcat"${open ? ' open' : ''}><summary><span><b>${esc(fmtStamp(c.at))}</b><small>${esc(summaryOf(c))}${c.refresh ? ' · all scorecards downloaded again' : ''}</small></span><span class="dcount">${c.matches.length + c.players.length + c.teams.length}</span></summary><ul class="dlist">${items.join('')}</ul></details>`;
+    };
+    const latest = log[0] && log[0].at === D.generated;
+    const status = D.previous
+      ? `Last fetched ${fmtStamp(D.generated)}${D.refreshed ? ', with every scorecard downloaded again' : ''}. ${latest ? `Compared with the fetch of ${fmtStamp(D.previous)}: ${summaryOf(log[0])}.` : `Nothing changed since the fetch of ${fmtStamp(D.previous)}.`}`
+      : `Fetched ${fmtStamp(D.generated)}. Changes are tracked from the next fetch on.`;
+    // The fetch buttons only work in the copy served by scripts/serve.mjs; the published page can't reach the Matchcentre.
+    const how = window.VCC_LOCAL
+      ? 'Fetch new results to update this page. Fetching everything again also picks up corrections to older scorecards and takes a few minutes. Publish the page again afterwards so the captains see it.'
+      : window.VCC_SITE
+        ? `This page fetches new results every night. To fetch now, open <a href="${esc(window.VCC_SITE.actions)}" target="_blank" rel="noopener">Refresh data on GitHub</a> and press "Run workflow" (needs write access to the repository); the page updates a few minutes later.`
+        : `To fetch the data again, run <code>node scripts/serve.mjs ${esc(D.season)}</code> in the project folder and use the fetch buttons on the page it opens, then publish the page again.`;
+    const tools = window.VCC_LOCAL
+      ? `<div class="head-tools"><button class="btn" data-fetch="new">Fetch new results</button><button class="btn" data-fetch="all">Fetch everything again</button></div>`
+      : '';
+    $('#data-updates').innerHTML = `<div class="card-head"><h2 id="h-updates">Data updates</h2>${tools}</div>
+      <p class="sub">${esc(status)} ${how}</p>
+      <p class="fetch-status" id="fetch-status" role="status" aria-live="polite" hidden></p>
+      ${log.length ? `<div class="dcats">${log.map((c, i) => entry(c, i === 0 && latest)).join('')}</div>` : '<p class="empty">No changes recorded yet.</p>'}`;
+  }
+
+  async function runFetch(all) {
+    const out = $('#fetch-status');
+    const btns = document.querySelectorAll('[data-fetch]');
+    btns.forEach(b => { b.disabled = true; });
+    out.hidden = false;
+    out.classList.remove('err');
+    out.textContent = all ? 'Downloading every scorecard from the Matchcentre again. This takes a few minutes…' : 'Fetching new results from the Matchcentre…';
+    try {
+      const r = await fetch('/api/fetch', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ refresh: all }) });
+      const res = await r.json();
+      if (!res.ok) throw new Error(res.log || 'The fetch failed.');
+      out.textContent = 'Done. Reloading with the new data…';
+      location.reload();
+    } catch (e) {
+      out.classList.add('err');
+      out.textContent = `The fetch didn't finish. ${e.message.includes('Failed to fetch') ? 'Is scripts/serve.mjs still running?' : e.message.split('\n').slice(-6).join('\n')}`;
+      btns.forEach(b => { b.disabled = false; });
+    }
+  }
+
+  // ---- section links (right sidebar) -----------------------------------------
+  function renderToc() {
+    const panel = $('#view-' + state.tab);
+    const secs = [...panel.querySelectorAll('section.card'), $('#data-issues'), $('#data-updates')];
+    const items = secs.map(s => {
+      const h = s.querySelector('h2');
+      const label = s.dataset.toc || (h && h.textContent.trim());
+      if (!label || !s.textContent.trim()) return null;
+      if (!s.id) s.id = 'sec-' + label.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+      return `<li${s.id === 'data-issues' ? ' class="toc-sep"' : ''}><button data-goto="${s.id}">${esc(label)}</button></li>`;
+    }).filter(Boolean);
+    $('#toc').innerHTML = items.join('');
+    markToc();
+  }
+  // The current section is the last one whose top has scrolled past the top of the window.
+  function markToc() {
+    const items = [...document.querySelectorAll('#toc [data-goto]')];
+    if (!items.length) return;
+    let cur = items[0];
+    for (const b of items) {
+      const el = document.getElementById(b.dataset.goto);
+      if (el && el.getBoundingClientRect().top < 140) cur = b;
+    }
+    if (innerHeight + scrollY >= document.documentElement.scrollHeight - 4) cur = items[items.length - 1];
+    items.forEach(b => b.setAttribute('aria-current', String(b === cur)));
+  }
+  let tocTick = false;
+  addEventListener('scroll', () => {
+    if (tocTick) return;
+    tocTick = true;
+    requestAnimationFrame(() => { tocTick = false; markToc(); });
+  }, { passive: true });
+
+  // ---- render loop ---------------------------------------------------------
+  let current, issuesFor = null;
+  function render(opts = {}) {
+    current = V.apply(S, filter());
+    if (opts.filters) renderFilters();
+    if (opts.dynamic) renderMonthOppFilter();
+    scopeLine(current);
+    document.querySelectorAll('.tab').forEach(t => t.setAttribute('aria-selected', String(t.dataset.tab === state.tab)));
+    ['highlights', 'finder', 'matches'].forEach(k => { $('#view-' + k).hidden = state.tab !== k; });
+    if (state.tab === 'highlights') renderHighlights(current);
+    if (state.tab === 'finder') { if (opts.finder !== false) renderFinderControls(); renderFinderResults(current); }
+    if (state.tab === 'matches') renderMatches(current);
+    // Only when the team choice changes, so open lists stay open while the rest of the page updates.
+    if (issuesFor !== state.teams.join()) { issuesFor = state.teams.join(); renderIssues(); }
+    renderToc();
+    save();
+  }
+
+  // ---- events --------------------------------------------------------------
+  document.addEventListener('change', e => {
+    const t = e.target;
+    if (t.name === 'team-all') { state.teams = []; resetPaging(); return render({ filters: true }); }
+    if (t.name === 'team') {
+      state.teams = [...document.querySelectorAll('input[name=team]:checked')].map(i => i.value);
+      resetPaging(); return render({ filters: true });
+    }
+    if (['result', 'venue', 'toss', 'side', 'names'].includes(t.name)) {
+      state[t.name] = t.value;
+      if (t.name === 'side' && state.player) state.player = null;
+      resetPaging(); return render({ filters: t.name === 'side' });
+    }
+    if (t.name === 'top') { state.top = t.value === 'all' ? 'all' : +t.value; return render(); }
+    if (t.name === 'squadCounts') { state.squadCounts = t.value; return render(); }
+    if (t.name === 'issueGroup') { state.issueGroup = t.value; issuesFor = null; return render(); }
+    if (t.name === 'issueOpp') { state.issueOpp = t.value === 'both'; issuesFor = null; return render(); }
+    if (t.name === 'issueType') {
+      const on = [...document.querySelectorAll('input[name=issueType]:checked')].map(i => i.value);
+      state.issueOff = ISSUE_GROUPS.flatMap(([, ts]) => ts.map(x => x[0])).filter(k => !on.includes(k));
+      issuesFor = null; return render();
+    }
+    if (t.name && t.name.startsWith('ms-')) { state.ms[t.name.slice(3)] = +t.value; return render(); }
+    if (t.name === 'month') { state.months = [...document.querySelectorAll('input[name=month]:checked')].map(i => +i.value); resetPaging(); return render(); }
+    if (t.name === 'opp') { state.opps = [...document.querySelectorAll('input[name=opp]:checked')].map(i => i.value); resetPaging(); return render({ dynamic: true }); }
+    if (t.name === 'ds') { state.finder.ds = t.value; return render(); }
+    if (t.name && t.name.startsWith('chip-')) {
+      const k = t.name.slice(5), ds = state.finder.ds;
+      state.finder.chips[ds] = state.finder.chips[ds] || {};
+      state.finder.chips[ds][k] = [...document.querySelectorAll(`input[name="${t.name}"]:checked`)].map(i => i.value);
+      delete state.limits['finder-' + ds];
+      return render();
+    }
+  });
+  // 'toggle' doesn't bubble, so listen in the capture phase.
+  document.addEventListener('toggle', e => {
+    if (e.target.id === 'issue-filter') { state.issueFilterOpen = e.target.open; save(); }
+  }, true);
+  document.addEventListener('input', e => {
+    const t = e.target;
+    if (t.dataset.cond) {
+      const ds = state.finder.ds;
+      state.finder.cond[ds] = state.finder.cond[ds] || {};
+      state.finder.cond[ds][t.dataset.cond] = t.value;
+      delete state.limits['finder-' + ds];
+      render({ finder: false });
+    }
+    if (t.id === 'player-q') suggestPlayers(t.value);
+  });
+  document.addEventListener('keydown', e => {
+    if (e.target.id !== 'player-q') return;
+    const list = $('#player-suggest');
+    const items = [...list.querySelectorAll('[data-pick]')];
+    if (!items.length) return;
+    let i = items.findIndex(b => b.getAttribute('aria-selected') === 'true');
+    if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+      e.preventDefault();
+      i = (i + (e.key === 'ArrowDown' ? 1 : -1) + items.length) % items.length;
+      items.forEach((b, j) => b.setAttribute('aria-selected', String(j === i)));
+    } else if (e.key === 'Enter') { e.preventDefault(); pickPlayer(+items[Math.max(0, i)].dataset.pick); }
+    else if (e.key === 'Escape') list.hidden = true;
+  });
+  function pickPlayer(pid) {
+    state.player = pid;
+    resetPaging();
+    render({ filters: true });
+    $('#scope').scrollIntoView({ block: 'start', behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
+  }
+  function resetPaging() { state.limits = {}; }
+  document.addEventListener('click', e => {
+    const t = e.target.closest('button, [data-tab]');
+    if (!t) { const l = $('#player-suggest'); if (l) l.hidden = true; return; }
+    if (t.dataset.tab) { state.tab = t.dataset.tab; history.replaceState(null, '', '#' + state.tab); return render(); }
+    if (t.dataset.pid) return pickPlayer(+t.dataset.pid);
+    if (t.dataset.pick) return pickPlayer(+t.dataset.pick);
+    if (t.dataset.team) { state.teams = [t.dataset.team]; resetPaging(); return render({ filters: true }); }
+    if (t.dataset.opp) { state.opps = [t.dataset.opp]; resetPaging(); render({ filters: true }); return $('#scope').scrollIntoView({ block: 'start' }); }
+    if (t.hasAttribute('data-clear-player')) { state.player = null; return render({ filters: true }); }
+    if (t.hasAttribute('data-reset')) {
+      Object.assign(state, { teams: [], result: 'all', venue: 'all', toss: 'all', months: [], opps: [], player: null, limits: {} });
+      return render({ filters: true });
+    }
+    if (t.hasAttribute('data-clear-cond')) { state.finder.cond[state.finder.ds] = {}; state.finder.chips[state.finder.ds] = {}; return render(); }
+    if (t.dataset.copy) return doCopy(t.dataset.copy);
+    if (t.dataset.fetch) return runFetch(t.dataset.fetch === 'all');
+    if (t.dataset.issueAll) {
+      const keys = ISSUE_GROUPS[+t.dataset.issueAll][1].map(x => x[0]);
+      state.issueOff = t.dataset.on === '1' ? state.issueOff.filter(k => !keys.includes(k)) : [...new Set(state.issueOff.concat(keys))];
+      issuesFor = null; return render();
+    }
+    if (t.dataset.goto) {
+      const el = document.getElementById(t.dataset.goto);
+      if (el) el.scrollIntoView({ block: 'start', behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
+      return;
+    }
+    if (t.dataset.more) {
+      const k = t.dataset.more;
+      state.limits[k] = t.dataset.step === 'all' ? 1e9 : (state.limits[k] || +t.dataset.step) + +t.dataset.step;
+      return render({ finder: false });
+    }
+    if (t.dataset.sort) {
+      const key = t.dataset.sort, k = t.dataset.k;
+      const cur = state.sorts[key];
+      const col = (colReg[key] || []).find(c => c.k === k);
+      const first = col && col.num ? (col.asc ? 1 : -1) : 1;
+      state.sorts[key] = cur && cur.k === k ? { k, dir: -cur.dir } : { k, dir: first };
+      return render({ finder: false });
+    }
+    if (t.id === 'filters-toggle') {
+      const p = $('#filters'); const collapsed = p.classList.toggle('collapsed');
+      t.setAttribute('aria-expanded', String(!collapsed));
+    }
+  });
+  // ---- chart tooltips ------------------------------------------------------
+  const tip = $('#tip');
+  const placeTip = (x, y) => {
+    const w = tip.offsetWidth, h = tip.offsetHeight;
+    tip.style.left = Math.max(8, Math.min(innerWidth - w - 8, x + 14)) + 'px';
+    tip.style.top = (y + h + 22 > innerHeight ? y - h - 12 : y + 16) + 'px';
+  };
+  const showTip = (el, x, y) => { tip.textContent = el.dataset.tip; tip.hidden = false; placeTip(x, y); };
+  document.addEventListener('mouseover', e => { const el = e.target.closest('[data-tip]'); if (el) showTip(el, e.clientX, e.clientY); else tip.hidden = true; });
+  document.addEventListener('mousemove', e => { if (!tip.hidden) placeTip(e.clientX, e.clientY); });
+  document.addEventListener('focusin', e => { const el = e.target.closest('[data-tip]'); if (el) { const b = el.getBoundingClientRect(); showTip(el, b.left, b.bottom - 10); } else tip.hidden = true; });
+  document.addEventListener('focusout', () => { tip.hidden = true; });
+  addEventListener('scroll', () => { tip.hidden = true; }, { passive: true });
+
+  // ---- boot ----------------------------------------------------------------
+  $('#season-year').textContent = D.season;
+  document.title = `VCC Season Facts ${D.season}`;
+  const gen = new Date(D.generated);
+  $('#data-note').textContent = `Data from the KNCB Matchcentre, collected ${gen.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })}: ${S.matches.filter(m => m.played).length} played matches across ${playedTeams.length} VCC teams.`;
+  if (matchMedia('(max-width: 719px)').matches) { $('#filters').classList.add('collapsed'); $('#filters-toggle').setAttribute('aria-expanded', 'false'); }
+  renderUpdates();
+  render({ filters: true });
+})();
+</script>

@@ -1,0 +1,11 @@
+# Built by the workflow
+dist/
+
+# Jaarverslag spreadsheets and the Google Docs / Drive tooling stay local
+*.xlsx
+~$*
+apps-script/
+scripts/publish-to-drive.mjs
+scripts/compare_docx.py
+scripts/doc-mapping-*.json
+data/jaarverslag-*.json

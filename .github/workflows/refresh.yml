@@ -1,0 +1,67 @@
+# Fetches new results from the KNCB Matchcentre, rebuilds the page and publishes it on GitHub Pages.
+# Runs every night, and by hand from the Actions tab ("Run workflow").
+name: Refresh data
+
+on:
+  schedule:
+    - cron: '0 3 * * *'   # 03:00 UTC every night
+  workflow_dispatch:
+    inputs:
+      refresh:
+        description: 'Download every scorecard again (picks up corrections to older matches, takes a few minutes)'
+        type: boolean
+        default: false
+      season:
+        description: 'Season'
+        default: '2026'
+  push:
+    branches: [main]
+    paths: ['src/**', 'scripts/build.mjs']
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: refresh
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    env:
+      SEASON: ${{ inputs.season || '2026' }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
+      - name: Fetch results
+        if: github.event_name != 'push'
+        run: node scripts/fetch-data.mjs "$SEASON" ${{ inputs.refresh && '--refresh' || '' }}
+
+      - name: Build page
+        run: node scripts/build.mjs "$SEASON" --site "${{ github.server_url }}/${{ github.repository }}/actions/workflows/refresh.yml"
+
+      # Keep the data and the scorecard cache in the repo: the next run only downloads new matches
+      # and compares with this fetch for the "Data updates" log.
+      - name: Save data
+        if: github.event_name != 'push'
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add data cache
+          git diff --cached --quiet || { git commit -m "Data refresh $(date -u +%Y-%m-%d)" && git push; }
+
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist/site
+      - id: deploy
+        uses: actions/deploy-pages@v4
