@@ -31,6 +31,12 @@ same club has a player with exactly that name.
 the page and publishes it on GitHub Pages. To fetch right away: Actions → Refresh data → Run workflow (tick the box
 to download every scorecard again). Changes to `src/` or `scripts/build.mjs` pushed to `main` rebuild the page without fetching.
 
+Visitors without a GitHub account use the page's "Fetch latest results" button (under Data updates). It calls
+`refresh-service/Code.gs`, a Google Apps Script web app that holds a GitHub token and starts the workflow: one fetch at
+a time (a second press joins the running one), at most one every 10 minutes and 30 a day. The web app's address goes
+in the repository variable `REFRESH_URL` (Settings → Secrets and variables → Actions → Variables); without it the page
+links to the workflow on GitHub instead.
+
 ## Jaarverslag tables in Google Sheets / Docs
 
 These tools stay on the local computer (not in the GitHub repository).

@@ -2,7 +2,8 @@
 //   dist/vcc-season-facts-<year>.html   page body for publishing as an Artifact
 //   dist/vcc-season-facts-<year>.local.html   same page with a full HTML shell, to open locally
 //   dist/site/index.html   with --site <workflow url>: the GitHub Pages copy, linking to the refresh workflow
-// Usage: node scripts/build.mjs [seasonYear] [--site <workflow url>]   (default 2026)
+//     --refresh-url <web app url>: the refresh-service web app behind the page's "Fetch latest results" button
+// Usage: node scripts/build.mjs [seasonYear] [--site <workflow url> [--refresh-url <url>]]   (default 2026)
 
 import fs from 'node:fs/promises';
 import path from 'node:path';
@@ -13,6 +14,8 @@ const ARGS = process.argv.slice(2);
 const year = ARGS.find(a => /^\d{4}$/.test(a)) || '2026';
 const siteIdx = ARGS.indexOf('--site');
 const site = siteIdx >= 0 ? ARGS[siteIdx + 1] : null;
+const refreshIdx = ARGS.indexOf('--refresh-url');
+const refreshUrl = refreshIdx >= 0 ? ARGS[refreshIdx + 1] : '';
 
 const [tpl, stats, data] = await Promise.all([
   fs.readFile(path.join(ROOT, 'src', 'index.html'), 'utf8'),
@@ -38,6 +41,6 @@ console.log(`Built ${path.relative(ROOT, base)}.html (${(page.length / 1024).toF
 if (site) {
   await fs.mkdir(path.join(ROOT, 'dist', 'site'), { recursive: true });
   await fs.writeFile(path.join(ROOT, 'dist', 'site', 'index.html'),
-    shell(`<script>window.VCC_SITE = ${JSON.stringify({ actions: site }).replace(/</g, '\\u003c')};</script>`));
+    shell(`<script>window.VCC_SITE = ${JSON.stringify({ actions: site, refresh: refreshUrl || null }).replace(/</g, '\\u003c')};</script>`));
   console.log('Built dist/site/index.html');
 }

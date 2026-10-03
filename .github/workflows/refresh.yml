@@ -36,7 +36,11 @@ jobs:
     env:
       SEASON: ${{ inputs.season || '2026' }}
     steps:
+      # The tip of main, not the commit the run was queued for: a run that waited for another one
+      # must build on the data that run committed.
       - uses: actions/checkout@v4
+        with:
+          ref: main
 
       - uses: actions/setup-node@v4
         with:
@@ -47,7 +51,7 @@ jobs:
         run: node scripts/fetch-data.mjs "$SEASON" ${{ inputs.refresh && '--refresh' || '' }}
 
       - name: Build page
-        run: node scripts/build.mjs "$SEASON" --site "${{ github.server_url }}/${{ github.repository }}/actions/workflows/refresh.yml"
+        run: node scripts/build.mjs "$SEASON" --site "${{ github.server_url }}/${{ github.repository }}/actions/workflows/refresh.yml" --refresh-url "${{ vars.REFRESH_URL }}"
 
       # Keep the data and the scorecard cache in the repo: the next run only downloads new matches
       # and compares with this fetch for the "Data updates" log.

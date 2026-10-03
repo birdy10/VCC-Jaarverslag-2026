@@ -1590,12 +1590,16 @@ footer p { margin: 0; max-width: 90ch; }
     // The fetch buttons only work in the copy served by scripts/serve.mjs; the published page can't reach the Matchcentre.
     const how = window.VCC_LOCAL
       ? 'Fetch new results to update this page. Fetching everything again also picks up corrections to older scorecards and takes a few minutes. Publish the page again afterwards so the captains see it.'
-      : window.VCC_SITE
-        ? `This page fetches new results every night. To fetch now, open <a href="${esc(window.VCC_SITE.actions)}" target="_blank" rel="noopener">Refresh data on GitHub</a> and press "Run workflow" (needs write access to the repository); the page updates a few minutes later.`
-        : `To fetch the data again, run <code>node scripts/serve.mjs ${esc(D.season)}</code> in the project folder and use the fetch buttons on the page it opens, then publish the page again.`;
+      : SITE && SITE.refresh
+        ? 'New results are fetched every night. Anyone can fetch them sooner: it takes about two minutes, one fetch runs at a time, and at most one every 10 minutes.'
+        : SITE
+          ? `This page fetches new results every night. To fetch now, open <a href="${esc(SITE.actions)}" target="_blank" rel="noopener">Refresh data on GitHub</a> and press "Run workflow" (needs write access to the repository); the page updates a few minutes later.`
+          : `To fetch the data again, run <code>node scripts/serve.mjs ${esc(D.season)}</code> in the project folder and use the fetch buttons on the page it opens, then publish the page again.`;
     const tools = window.VCC_LOCAL
       ? `<div class="head-tools"><button class="btn" data-fetch="new">Fetch new results</button><button class="btn" data-fetch="all">Fetch everything again</button></div>`
-      : '';
+      : SITE && SITE.refresh
+        ? '<div class="head-tools"><button class="btn" data-fetch="site">Fetch latest results</button></div>'
+        : '';
     $('#data-updates').innerHTML = `<div class="card-head"><h2 id="h-updates">Data updates</h2>${tools}</div>
       <p class="sub">${esc(status)} ${how}</p>
       <p class="fetch-status" id="fetch-status" role="status" aria-live="polite" hidden></p>
@@ -1619,6 +1623,79 @@ footer p { margin: 0; max-width: 90ch; }
       out.classList.add('err');
       out.textContent = `The fetch didn't finish. ${e.message.includes('Failed to fetch') ? 'Is scripts/serve.mjs still running?' : e.message.split('\n').slice(-6).join('\n')}`;
       btns.forEach(b => { b.disabled = false; });
+    }
+  }
+
+  // The GitHub Pages copy: refresh-service/Code.gs starts the "Refresh data" workflow, which fetches,
+  // rebuilds and republishes this page. It runs one fetch at a time, at most one every 10 minutes.
+  const SITE = window.VCC_SITE;
+  const fmtTime = ms => new Date(ms).toLocaleString('en-GB', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });
+
+  async function siteCall(method) {
+    const r = await fetch(SITE.refresh + (method === 'GET' ? '?action=status' : ''), method === 'POST' ? { method, body: 'refresh' } : {});
+    if (!r.ok) throw new Error(`The refresh service answered ${r.status}.`);
+    const res = await r.json();
+    if (res.state === 'error') throw new Error(res.message);
+    return res;
+  }
+
+  function siteMessage(text, err) {
+    const out = $('#fetch-status');
+    out.hidden = false;
+    out.classList.toggle('err', !!err);
+    out.textContent = text;
+  }
+
+  async function siteFetch() {
+    const btn = $('[data-fetch="site"]');
+    btn.disabled = true;
+    siteMessage('Asking for new results…');
+    try {
+      const res = await siteCall('POST');
+      if (res.state === 'cooldown') return siteMessage(`New results were fetched less than 10 minutes ago. You can fetch again in ${res.cooldownMin} minute${res.cooldownMin === 1 ? '' : 's'}.`);
+      if (res.state === 'limit') return siteMessage('The page has been refreshed often today already. New results will be fetched tonight.');
+      await watchSite(res.state === 'running' ? 'Someone else just started a fetch. Waiting for it to finish…' : 'Fetching new results from the Matchcentre. This takes about two minutes…');
+    } catch (e) {
+      siteMessage(`The fetch didn't start. ${e.message.includes('Failed to fetch') ? 'Check the internet connection and try again.' : e.message}`, true);
+      btn.disabled = false;
+    }
+  }
+
+  // Polls until the running fetch is done, then reloads (with a new address, so no cached copy comes back).
+  async function watchSite(text) {
+    const btn = $('[data-fetch="site"]');
+    if (btn) btn.disabled = true;
+    siteMessage(text);
+    const until = Date.now() + 15 * 60000;
+    while (Date.now() < until) {
+      await new Promise(res => setTimeout(res, 10000));
+      const s = await siteCall('GET');
+      if (s.busy) continue;
+      if (s.run && s.run.conclusion === 'success') {
+        siteMessage('Done. Reloading with the new data…');
+        return reloadFresh();
+      }
+      throw new Error('The fetch failed on GitHub. The page keeps the data it had.');
+    }
+    throw new Error('The fetch is taking longer than expected. Reload the page later.');
+  }
+
+  function reloadFresh() {
+    location.replace(`${location.pathname}?t=${Date.now()}${location.hash}`);
+  }
+
+  // On load: join a fetch someone else started, or offer a newer copy than this (cached) one.
+  async function checkSite() {
+    try {
+      const s = await siteCall('GET');
+      if (s.busy) return await watchSite('Someone is fetching new results right now. This page reloads when they are in…');
+      const done = s.run && s.run.conclusion === 'success' ? Date.parse(s.run.updated) : 0;
+      if (done - new Date(D.generated).getTime() > 5 * 60000) {
+        siteMessage(`Newer results were fetched at ${fmtTime(done)}. Reload the page to see them.`);
+      }
+    } catch (e) {
+      const btn = $('[data-fetch="site"]');
+      if (btn && btn.disabled) { siteMessage(e.message, true); btn.disabled = false; }
     }
   }
 
@@ -1757,7 +1834,7 @@ footer p { margin: 0; max-width: 90ch; }
     }
     if (t.hasAttribute('data-clear-cond')) { state.finder.cond[state.finder.ds] = {}; state.finder.chips[state.finder.ds] = {}; return render(); }
     if (t.dataset.copy) return doCopy(t.dataset.copy);
-    if (t.dataset.fetch) return runFetch(t.dataset.fetch === 'all');
+    if (t.dataset.fetch) return t.dataset.fetch === 'site' ? siteFetch() : runFetch(t.dataset.fetch === 'all');
     if (t.dataset.issueAll) {
       const keys = ISSUE_GROUPS[+t.dataset.issueAll][1].map(x => x[0]);
       state.issueOff = t.dataset.on === '1' ? state.issueOff.filter(k => !keys.includes(k)) : [...new Set(state.issueOff.concat(keys))];
@@ -1808,5 +1885,6 @@ footer p { margin: 0; max-width: 90ch; }
   if (matchMedia('(max-width: 719px)').matches) { $('#filters').classList.add('collapsed'); $('#filters-toggle').setAttribute('aria-expanded', 'false'); }
   renderUpdates();
   render({ filters: true });
+  if (SITE && SITE.refresh) checkSite();
 })();
 </script>
