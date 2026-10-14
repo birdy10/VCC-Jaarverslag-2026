@@ -7,7 +7,6 @@
 //
 // Usage: node scripts/export-tables.mjs [seasonYear]   (run fetch-data.mjs first)
 
-import crypto from 'node:crypto';
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import { createRequire } from 'node:module';
@@ -103,33 +102,14 @@ tables.push({ key: 'special-p75', kind: 'special', title: `Partnerships >75 runs
     by: S.fullName(p.a), byScore: runsOf(p, p.a), and: S.fullName(p.b), andScore: runsOf(p, p.b) };
 }) });
 
-// ---- standings --------------------------------------------------------------
-const SECRET = '2457FAE695024E20A780B4DE';
-const token = () => { const c = crypto.createCipheriv('des-ede3-ecb', Buffer.from(SECRET, 'latin1'), null); return Buffer.concat([c.update(Math.round(Date.now() / 1000 - 60).toString(), 'latin1'), c.final()]).toString('base64'); };
-const getJson = async url => {
-  const res = await fetch(url, { headers: { 'X-IAS-API-REQUEST': token() } });
-  const text = await res.text();
-  try { return JSON.parse(text); } catch { return null; }
-};
-const seasons = await getJson('https://api.resultsvault.co.uk/rv/134453/seasons/?apiid=1002');
-const seasonId = seasons.find(s => s.season_text.trim() === YEAR).season_id;
-for (const gradeId of [...new Set(data.teams.map(t => t.gradeId))]) {
-  const teams = data.teams.filter(t => t.gradeId === gradeId && S.matches.some(m => m.team === t.id && m.played));
-  if (!teams.length) continue;
-  const ladders = await getJson(`https://api.resultsvault.co.uk/rv/134453/ladders/v2/?apiid=1002&gradeid=${gradeId}&seasonid=${seasonId}&sportid=1`);
-  if (!Array.isArray(ladders)) { console.warn('  no standings for', teams[0].grade); continue; }
-  for (const [li, lad] of ladders.entries()) {
-    const col = Object.fromEntries((lad.LadderColumns || []).map(c => [c.col_id, c.heading]));
-    for (const [pi0, pool] of (lad.LadderPools || []).entries()) {
-      const pi = li ? `${li}-${pi0}` : pi0;
-      const rows = (pool.LadderTeams || []).sort((a, b) => a.rank - b.rank).map(t => {
-        const v = Object.fromEntries(t.LadderData.map(x => [col[x.id] || x.id, x.val]));
-        return { rank: t.rank, club: t.team_name, isVcc: t.entity_id === 134465, played: +v.P || 0, won: +v.W || 0, lost: +v.L || 0,
-          points: v.Pts != null ? +(+v.Pts).toFixed(2) : '', nrr: v.NRR != null && v.NRR !== '' ? (+v.NRR).toFixed(2) : '' };
-      });
-      if (!rows.some(x => x.isVcc)) continue;
-      tables.push({ key: `stand-${gradeId}-${pi}`, kind: 'standings', title: `${teams[0].grade}${lad.LadderPools.length > 1 ? ` · ${pool.pool_name || 'poule ' + (pi + 1)}` : ''}`, rows });
-    }
+// ---- standings (fetched by fetch-data.mjs: regular rounds only, play-offs listed apart) --------
+if (!data.standings) console.warn('  no standings in the data file: run fetch-data.mjs again');
+for (const st of data.standings || []) {
+  if (!data.teams.some(t => t.gradeId === st.gradeId && S.matches.some(m => m.team === t.id && m.played))) continue;
+  for (const pool of st.pools) {
+    const rows = pool.rows.map(r => ({ rank: r.rank, club: r.team, isVcc: r.vcc, played: r.p || 0, won: r.w || 0, lost: r.l || 0,
+      points: r.pts != null ? +r.pts.toFixed(2) : '', nrr: r.nrr != null ? r.nrr.toFixed(2) : '' }));
+    tables.push({ key: `stand-${st.gradeId}-${pool.key}`, kind: 'standings', title: `${st.grade}${pool.name && pool.name !== st.grade ? ` · ${pool.name}` : ''}`, rows });
   }
 }
 

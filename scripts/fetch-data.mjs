@@ -344,13 +344,76 @@ wanted.forEach(({ listing, teamId }, i) => {
 });
 matches.sort((a, b) => a.date - b.date);
 
+// ---- standings ------------------------------------------------------------------
+// The Matchcentre ladders count the regular rounds only. Play-off matches have a round code
+// instead of a number (QF, SF, GF, ...) and are listed under the table. A ladder that does count
+// them is flagged: the table from before the play-offs can't be worked out again afterwards.
+const file = path.join(ROOT, 'data', `season-${SEASON_YEAR}.json`);
+let prevStandings = [];
+try { prevStandings = JSON.parse(await fs.readFile(file, 'utf8')).standings || []; } catch {}
+const isPlayoff = m => !/^\d+$/.test(String(m.round ?? '').trim());
+const gradeIds = [...new Set([...teams.values()].map(t => t.gradeId))];
+const ladders = await pool(gradeIds, 6, async gid => {
+  try { return await get(`${API}/ladders/v2/?apiid=${APIID}&gradeid=${gid}&seasonid=${season.season_id}&sportid=1`); }
+  catch (e) { console.warn('  no standings for grade', gid, e.message); return null; }
+});
+const standings = [];
+gradeIds.forEach((gid, gi) => {
+  const lads = ladders[gi];
+  if (lads === null) { // fetch failed: keep what the previous run had
+    const old = prevStandings.find(s => s.gradeId === gid);
+    if (old) standings.push(old);
+    return;
+  }
+  if (!Array.isArray(lads)) return;
+  const listing = listings[grades.findIndex(g => g.grade_id === gid)] || [];
+  const regular = listing.filter(m => !isPlayoff(m)), playoffs = listing.filter(isPlayoff);
+  const record = (ms, name) => ms.reduce((r, m) => {
+    const t = (m.MatchTeams || []).find(x => x.team_name.trim() === name);
+    if (t?.result_flag === 2) r.w++; else if (t?.result_flag === 1) r.l++;
+    return r;
+  }, { w: 0, l: 0 });
+  const pools = [];
+  lads.forEach((lad, li) => {
+    const col = Object.fromEntries((lad.LadderColumns || []).map(c => [c.col_id, (c.heading || '').trim()]));
+    (lad.LadderPools || []).forEach((p, pi) => {
+      if (!(p.LadderTeams || []).some(t => t.entity_id === CLUB_ENTITY_ID)) return;
+      let counted = false;
+      const rows = [...p.LadderTeams].sort((a, b) => a.rank - b.rank).map(t => {
+        const v = Object.fromEntries((t.LadderData || []).map(x => [col[x.id] || x.id, x.val]));
+        const num = (...ks) => { const k = ks.find(x => v[x] != null && v[x] !== ''); return k ? +v[k] : null; };
+        const name = t.team_name.trim();
+        const po = record(playoffs, name);
+        if (po.w + po.l) {
+          const reg = record(regular, name);
+          if (num('W') === reg.w + po.w && num('L') === reg.l + po.l) counted = true;
+        }
+        return { rank: t.rank, team: rename(name), vcc: t.entity_id === CLUB_ENTITY_ID, p: num('P'), w: num('W'), l: num('L'), t: num('T'),
+          nr: num('NR', 'No Results'), pts: num('Pts'), avg: num('AVE', 'Ave'), nrr: num('NRR') };
+      });
+      // key: position among all the grade's pools (the jaarverslag mapping refers to it)
+      pools.push({ key: li ? `${li}-${pi}` : String(pi), name: (p.pool_name || '').trim(), rows, playoffsCounted: counted });
+    });
+  });
+  if (!pools.length) return;
+  const t = [...teams.values()].find(x => x.gradeId === gid);
+  standings.push({
+    gradeId: gid, grade: t.grade, sort: t.sort, pools,
+    playoffs: playoffs.map(m => ({
+      id: m.match_id, round: String(m.round).trim(), date: msDate(m.date1),
+      teams: (m.MatchTeams || []).map(x => [rename(x.team_name.trim()), x.result_flag || 0, x.entity_id === CLUB_ENTITY_ID]),
+      leader: rename(m.leader_text || ''), score: rename(m.score_text || ''),
+    })).sort((a, b) => a.date - b.date),
+  });
+});
+standings.sort((a, b) => a.sort - b.sort || a.grade.localeCompare(b.grade));
+
 const out = {
   season: SEASON_YEAR, generated: new Date().toISOString(), club: 'VCC', refreshed: REFRESH,
   teams: [...teams.values()].sort((a, b) => a.sort - b.sort || a.label.localeCompare(b.label)),
-  matches, players, issues: issues.map(x => [x[0], x[1], x[2], fixDismissal(rename(x[3]))]),
+  matches, players, standings, issues: issues.map(x => [x[0], x[1], x[2], fixDismissal(rename(x[3]))]),
 };
 await fs.mkdir(path.join(ROOT, 'data'), { recursive: true });
-const file = path.join(ROOT, 'data', `season-${SEASON_YEAR}.json`);
 for (const m of out.matches) {
   for (const k of ['opp', 'oppClub', 'leader', 'score', 'venue']) m[k] = rename(m[k] || '');
   for (const inn of m.innings) for (const b of inn.bat) b[7] = fixDismissal(rename(b[7] || ''));
@@ -440,4 +503,5 @@ const played = matches.filter(m => m.innings.length).length;
 console.log(`Wrote ${path.relative(ROOT, file)}: ${matches.length} matches (${played} with scores), ${Object.keys(players).length} players, ${(JSON.stringify(out).length / 1024).toFixed(0)} KB`);
 const byType = issues.reduce((a, x) => ((a[x[2]] = (a[x[2]] || 0) + 1), a), {});
 console.log(`Data issues: ${issues.length}`, byType);
+console.log(`Standings: ${standings.length} competitions${standings.some(s => s.pools.some(p => p.playoffsCounted)) ? ' (some ladders count play-off matches)' : ''}`);
 if (entry) console.log(`Changes since ${entry.since}: ${entry.matches.length} matches, ${entry.players.length} renamed players, ${entry.teams.length} new teams`);

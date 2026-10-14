@@ -226,6 +226,12 @@ tbody tr:first-child td .ctx { font-weight: 400; }
 .res { display: inline-block; min-width: 22px; text-align: center; padding: 1px 6px; border-radius: 3px; color: #fff; font: 800 11px/1.5 var(--font-display); background: var(--draw); }
 .res.W { background: var(--win); } .res.L { background: var(--red); }
 
+/* ---- standings ---- */
+tr.vcc td { background: var(--barfill); }
+table:not(.po) tr.vcc td:nth-child(2) { color: var(--brand-ink); font-weight: 700; }
+.tw + h3 { margin-top: 22px; }
+table.po tbody tr:first-child td { font-weight: 400; }
+
 /* ---- records & oddities ---- */
 .facts { display: grid; gap: 10px; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); }
 .fact { border: 1px solid var(--line); border-radius: var(--radius); padding: 12px 14px; min-width: 0; }
@@ -384,6 +390,7 @@ footer p { margin: 0; max-width: 90ch; }
     <button class="tab" role="tab" id="tab-highlights" aria-controls="view-highlights" data-tab="highlights">Highlights</button>
     <button class="tab" role="tab" id="tab-finder" aria-controls="view-finder" data-tab="finder">Fact finder</button>
     <button class="tab" role="tab" id="tab-matches" aria-controls="view-matches" data-tab="matches">Matches</button>
+    <button class="tab" role="tab" id="tab-standings" aria-controls="view-standings" data-tab="standings">Standings</button>
   </nav>
 </header>
 <div class="stripe" aria-hidden="true"></div>
@@ -432,6 +439,7 @@ footer p { margin: 0; max-width: 90ch; }
     <section class="card" id="finder-results" data-toc="Results" style="margin-top:18px"></section>
   </div>
   <div id="view-matches" role="tabpanel" aria-labelledby="tab-matches" hidden></div>
+  <div id="view-standings" role="tabpanel" aria-labelledby="tab-standings" hidden></div>
 
   <section class="card" id="data-issues" aria-labelledby="h-issues"></section>
   <section class="card" id="data-updates" aria-labelledby="h-updates"></section>
@@ -486,7 +494,7 @@ footer p { margin: 0; max-width: 90ch; }
   } catch (e) {}
   const save = () => { try { localStorage.setItem('vcc-facts-' + D.season, JSON.stringify(state)); } catch (e) {} };
   const hashTab = location.hash.replace('#', '');
-  if (['highlights', 'finder', 'matches'].includes(hashTab)) state.tab = hashTab;
+  if (['highlights', 'finder', 'matches', 'standings'].includes(hashTab)) state.tab = hashTab;
 
   const playedTeams = D.teams.filter(t => S.matches.some(m => m.team === t.id && m.played));
   state.teams = state.teams.filter(id => playedTeams.some(t => t.id === id));
@@ -587,7 +595,7 @@ footer p { margin: 0; max-width: 90ch; }
       const bar = c.bar && barMax[c.k] ? ` style="--w:${pct(+c.get(r) || 0, barMax[c.k]).toFixed(1)}%"` : '';
       return `<td class="${c.num ? 'n' : ''} ${c.opt ? 'opt' : ''} ${bar ? 'bar' : ''}"${bar}>${c.html ? c.html(r) : esc(c.num && typeof c.get(r) === 'number' ? n0(c.get(r)) : c.get(r) ?? '–')}</td>`;
     };
-    const body = shown.map(r => `<tr>${vis.map(c => cell(c, r)).join('')}</tr>`).join('');
+    const body = shown.map(r => { const rc = opts.rowClass && opts.rowClass(r); return `<tr${rc ? ` class="${rc}"` : ''}>${vis.map(c => cell(c, r)).join('')}</tr>`; }).join('');
     let more = '';
     if (opts.paged && sorted.length > shown.length) {
       more = `<div class="morebar"><button class="btn" data-more="${key}" data-step="${opts.limit}">Show ${Math.min(opts.limit, sorted.length - shown.length)} more</button><button class="link" data-more="${key}" data-step="all">Show all ${sorted.length}</button></div>`;
@@ -1477,6 +1485,72 @@ footer p { margin: 0; max-width: 90ch; }
       ${table('matches', cols, r.matches, { sort: { k: 'date', dir: 1 }, limit: 30, paged: true, title: 'Matches', what: 'the match list', empty: 'No matches fit these filters.' })}</section>`;
   }
 
+  // ---- standings -------------------------------------------------------------
+  // Final tables of the regular rounds, as the Matchcentre ranks them. Play-off matches (rounds
+  // with a code instead of a number) don't count towards them and are listed under each table.
+  const ROUND = { QF: 'Quarter-final', SF: 'Semi-final', GF: 'Final', GF1: 'Final', GF2: 'Final', EF: 'Elimination final', PF: 'Preliminary final' };
+  const roundName = (s, code) => (code === 'QF' && s.playoffs.some(m => m.round === 'EF' || m.round === 'PF') ? 'Qualifying final' : ROUND[code] || code);
+  // The table row of a VCC team: by name, or the only VCC row in that competition.
+  function standingOf(t) {
+    const s = (D.standings || []).find(x => x.gradeId === t.gradeId);
+    if (!s) return null;
+    const hits = s.pools.flatMap(p => p.rows.filter(r => r.vcc).map(r => ({ s, p, r })));
+    return hits.find(h => h.r.team === t.teamName.trim()) || (hits.length === 1 ? hits[0] : null);
+  }
+  const playoffLine = (s, m, team) => {
+    const me = m.teams.find(x => x[0] === team), them = m.teams.find(x => x !== me);
+    const res = !me ? '' : me[1] === 2 ? 'won' : me[1] === 1 ? 'lost' : m.leader ? (/tie/i.test(m.leader) ? 'tied' : 'no result') : 'to play';
+    return `${roundName(s, m.round)} ${res} v ${them ? them[0] : '?'}`;
+  };
+  function renderStandings() {
+    const all = D.standings || [];
+    const grades = new Set(state.teams.map(id => D.teams.find(t => t.id === id).gradeId));
+    const list = all.filter(s => !grades.size || grades.has(s.gradeId));
+    const teams = playedTeams.filter(t => !state.teams.length || state.teams.includes(t.id)).map(t => ({ t, h: standingOf(t) })).filter(x => x.h);
+    const posCols = [
+      { k: 'team', label: 'Team', get: x => x.t.label, html: x => `${esc(x.t.label)} <span class="club">${esc(shortGrade(x.t))}</span>`, text: x => `${x.t.label} (${shortGrade(x.t)})` },
+      { k: 'pool', label: 'Competition', get: x => x.h.p.name || x.h.s.grade },
+      { k: 'pos', label: 'Position', num: true, asc: true, get: x => x.h.r.rank, html: x => `${ord(x.h.r.rank)} <span class="club">of ${x.h.p.rows.length}</span>`, text: x => `${ord(x.h.r.rank)} of ${x.h.p.rows.length}` },
+      { k: 'pts', label: 'Pts', title: 'Points', num: true, get: x => x.h.r.pts },
+      { k: 'po', label: 'Play-offs', get: x => x.h.s.playoffs.filter(m => m.teams.some(y => y[0] === x.h.r.team)).map(m => playoffLine(x.h.s, m, x.h.r.team)).join(' · ') || null },
+    ];
+    const overview = teams.length ? `<section class="card"><div class="card-head"><h2>Final positions</h2>${copyBtn('stand-pos')}</div>
+      <p class="sub">Where each VCC team finished in the regular competition. Play-off matches don't count towards the tables; their results are listed separately.</p>
+      ${table('stand-pos', posCols, teams, { title: 'Final positions', what: 'the final positions' })}</section>` : '';
+
+    const sections = list.map(s => {
+      const key = 'stand-' + s.gradeId;
+      const hasAvg = s.pools.some(p => p.rows.some(r => r.avg != null)), hasNr = s.pools.some(p => p.rows.some(r => r.nr != null));
+      const cols = [
+        { k: 'rank', label: '#', num: true, asc: true, get: r => r.rank },
+        { k: 'team', label: 'Team', get: r => r.team },
+        { k: 'p', label: 'P', title: 'Played', num: true, get: r => r.p },
+        { k: 'w', label: 'W', title: 'Won', num: true, get: r => r.w },
+        { k: 'l', label: 'L', title: 'Lost', num: true, get: r => r.l },
+        { k: 't', label: 'T', title: 'Tied', num: true, opt: true, get: r => r.t },
+        ...(hasNr ? [{ k: 'nr', label: 'NR', title: 'No result', num: true, opt: true, get: r => r.nr }] : []),
+        { k: 'pts', label: 'Pts', title: 'Points', num: true, get: r => r.pts },
+        ...(hasAvg ? [{ k: 'avg', label: 'Avg', title: 'Points per match', num: true, get: r => r.avg, html: r => esc(n2(r.avg)), text: r => (r.avg == null ? '' : r.avg.toFixed(2)) }] : []),
+        { k: 'nrr', label: 'NRR', title: 'Net run rate', num: true, get: r => r.nrr, html: r => esc(r.nrr == null ? '–' : (r.nrr > 0 ? '+' : '') + r.nrr.toFixed(3)), text: r => (r.nrr == null ? '' : r.nrr.toFixed(3)) },
+      ];
+      const tables = s.pools.map((p, i) => {
+        const title = p.name && p.name !== s.grade ? `${s.grade} · ${p.name}` : s.grade;
+        const html = table(`${key}-${i}`, cols, p.rows, { sort: { k: 'rank', dir: 1 }, title, rowClass: r => (r.vcc ? 'vcc' : '') });
+        return { title, html: `${s.pools.length > 1 ? `<h3><span class="u">${esc(p.name)}</span></h3>` : ''}${p.playoffsCounted ? '<p class="note">This table also counts play-off matches; the Matchcentre doesn\'t keep the table from before them.</p>' : ''}${html}`, copy: copyReg[`${key}-${i}`].tables[0] };
+      });
+      const po = s.playoffs;
+      const poHead = ['Round', 'Date', 'Match', 'Result'];
+      const poBody = po.map(m => [roundName(s, m.round), fmtDate(m.date), m.teams.map(x => x[0]).join(' v '), m.leader || 'to play']);
+      const poHtml = po.length ? `<h3><span class="u">Play-offs</span></h3><div class="tw"><table class="po"><thead><tr>${poHead.map(h => `<th>${h}</th>`).join('')}</tr></thead><tbody>${po.map((m, i) =>
+        `<tr${m.teams.some(x => x[2]) ? ' class="vcc"' : ''}><td>${esc(poBody[i][0])}</td><td>${esc(poBody[i][1])}</td><td>${m.teams.map(x => (x[1] === 2 ? `<b>${esc(x[0])}</b>` : esc(x[0]))).join(' v ')}</td><td>${m.leader ? `${esc(m.leader)}<span class="ctx"><a href="${scorecard(m)}" target="_blank" rel="noopener">${esc(m.score)}</a></span>` : '<span class="club" style="margin:0">to play</span>'}</td></tr>`).join('')}</tbody></table></div>` : '';
+      copyReg[key] = { what: `the ${s.grade} standings`, tables: [...tables.map(t => t.copy), ...(po.length ? [{ title: `${s.grade} · Play-offs`, head: poHead, body: poBody }] : [])] };
+      return `<section class="card" data-toc="${esc(shortGrade(s))}"><div class="card-head"><h2>${esc(s.grade)}</h2>${copyBtn(key)}</div>${tables.map(t => t.html).join('')}${poHtml}</section>`;
+    });
+    $('#view-standings').innerHTML = list.length
+      ? `<div style="display:grid;gap:18px">${overview}${sections.join('')}</div>`
+      : `<section class="card"><h2>Standings</h2><p class="empty">No standings for these teams in the Matchcentre.</p></section>`;
+  }
+
   // ---- data issues & updates -------------------------------------------------
   const matchById = new Map(S.matches.map(m => [m.id, m]));
   const matchLink = m => `<span class="ctx"><a href="${scorecard(m)}" target="_blank" rel="noopener">${esc(fmtDate(m.date))} · ${esc(teamOf(m).label)} v ${esc(m.opp)}</a></span>`;
@@ -1759,10 +1833,11 @@ footer p { margin: 0; max-width: 90ch; }
     if (opts.dynamic) renderMonthOppFilter();
     scopeLine(current);
     document.querySelectorAll('.tab').forEach(t => t.setAttribute('aria-selected', String(t.dataset.tab === state.tab)));
-    ['highlights', 'finder', 'matches'].forEach(k => { $('#view-' + k).hidden = state.tab !== k; });
+    ['highlights', 'finder', 'matches', 'standings'].forEach(k => { $('#view-' + k).hidden = state.tab !== k; });
     if (state.tab === 'highlights') renderHighlights(current);
     if (state.tab === 'finder') { if (opts.finder !== false) renderFinderControls(); renderFinderResults(current); }
     if (state.tab === 'matches') renderMatches(current);
+    if (state.tab === 'standings') renderStandings();
     // Only when the team choice changes, so open lists stay open while the rest of the page updates.
     if (issuesFor !== state.teams.join()) { issuesFor = state.teams.join(); renderIssues(); }
     renderToc();

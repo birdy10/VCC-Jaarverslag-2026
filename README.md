@@ -60,5 +60,9 @@ The Sheet's "Koppelingen" tab says which data table fills which document table (
 - `src/stats.js` flattens matches into innings, spells, fielding and partnership rows and builds leaderboards.
   Fielding is counted from the dismissals (the API's Fielding records miss catches). Partnerships come from
   fall-of-wicket scores; stands involving a retired batter are marked approximate (~).
+- The fetch also stores the standings (ResultVault ladders) of every competition VCC played in, for the Standings tab
+  and the jaarverslag export. The ladders count the regular rounds only: play-off matches have a round code instead
+  of a number (QF, SF, GF, EF, PF) and are listed under the table. Checked for 2024 and 2026. If a ladder ever does
+  count them, the page says so, because the table from before the play-offs can't be worked out afterwards.
 - `src/index.html` is the interface; the build inlines the stats engine and the data, because the published page
   can't call the API itself.
