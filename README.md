@@ -60,6 +60,8 @@ The Sheet's "Koppelingen" tab says which data table fills which document table (
 - `src/stats.js` flattens matches into innings, spells, fielding and partnership rows and builds leaderboards.
   Fielding is counted from the dismissals (the API's Fielding records miss catches). Partnerships come from
   fall-of-wicket scores; stands involving a retired batter are marked approximate (~).
+- Combined teams entered under another club count as VCC teams: `COMBI` in `fetch-data.mjs` lists them by club
+  entity id and team name (now HCC-VCC Combinatie, the women's team HCC enters). Women's teams are labelled "VCC Women".
 - The fetch also stores the standings (ResultVault ladders) of every competition VCC played in, for the Standings tab
   and the jaarverslag export. The ladders count the regular rounds only: play-off matches have a round code instead
   of a number (QF, SF, GF, EF, PF) and are listed under the table. Checked for 2024 and 2026. If a ladder ever does

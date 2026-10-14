@@ -16,6 +16,10 @@ const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const API = 'https://api.resultsvault.co.uk/rv/134453';
 const APIID = 1002;
 const CLUB_ENTITY_ID = 134465; // VCC
+// Combined teams that play under another club's name in the Matchcentre, counted as VCC teams.
+const COMBI = [{ entity: 134461, name: /HCC-VCC/i }]; // HCC-VCC Combinatie (women), entered by HCC
+const combiOf = t => COMBI.find(c => c.entity === t.entity_id && c.name.test(t.team_name || ''));
+const isOurs = t => t.entity_id === CLUB_ENTITY_ID || !!combiOf(t);
 const SHARED_SECRET = '2457FAE695024E20A780B4DE'; // public, embedded in matchcentre.kncb.nl
 const ARGS = process.argv.slice(2);
 const SEASON_YEAR = ARGS.find(a => !a.startsWith('--')) || '2026';
@@ -72,8 +76,12 @@ const GROUPS = [
 ];
 const groupOf = grade => GROUPS.find(([re]) => re.test(grade))[1];
 
-// The first XI is listed as plain "VCC"; number it like the others.
-const teamLabel = teamName => (teamName.trim() === 'VCC' ? 'VCC 1' : teamName.trim());
+// The first XI is listed as plain "VCC"; number it like the others. Women's teams say so in their name.
+function teamLabel(teamName, group) {
+  const n = teamName.trim();
+  if (group === 'Women' && /^VCC( d+)?$/.test(n)) return n.replace(/^VCC/, 'VCC Women');
+  return n === 'VCC' ? 'VCC 1' : n;
+}
 
 // ---- main ---------------------------------------------------------------------
 const seasons = await get(`${API}/seasons/?apiid=${APIID}`);
@@ -92,13 +100,13 @@ const teams = new Map();
 const wanted = [];
 grades.forEach((g, gi) => {
   for (const m of listings[gi]) {
-    const mt = (m.MatchTeams || []).find(t => t.entity_id === CLUB_ENTITY_ID);
+    const mt = (m.MatchTeams || []).find(isOurs);
     if (!mt) continue;
-    const teamId = `${g.grade_id}-${mt.team_number}`;
+    const teamId = `${g.grade_id}-${combiOf(mt) ? 'c' : ''}${mt.team_number}`;
     if (!teams.has(teamId)) {
       teams.set(teamId, {
-        id: teamId, label: teamLabel(mt.team_name), teamName: mt.team_name,
-        grade: g.grade_name.trim(), gradeId: g.grade_id, group: groupOf(g.grade_name),
+        id: teamId, label: teamLabel(mt.team_name, groupOf(g.grade_name)), teamName: mt.team_name,
+        grade: g.grade_name.trim(), gradeId: g.grade_id, group: groupOf(g.grade_name), ...(combiOf(mt) ? { combi: true } : {}),
         overs: m.MatchConfig?.max_overs ?? null, sort: g.sort_order ?? 999,
       });
     }
@@ -213,7 +221,7 @@ const NOT_OUT_IDS = new Set([0, 1, 13, 14, 15]);
 const matches = [];
 wanted.forEach(({ listing, teamId }, i) => {
   const m = details[i] || listing;
-  const us = m.MatchTeams.find(t => t.entity_id === CLUB_ENTITY_ID);
+  const us = m.MatchTeams.find(isOurs);
   const them = m.MatchTeams.find(t => t !== us);
   if (!them || /^bye$/i.test(them.team_name)) return;
   const sideOf = t => (t === us ? 'v' : 'o');
@@ -377,7 +385,7 @@ gradeIds.forEach((gid, gi) => {
   lads.forEach((lad, li) => {
     const col = Object.fromEntries((lad.LadderColumns || []).map(c => [c.col_id, (c.heading || '').trim()]));
     (lad.LadderPools || []).forEach((p, pi) => {
-      if (!(p.LadderTeams || []).some(t => t.entity_id === CLUB_ENTITY_ID)) return;
+      if (!(p.LadderTeams || []).some(isOurs)) return;
       let counted = false;
       const rows = [...p.LadderTeams].sort((a, b) => a.rank - b.rank).map(t => {
         const v = Object.fromEntries((t.LadderData || []).map(x => [col[x.id] || x.id, x.val]));
@@ -388,7 +396,7 @@ gradeIds.forEach((gid, gi) => {
           const reg = record(regular, name);
           if (num('W') === reg.w + po.w && num('L') === reg.l + po.l) counted = true;
         }
-        return { rank: t.rank, team: rename(name), vcc: t.entity_id === CLUB_ENTITY_ID, p: num('P'), w: num('W'), l: num('L'), t: num('T'),
+        return { rank: t.rank, team: rename(name), vcc: isOurs(t), p: num('P'), w: num('W'), l: num('L'), t: num('T'),
           nr: num('NR', 'No Results'), pts: num('Pts'), avg: num('AVE', 'Ave'), nrr: num('NRR') };
       });
       // key: position among all the grade's pools (the jaarverslag mapping refers to it)
@@ -401,7 +409,7 @@ gradeIds.forEach((gid, gi) => {
     gradeId: gid, grade: t.grade, sort: t.sort, pools,
     playoffs: playoffs.map(m => ({
       id: m.match_id, round: String(m.round).trim(), date: msDate(m.date1),
-      teams: (m.MatchTeams || []).map(x => [rename(x.team_name.trim()), x.result_flag || 0, x.entity_id === CLUB_ENTITY_ID]),
+      teams: (m.MatchTeams || []).map(x => [rename(x.team_name.trim()), x.result_flag || 0, isOurs(x)]),
       leader: rename(m.leader_text || ''), score: rename(m.score_text || ''),
     })).sort((a, b) => a.date - b.date),
   });
