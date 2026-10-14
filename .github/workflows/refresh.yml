@@ -16,7 +16,8 @@ on:
         default: '2026'
   push:
     branches: [main]
-    paths: ['src/**', 'scripts/build.mjs']
+    # data/ too, for data fetched locally; the workflow's own data commits don't start a run (GITHUB_TOKEN)
+    paths: ['src/**', 'scripts/build.mjs', 'scripts/fetch-data.mjs', 'data/**']
 
 permissions:
   contents: write

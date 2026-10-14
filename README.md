@@ -29,7 +29,7 @@ same club has a player with exactly that name.
 
 `.github/workflows/refresh.yml` fetches new results every night at 03:00 UTC, commits `data/` and `cache/`, rebuilds
 the page and publishes it on GitHub Pages. To fetch right away: Actions → Refresh data → Run workflow (tick the box
-to download every scorecard again). Changes to `src/` or `scripts/build.mjs` pushed to `main` rebuild the page without fetching.
+to download every scorecard again). Changes to `src/`, `data/`, `scripts/build.mjs` or `scripts/fetch-data.mjs` pushed to `main` rebuild the page without fetching.
 
 Visitors without a GitHub account use the "Reload all data" button at the top of the page. It calls
 `refresh-service/Code.gs`, a Google Apps Script web app that holds a GitHub token and starts the workflow with every
