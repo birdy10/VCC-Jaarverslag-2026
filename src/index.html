@@ -75,7 +75,10 @@ button, input { font: inherit; color: inherit; }
 .mast-status button { border: 0; padding: 0; background: none; color: inherit; font: inherit; font-weight: 700; text-decoration: underline; cursor: pointer; }
 @media (max-width: 719px) { .mast-in { flex-wrap: wrap; } .mast-data { margin-left: 0; align-items: flex-start; text-align: left; flex-basis: 100%; max-width: none; } }
 @media (prefers-reduced-motion: reduce) { .mast-btn:disabled svg { animation: none; } }
-.tabs { display: flex; gap: 26px; }
+.tabs { display: flex; gap: 26px; overflow-x: auto; scrollbar-width: none; }
+.tabs::-webkit-scrollbar { display: none; }
+.tab { flex: none; }
+@media (max-width: 480px) { .tabs { gap: 18px; } }
 .tab { background: none; border: 0; color: rgba(255,255,255,.75); font: 700 12px/1 var(--font-display); letter-spacing: .08em; text-transform: uppercase; padding: 12px 0 11px; border-bottom: 3px solid transparent; cursor: pointer; }
 .tab:hover { color: #fff; }
 .tab[aria-selected="true"] { color: #fff; border-bottom-color: #fff; }
@@ -225,6 +228,23 @@ tbody tr:first-child td .ctx { font-weight: 400; }
 
 .res { display: inline-block; min-width: 22px; text-align: center; padding: 1px 6px; border-radius: 3px; color: #fff; font: 800 11px/1.5 var(--font-display); background: var(--draw); }
 .res.W { background: var(--win); } .res.L { background: var(--red); }
+
+/* ---- match highlights ---- */
+th.xp-col { width: 30px; }
+.xp { display: grid; place-items: center; width: 24px; height: 24px; border: 1px solid var(--line); border-radius: 50%; background: var(--surface); color: var(--brand-ink); cursor: pointer; padding: 0; }
+.xp svg { width: 12px; height: 12px; transition: transform .15s; }
+.xp[aria-expanded="true"] svg { transform: rotate(90deg); }
+.xp:hover { border-color: var(--brand-ink); }
+tr[data-row] { cursor: pointer; }
+tr.detail > td { background: var(--surface-2); padding: 12px 14px 14px 42px; font-weight: 400 !important; }
+.hl { list-style: none; margin: 0; padding: 0; display: grid; gap: 5px 24px; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); }
+.hl li { display: grid; grid-template-columns: 128px 1fr; gap: 8px; font-size: 14px; }
+.hl li b { font: 700 11px/1.9 var(--font-display); text-transform: uppercase; letter-spacing: .05em; color: var(--muted); }
+.hl li.hl-big b { color: var(--red-ink); }
+.hl li.hl-big b::before { content: "★ "; }
+.hl-sc { display: inline-block; margin-top: 10px; font-size: 12.5px; color: var(--muted); }
+.hl-star { color: var(--red-ink); font-weight: 700; }
+@media (max-width: 560px) { tr.detail > td { padding-left: 12px; } .hl li { grid-template-columns: 1fr; gap: 0; } }
 
 /* ---- standings ---- */
 tr.vcc td { background: var(--barfill); }
@@ -580,12 +600,13 @@ footer p { margin: 0; max-width: 90ch; }
     const vis = cols.filter(c => !c.copyOnly);
     copyReg[key] = {
       what: opts.what || 'the table',
-      tables: [{ title: opts.title || '', head: cols.map(c => c.label), body: shown.map(r => cols.map(c => (c.text ? c.text(r) : String(c.get(r) ?? '')))) }],
+      tables: [{ title: opts.title || '', head: cols.filter(c => !c.noCopy).map(c => c.label), body: shown.map(r => cols.filter(c => !c.noCopy).map(c => (c.text ? c.text(r) : String(c.get(r) ?? '')))) }],
     };
     if (!rows.length) return `<p class="empty">${opts.empty || 'Nothing matches the current filters.'}</p>`;
     const head = vis.map(c => {
       const sortAttr = st && st.k === c.k ? ` aria-sort="${st.dir < 0 ? 'descending' : 'ascending'}"` : '';
       const lab = c.title ? `<abbr title="${esc(c.title)}" style="text-decoration:none">${esc(c.label)}</abbr>` : esc(c.label);
+      if (c.noSort) return `<th class="xp-col"><span class="sr">${esc(c.label || 'Details')}</span></th>`;
       return `<th class="${c.num ? 'n' : ''} ${c.opt ? 'opt' : ''}"${sortAttr}><button data-sort="${key}" data-k="${c.k}">${lab}</button></th>`;
     }).join('');
     // Subtle data bars behind the columns that compare players (scaled to the column maximum).
@@ -595,7 +616,12 @@ footer p { margin: 0; max-width: 90ch; }
       const bar = c.bar && barMax[c.k] ? ` style="--w:${pct(+c.get(r) || 0, barMax[c.k]).toFixed(1)}%"` : '';
       return `<td class="${c.num ? 'n' : ''} ${c.opt ? 'opt' : ''} ${bar ? 'bar' : ''}"${bar}>${c.html ? c.html(r) : esc(c.num && typeof c.get(r) === 'number' ? n0(c.get(r)) : c.get(r) ?? '–')}</td>`;
     };
-    const body = shown.map(r => { const rc = opts.rowClass && opts.rowClass(r); return `<tr${rc ? ` class="${rc}"` : ''}>${vis.map(c => cell(c, r)).join('')}</tr>`; }).join('');
+    const body = shown.map(r => {
+      const rc = opts.rowClass && opts.rowClass(r);
+      const row = `<tr${rc ? ` class="${rc}"` : ''}${opts.rowAttr ? ' ' + opts.rowAttr(r) : ''}>${vis.map(c => cell(c, r)).join('')}</tr>`;
+      // opts.detail: an expandable row under each row, shown when opts.open(r)
+      return opts.detail ? `${row}<tr class="detail"${opts.open(r) ? '' : ' hidden'}><td colspan="${vis.length}">${opts.detail(r)}</td></tr>` : row;
+    }).join('');
     let more = '';
     if (opts.paged && sorted.length > shown.length) {
       more = `<div class="morebar"><button class="btn" data-more="${key}" data-step="${opts.limit}">Show ${Math.min(opts.limit, sorted.length - shown.length)} more</button><button class="link" data-more="${key}" data-step="all">Show all ${sorted.length}</button></div>`;
@@ -1472,17 +1498,120 @@ footer p { margin: 0; max-width: 90ch; }
   }
 
   // ---- matches -------------------------------------------------------------
+  // Highlights per match: the best performances, the milestones (same thresholds as the Milestones
+  // card), season bests and running season totals passing a milestone. Follows "Performances by".
+  function matchHighlights(r) {
+    const ms = state.ms, out = new Map();
+    const add = (m, k, html, text, big) => { if (!out.has(m.id)) out.set(m.id, []); out.get(m.id).push({ k, html, text, big: !!big }); };
+    const who = (x, side = x.side) => (state.side === 'v' ? '' : side === 'v' ? ' (VCC)' : ` (${x.m.oppClub})`);
+    const P = (pid, x, side) => ({ h: playerBtn(pid) + esc(who(x, side)), t: name(pid) + who(x, side) });
+    const byMatch = rows => { const g = new Map(); rows.forEach(x => { if (!g.has(x.m)) g.set(x.m, []); g.get(x.m).push(x); }); return g; };
+    const top = (rows, f) => rows.reduce((a, x) => (!a || f(x) > f(a) ? x : a), null);
+    const bowlFig = x => x.wkts * 1000 - x.runs;
+    const bestBat = top(r.bat, x => x.runs + (x.out ? 0 : 0.5)), bestBowl = top(r.bowl, bowlFig);
+    const bestP = top(r.pship, x => x.runs), bestT = top(r.team, x => x.runs);
+    const season = r.matches.length > 1;
+    const bowlByMatch = new Map(r.bowl.map(b => [b.m.id + ':' + b.pid, b]));
+    const batLine = b => `${batScore(b)}${b.balls ? ` (${b.balls})` : ''}`;
+    const spell = b => `${b.wkts}-${b.runs}${b.overs != null ? ` (${b.overs} ov)` : ''}`;
+
+    // best of each match, so every match has something to show
+    for (const [m, rows] of byMatch(r.bat)) {
+      for (const side of new Set(rows.map(x => x.side))) {
+        const b = top(rows.filter(x => x.side === side), x => x.runs + (x.out ? 0 : 0.5));
+        if (b && b.runs > 0 && b.runs < Math.min(ms.runs, 90)) { const p = P(b.pid, b); add(m, 'Top scorer', `${p.h} ${batLine(b)}`, `${p.t} ${batLine(b)}`); }
+      }
+    }
+    for (const [m, rows] of byMatch(r.bowl)) {
+      for (const side of new Set(rows.map(x => x.side))) {
+        const b = top(rows.filter(x => x.side === side && x.wkts > 0), bowlFig);
+        if (b && b.wkts < Math.min(ms.wkts, 5)) { const p = P(b.pid, b); add(m, 'Best bowling', `${p.h} ${spell(b)}`, `${p.t} ${spell(b)}`); }
+      }
+    }
+    // milestones and special performances
+    for (const b of r.bat) {
+      const p = P(b.pid, b);
+      if (b.runs >= 100) add(b.m, 'Century', `${p.h} ${batLine(b)}`, `${p.t} ${batLine(b)}`, true);
+      else if (b.runs >= ms.runs) add(b.m, `${ms.runs}+ runs`, `${p.h} ${batLine(b)}`, `${p.t} ${batLine(b)}`, b.runs >= 50);
+      else if (b.runs >= 90) add(b.m, 'Nervous nineties', `${p.h} ${batLine(b)}`, `${p.t} ${batLine(b)}`);
+      if (b.sixes >= 4) add(b.m, 'Sixes', `${p.h} hit ${b.sixes} sixes`, `${p.t} hit ${b.sixes} sixes`);
+      if (b.runs >= 25 && b.balls && b.sr >= 200) add(b.m, 'Fast scoring', `${p.h} ${batScore(b)} off ${b.balls} balls`, `${p.t} ${batScore(b)} off ${b.balls} balls`);
+      if (b.pos <= 2 && !b.out && b.inn.wkts >= 10) add(b.m, 'Carried the bat', `${p.h} ${batScore(b)} out of ${b.inn.runs}`, `${p.t} ${batScore(b)} out of ${b.inn.runs}`, true);
+      if (b.pos >= 8 && b.pos <= 11 && b.runs >= 30) add(b.m, 'From the tail', `${p.h} ${batScore(b)} batting at ${b.pos}`, `${p.t} ${batScore(b)} batting at ${b.pos}`);
+      if (b.golden) add(b.m, 'Golden duck', p.h, p.t);
+      const w = bowlByMatch.get(b.m.id + ':' + b.pid);
+      if (w && b.runs >= 40 && w.wkts >= 3) add(b.m, 'Bat and ball', `${p.h} ${batScore(b)} and ${w.wkts}-${w.runs}`, `${p.t} ${batScore(b)} and ${w.wkts}-${w.runs}`, true);
+    }
+    for (const b of r.bowl) {
+      const p = P(b.pid, b);
+      if (b.wkts >= 5) add(b.m, 'Five-wicket haul', `${p.h} ${spell(b)}`, `${p.t} ${spell(b)}`, true);
+      else if (b.wkts >= ms.wkts) add(b.m, `${ms.wkts}+ wickets`, `${p.h} ${spell(b)}`, `${p.t} ${spell(b)}`);
+      if (b.balls >= 24 && b.econ < ms.econ) add(b.m, 'Tight spell', `${p.h} ${b.overs}-${b.maidens}-${b.runs}-${b.wkts}, ${n2(b.econ)} an over`, `${p.t} ${b.overs}-${b.maidens}-${b.runs}-${b.wkts}, ${n2(b.econ)} an over`);
+      else if (b.maidens >= 3) add(b.m, 'Maidens', `${p.h} bowled ${b.maidens} maidens`, `${p.t} bowled ${b.maidens} maidens`);
+    }
+    for (const f of V.fieldingByMatch(r.field)) {
+      const p = P(f.pid, f), bits = [f.ct && plural(f.ct, 'catch', 'catches'), f.st && plural(f.st, 'stumping'), f.ro && plural(f.ro, 'run out')].filter(Boolean).join(', ');
+      if (f.ct >= ms.catches || f.tot >= 4 || f.st >= 2 || f.ro >= 2) add(f.m, 'In the field', `${p.h} ${bits}`, `${p.t} ${bits}`, f.tot >= 4);
+    }
+    for (const x of r.pship.filter(x => x.runs >= ms.pship || (x.wkt >= 8 && x.runs >= 30))) {
+      const t = `${pshipRuns(x)} for the ${ord(x.wkt)} wicket`, p = who(x);
+      add(x.m, x.runs >= 100 ? 'Century stand' : x.runs >= ms.pship ? `${ms.pship}+ partnership` : 'Tail stand', `${playerBtn(x.a)} &amp; ${playerBtn(x.b)}${esc(p)} ${esc(t)}`, `${pairText(x)}${p} ${t}`, x.runs >= 100);
+    }
+    for (const t of r.teamAll) {
+      const score = `${t.runs}${t.allOut ? '' : '/' + t.wkts}`;
+      if (t.side === 'v' && t.runs >= ms.total) add(t.m, `${ms.total}+ total`, esc(`VCC made ${score}`), `VCC made ${score}`);
+      if (t.allOut && t.side === 'o' && state.side !== 'o') add(t.m, 'Bowled out', esc(`${t.m.opp} all out for ${t.runs}`), `${t.m.opp} all out for ${t.runs}`);
+    }
+    for (const m of r.matches) {
+      if (m.result === 'T') add(m, 'Tie', esc(m.leader), m.leader, true);
+      else if ((m.marginRuns != null && m.marginRuns <= 10) || (m.marginWkts != null && m.marginWkts <= 1)) add(m, 'Close finish', esc(m.leader), m.leader);
+    }
+    // season bests (within the current filters)
+    if (season) {
+      if (bestBat) { const p = P(bestBat.pid, bestBat); add(bestBat.m, 'Season best', `${p.h} ${batLine(bestBat)}: highest score`, `${p.t} ${batLine(bestBat)}: highest score`, true); }
+      if (bestBowl) { const p = P(bestBowl.pid, bestBowl); add(bestBowl.m, 'Season best', `${p.h} ${spell(bestBowl)}: best bowling`, `${p.t} ${spell(bestBowl)}: best bowling`, true); }
+      if (bestP && bestP.runs >= 30) add(bestP.m, 'Season best', `${playerBtn(bestP.a)} &amp; ${playerBtn(bestP.b)} ${esc(pshipRuns(bestP))}: biggest partnership`, `${pairText(bestP)} ${pshipRuns(bestP)}: biggest partnership`, true);
+      if (bestT) add(bestT.m, 'Season best', esc(`${bestT.side === 'v' ? 'VCC' : bestT.m.opp} ${bestT.runs}${bestT.allOut ? '' : '/' + bestT.wkts}: highest total`), `${bestT.side === 'v' ? 'VCC' : bestT.m.opp} ${bestT.runs}: highest total`, true);
+    }
+    // running season totals passing a milestone
+    const passing = (rows, val, steps, unit) => {
+      const tot = new Map();
+      [...rows].sort((a, b) => a.m.date - b.m.date).forEach(x => {
+        const before = tot.get(x.pid) || 0, after = before + val(x);
+        tot.set(x.pid, after);
+        const step = steps.filter(s => before < s && after >= s).pop();
+        if (step) { const p = P(x.pid, x); add(x.m, 'Season milestone', `${p.h} passed ${step} ${unit} (now ${after})`, `${p.t} passed ${step} ${unit} (now ${after})`, true); }
+      });
+    };
+    passing(r.bat, x => x.runs, [1, 2, 3, 4].map(i => i * ms.sruns), 'season runs');
+    passing(r.bowl, x => x.wkts, [1, 2, 3, 4].map(i => i * ms.swkts), 'season wickets');
+    return out;
+  }
+  const openMatches = new Set();
   function renderMatches(r) {
+    const hl = matchHighlights(r);
+    const list = m => hl.get(m.id) || [];
+    const detail = m => {
+      const items = list(m);
+      return items.length
+        ? `<ul class="hl">${items.map(i => `<li${i.big ? ' class="hl-big"' : ''}><b>${esc(i.k)}</b><span>${i.html}</span></li>`).join('')}</ul><a class="hl-sc" href="${scorecard(m)}" target="_blank" rel="noopener">Full scorecard</a>`
+        : `<p class="empty">No scorecard details for this match. <a href="${scorecard(m)}" target="_blank" rel="noopener">Open it on the Matchcentre</a></p>`;
+    };
     const cols = [
+      { k: 'open', label: '', get: () => null, html: m => `<button class="xp" data-expand="${m.id}" aria-expanded="${openMatches.has(m.id)}" aria-label="Show highlights of ${esc(teamOf(m).label)} v ${esc(m.opp)}"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M6 4l4 4-4 4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>`, noCopy: true, noSort: true },
       { k: 'date', label: 'Date', get: m => m.date, html: m => esc(fmtDate(m.date)), text: m => fmtDate(m.date) },
       { k: 'team', label: 'Team', get: m => teamOf(m).label, html: m => `${esc(teamOf(m).label)} <span class="club">${esc(shortGrade(teamOf(m)))}</span>`, text: m => teamOf(m).label },
       { k: 'opp', label: 'Opponent', get: m => m.opp, html: m => `${m.home ? '' : '<span class="club" style="margin:0 4px 0 0">at</span>'}${esc(m.opp)}`, text: m => (m.home ? '' : 'at ') + m.opp },
       { k: 'res', label: 'Result', get: m => m.result, html: m => `<span class="res ${m.result}">${m.result}</span>`, text: m => m.result },
       { k: 'score', label: 'Score', get: m => m.score, html: m => `${esc(m.leader)}<span class="ctx"><a href="${scorecard(m)}" target="_blank" rel="noopener">${esc(m.score)}</a></span>`, text: m => `${m.leader} (${m.score})` },
+      { k: 'hl', label: 'Highlights', num: true, opt: true, get: m => list(m).filter(i => i.big).length * 100 + list(m).length,
+        html: m => { const big = list(m).filter(i => i.big).length; return list(m).length ? `<button class="link" data-expand="${m.id}">${list(m).length}${big ? ` <span class="hl-star" title="${plural(big, 'standout')}">★${big > 1 ? big : ''}</span>` : ''}</button>` : '–'; },
+        text: m => list(m).map(i => `${i.k}: ${i.text}`).join('; ') },
     ];
-    $('#view-matches').innerHTML = `<section class="card"><div class="card-head"><h2>Matches</h2>${r.matches.length ? copyBtn('matches') : ''}</div>
-      <p class="sub">Every match in the current filters. Open a scorecard on the KNCB Matchcentre from the score line.</p>
-      ${table('matches', cols, r.matches, { sort: { k: 'date', dir: 1 }, limit: 30, paged: true, title: 'Matches', what: 'the match list', empty: 'No matches fit these filters.' })}</section>`;
+    const allOpen = r.matches.length && r.matches.every(m => openMatches.has(m.id));
+    $('#view-matches').innerHTML = `<section class="card"><div class="card-head"><h2>Matches</h2>${r.matches.length ? `<div class="head-tools"><button class="btn" data-expand-all="${allOpen ? 0 : 1}" aria-pressed="${allOpen ? 'true' : 'false'}">${allOpen ? 'Collapse all' : 'Expand all'}</button>${copyBtn('matches')}</div>` : ''}</div>
+      <p class="sub">Every match in the current filters. Click a match to see its highlights: top performers, milestones (the thresholds you set in the Milestones card), season bests and season totals passing a mark. ★ marks standout performances. “Performances by” in the filters decides whose performances count.</p>
+      ${table('matches', cols, r.matches, { sort: { k: 'date', dir: 1 }, limit: 30, paged: true, title: 'Matches', what: 'the match list', empty: 'No matches fit these filters.', detail, open: m => openMatches.has(m.id), rowAttr: m => `data-row="${m.id}"` })}</section>`;
   }
 
   // ---- standings -------------------------------------------------------------
@@ -1913,8 +2042,27 @@ footer p { margin: 0; max-width: 90ch; }
     $('#scope').scrollIntoView({ block: 'start', behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
   }
   function resetPaging() { state.limits = {}; }
+  // Open or close one match's highlights in place, without drawing the page again.
+  function toggleMatch(id) {
+    const row = document.querySelector(`tr[data-row="${id}"]`);
+    if (!row) return;
+    const open = !openMatches.has(id);
+    if (open) openMatches.add(id); else openMatches.delete(id);
+    row.nextElementSibling.hidden = !open;
+    row.querySelector('.xp').setAttribute('aria-expanded', String(open));
+    const all = document.querySelector('[data-expand-all]');
+    if (all) {
+      const allOpen = current.matches.every(m => openMatches.has(m.id));
+      all.dataset.expandAll = allOpen ? '0' : '1';
+      all.textContent = allOpen ? 'Collapse all' : 'Expand all';
+      all.setAttribute('aria-pressed', String(allOpen));
+    }
+  }
   document.addEventListener('click', e => {
     const t = e.target.closest('button, [data-tab]');
+    // A click anywhere on a match row (not on a link or button) opens its highlights.
+    const mrow = !t && !e.target.closest('a') && e.target.closest('tr[data-row]');
+    if (mrow) return toggleMatch(+mrow.dataset.row);
     if (!t) { const l = $('#player-suggest'); if (l) l.hidden = true; return; }
     if (t.dataset.tab) { state.tab = t.dataset.tab; history.replaceState(null, '', '#' + state.tab); return render(); }
     if (t.dataset.pid) return pickPlayer(+t.dataset.pid);
@@ -1927,6 +2075,12 @@ footer p { margin: 0; max-width: 90ch; }
       return render({ filters: true });
     }
     if (t.hasAttribute('data-clear-cond')) { state.finder.cond[state.finder.ds] = {}; state.finder.chips[state.finder.ds] = {}; return render(); }
+    if (t.dataset.expand) return toggleMatch(+t.dataset.expand);
+    if (t.dataset.expandAll) {
+      const ids = current.matches.map(m => m.id);
+      if (t.dataset.expandAll === '1') ids.forEach(id => openMatches.add(id)); else ids.forEach(id => openMatches.delete(id));
+      return render({ finder: false });
+    }
     if (t.dataset.copy) return doCopy(t.dataset.copy);
     if (t.dataset.fetch) return t.dataset.fetch === 'site' ? siteFetch() : runFetch(t.dataset.fetch === 'all');
     if (t.hasAttribute('data-reload-page')) return reloadFresh();
