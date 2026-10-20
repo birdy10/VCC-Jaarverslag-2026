@@ -11,6 +11,7 @@ import crypto from 'node:crypto';
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { describeChanges } from './changes.mjs';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const API = 'https://api.resultsvault.co.uk/rv/134453';
@@ -437,74 +438,10 @@ function fixDismissal(text) {
 // ---- what changed since the previous run ---------------------------------------------
 let prev = null;
 try { prev = JSON.parse(await fs.readFile(file, 'utf8')); } catch {}
-const entry = prev ? describeChanges(prev, out) : null;
+const entry = prev ? describeChanges(prev, out, REFRESH) : null;
 out.previous = prev?.generated || null; // the fetch this one was compared with
 out.changes = (prev?.changes || []).slice(0, 24);
 if (entry && (entry.matches.length || entry.players.length || entry.teams.length)) out.changes.unshift(entry);
-
-function describeChanges(old, cur) {
-  const nameIn = (d, pid) => d.players[pid]?.[0] || 'Unknown';
-  const played = m => m.innings.some(i => i.runs != null);
-  const teamLbl = id => cur.teams.find(t => t.id === id)?.label || id;
-  const batLine = b => `${b[2] ?? '–'}${b[3] != null ? ` (${b[3]})` : ''}${b[7] ? `, ${b[7].trim()}` : ''}`;
-  const bowlLine = w => `${w[2] ?? 0}-${w[3] ?? 0}-${w[4] ?? 0}-${w[5] ?? 0}`;
-  const total = i => (i.runs == null ? '–' : `${i.runs}/${i.wkts ?? 0}${i.overs != null ? ` (${i.overs} ov)` : ''}`);
-  // Card rows pair up by player; what's left (guests, whose ids aren't stable) by position on the card.
-  const pairRows = (then, now) => {
-    const left = [...then], pairs = [];
-    const take = i => left.splice(i, 1)[0];
-    const rest = [];
-    for (const b of now) {
-      const i = left.findIndex(x => x[0] === b[0] && b[0] > 0);
-      if (i >= 0) pairs.push([take(i), b]); else rest.push(b);
-    }
-    for (const b of rest) {
-      const i = left.findIndex(x => x[1] === b[1] && (x[0] <= 0 || b[0] <= 0));
-      pairs.push([i >= 0 ? take(i) : null, b]);
-    }
-    return pairs.concat(left.map(x => [x, null]));
-  };
-  const oldById = new Map(old.matches.map(m => [m.id, m]));
-  const items = [];
-  for (const m of cur.matches) {
-    const o = oldById.get(m.id);
-    oldById.delete(m.id);
-    if (!o) { items.push({ id: m.id, kind: played(m) ? 'new' : 'fixture', lines: played(m) ? [m.leader || m.score] : [] }); continue; }
-    if (!played(o) && played(m)) { items.push({ id: m.id, kind: 'new', lines: [m.leader || m.score] }); continue; }
-    const lines = [];
-    const ch = (label, a, b) => { if (String(a ?? '') !== String(b ?? '')) lines.push(`${label}: ${a || '–'} → ${b || '–'}`); };
-    ch('Result', o.leader, m.leader);
-    ch('Score', o.score, m.score);
-    if (o.date !== m.date) ch('Date', new Date(o.date).toISOString().slice(0, 10), new Date(m.date).toISOString().slice(0, 10));
-    for (const inn of m.innings) {
-      const oi = o.innings.find(x => x.side === inn.side && x.no === inn.no);
-      const who = inn.side === 'v' ? teamLbl(m.team) : m.opp;
-      if (!oi) { lines.push(`${who} innings added: ${total(inn)}`); continue; }
-      ch(`${who} total`, total(oi), total(inn));
-      ch(`${who} extras`, oi.x[0], inn.x[0]);
-      for (const [card, rowsNow, rowsThen, line] of [['batting', inn.bat, oi.bat, batLine], ['bowling', inn.bowl, oi.bowl, bowlLine]]) {
-        for (const [x, b] of pairRows(rowsThen, rowsNow)) {
-          if (!x) lines.push(`${nameIn(cur, b[0])} added to the ${card} card: ${line(b)}`);
-          else if (!b) lines.push(`${nameIn(old, x[0])} removed from the ${card} card`);
-          else {
-            const nm = nameIn(cur, b[0]);
-            if (x[0] !== b[0] && x[0] > 0 && b[0] > 0) lines.push(`${card === 'batting' ? 'Batter' : 'Bowler'} ${nameIn(old, x[0])} replaced by ${nm}`);
-            ch(`${nm} ${card}`, line(x), line(b));
-          }
-        }
-      }
-    }
-    for (const oi of o.innings) {
-      if (!m.innings.some(x => x.side === oi.side && x.no === oi.no)) lines.push(`${oi.side === 'v' ? teamLbl(m.team) : m.opp} innings removed`);
-    }
-    if (lines.length) items.push({ id: m.id, kind: 'changed', lines });
-  }
-  for (const o of oldById.values()) items.push({ id: o.id, kind: 'removed', lines: [`${teamLbl(o.team)} v ${o.opp}, ${new Date(o.date).toISOString().slice(0, 10)}`] });
-  const renamed = Object.keys(cur.players).filter(pid => +pid > 0 && old.players[pid] && old.players[pid][1] && old.players[pid][1] !== cur.players[pid][1])
-    .map(pid => [+pid, old.players[pid][1], cur.players[pid][1]]);
-  const newTeams = cur.teams.filter(t => !old.teams.some(x => x.id === t.id)).map(t => `${t.label} (${t.grade})`);
-  return { at: cur.generated, since: old.generated, refresh: REFRESH, matches: items, players: renamed, teams: newTeams };
-}
 
 await fs.writeFile(file, JSON.stringify(out));
 const played = matches.filter(m => m.innings.length).length;

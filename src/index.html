@@ -340,7 +340,7 @@ details.dcat > summary small { display: block; color: var(--muted); font-size: 1
 .side-tag { display: inline-block; font: 700 10px/1.5 var(--font-display); letter-spacing: .06em; text-transform: uppercase; padding: 0 5px; border-radius: 3px; border: 1px solid var(--line); color: var(--muted); margin-right: 6px; vertical-align: 1px; }
 .side-tag.v { border-color: var(--brand-ink); color: var(--brand-ink); }
 .kind { display: inline-block; font: 700 10px/1.5 var(--font-display); letter-spacing: .06em; text-transform: uppercase; padding: 0 6px; border-radius: 3px; color: #fff; background: var(--draw); margin-right: 6px; vertical-align: 1px; }
-.kind.new { background: var(--win); } .kind.removed { background: var(--red); } .kind.changed { background: var(--s1); }
+.kind.new, .kind.fixed { background: var(--win); } .kind.removed { background: var(--red); } .kind.changed { background: var(--s1); }
 .itotal { display: flex; flex-wrap: wrap; gap: 4px 22px; margin: -4px 0 12px; color: var(--muted); font-size: 14px; }
 .itotal strong { font: 800 22px/1 var(--font-display); color: var(--brand-ink); margin-right: 4px; font-variant-numeric: tabular-nums; }
 .itotal span:first-child strong { color: var(--red-ink); }
@@ -369,15 +369,20 @@ details.dcat > summary small { display: block; color: var(--muted); font-size: 1
 .ilist { list-style: none; margin: 0 0 10px; padding: 0 0 0 calc(1.2em + 8px); display: grid; }
 .ilist ul { list-style: none; margin: 0; padding: 0; display: grid; }
 .iss { padding: 8px 0; border-top: 1px solid var(--line); min-width: 0; }
-.ilist > .iss:first-child, .iss-match ul .iss:first-child { border-top: 0; }
+.iss-match ul .iss:first-child { border-top: 0; }
 .iss-t { margin: 0; font-size: 15px; line-height: 1.4; color: var(--fg); overflow-wrap: anywhere; }
 .iss-m { margin: 3px 0 0; display: flex; flex-wrap: wrap; align-items: center; gap: 2px 12px; font-size: 12.5px; color: var(--muted); }
 .iss-m a, .iss-mh a { color: inherit; text-underline-offset: 2px; }
 .iss-type { display: inline-flex; align-items: center; gap: 6px; }
 .iss-side { font-weight: 700; color: var(--brand-ink); }
 .iss-side.o { color: var(--red-ink); }
-.iss-match { padding-top: 10px; }
-.iss-match + .iss-match { border-top: 1px solid var(--line); margin-top: 4px; }
+/* each match (by team) or each issue (by issue) sits in its own faint block, so neighbours don't run together */
+.ilist { gap: 6px; }
+.ilist > .iss, .iss-match { background: var(--surface-2); border: 1px solid var(--line); border-left: 3px solid var(--brand); border-radius: var(--radius); }
+.ilist > .iss { padding: 8px 12px; border-top: 1px solid var(--line); }
+.iss-match { padding: 8px 12px 2px; }
+.iss-match .iss:last-child { padding-bottom: 6px; }
+.iss-match .cv, .ilist > .iss .cv { background: var(--surface); }
 .iss-mh { margin: 0 0 2px; font: 700 13px/1.3 var(--font-body); color: var(--brand-ink); }
 .iss-mh a { text-decoration: none; }
 .iss-mh a:hover { text-decoration: underline; }
@@ -1750,7 +1755,7 @@ footer p { margin: 0; max-width: 90ch; }
   // Everything a captain needs to find the match in ResultsVault, each value one click to copy.
   const fixBar = (m, types) => `<div class="fixbar"><span class="cvs">${copyChip('Opponent', m.opp)}${copyChip('Round', m.round || '–')}${copyChip('Match ID', m.id)}${copyChip('Grade', teamOf(m).grade)}</span>
     <span class="fixl">Fix in ResultsVault: ${fixPages(types).map(p => `<a href="${RV_PAGES[p][1]}" target="_blank" rel="noopener" title="${esc(RV_PAGES[p][2])}">${RV_PAGES[p][0]}<span aria-hidden="true"> ↗</span></a>`).join(' · ')}</span></div>`;
-  const dcat = (title, note, count, body) => `<details class="dcat"><summary><span><b>${esc(title)}</b>${note ? `<small>${esc(note)}</small>` : ''}</span><span class="dcount">${count}</span></summary>${body}</details>`;
+  const dcat = (title, note, count, body, open) => `<details class="dcat"${open ? ' open' : ''}><summary><span><b>${esc(title)}</b>${note ? `<small>${esc(note)}</small>` : ''}</span><span class="dcount">${count}</span></summary>${body}</details>`;
 
   function renderIssues() {
     const teamsOn = new Set(state.teams);
@@ -1795,7 +1800,7 @@ footer p { margin: 0; max-width: 90ch; }
           const mr = rows.filter(x => x.m === m);
           return `<div class="iss-match"><p class="iss-mh">${ext(m, `${fmtDate(m.date)} · v ${m.opp}`)}</p>${fixBar(m, mr.map(x => x.type))}<ul>${mr.map(x => issueRow(x, typeTag(x) + sideTag(x))).join('')}</ul></div>`;
         }).join('')}</div>`;
-        return dcat(teamName(t), note, rows.length, body);
+        return dcat(teamName(t), note, rows.length, body, matchOn.size);
       }).join('');
       groups = groups ? `<div class="dcats">${groups}</div>` : '';
     } else {
@@ -1803,7 +1808,7 @@ footer p { margin: 0; max-width: 90ch; }
         const cats = types.map(([k, label, note]) => {
           const rows = list.filter(x => x.type === k);
           if (!rows.length) return '';
-          return dcat(label, note, rows.length, `<ul class="ilist">${rows.map(x => issueRow(x, ext(x.m, `${fmtDate(x.m.date)} · ${teamOf(x.m).label} v ${x.m.opp}`) + sideTag(x), fixBar(x.m, [x.type]))).join('')}</ul>`);
+          return dcat(label, note, rows.length, `<ul class="ilist">${rows.map(x => issueRow(x, ext(x.m, `${fmtDate(x.m.date)} · ${teamOf(x.m).label} v ${x.m.opp}`) + sideTag(x), fixBar(x.m, [x.type]))).join('')}</ul>`, matchOn.size);
         }).join('');
         return cats ? `<div class="dgroup"><h3><span class="u">${esc(title)}</span></h3><div class="dcats">${cats}</div></div>` : '';
       }).join('');
@@ -1841,10 +1846,10 @@ footer p { margin: 0; max-width: 90ch; }
 
   function renderUpdates() {
     const log = D.changes || [];
-    const kindLabel = { new: 'New result', changed: 'Changed', removed: 'Removed', fixture: 'New fixture' };
+    const kindLabel = { new: 'New result', changed: 'Changed', fixed: 'Issues fixed', removed: 'Removed', fixture: 'New fixture' };
     const summaryOf = c => {
       const n = k => c.matches.filter(x => x.kind === k).length;
-      const parts = [[n('new'), 'new result', 'new results'], [n('changed'), 'changed match', 'changed matches'], [n('removed'), 'removed match', 'removed matches'], [n('fixture'), 'new fixture', 'new fixtures'], [c.players.length, 'renamed player', 'renamed players'], [c.teams.length, 'new team', 'new teams']]
+      const parts = [[n('new'), 'new result', 'new results'], [n('changed'), 'changed match', 'changed matches'], [n('fixed'), 'match with issues fixed', 'matches with issues fixed'],[n('removed'), 'removed match', 'removed matches'], [n('fixture'), 'new fixture', 'new fixtures'], [c.players.length, 'renamed player', 'renamed players'], [c.teams.length, 'new team', 'new teams']]
         .filter(([k]) => k).map(([k, one, many]) => plural(k, one, many));
       return parts.join(', ');
     };
