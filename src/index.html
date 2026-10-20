@@ -381,6 +381,17 @@ details.dcat > summary small { display: block; color: var(--muted); font-size: 1
 .iss-mh { margin: 0 0 2px; font: 700 13px/1.3 var(--font-body); color: var(--brand-ink); }
 .iss-mh a { text-decoration: none; }
 .iss-mh a:hover { text-decoration: underline; }
+.iall { margin-left: auto; align-items: center; margin-bottom: 0; }
+.imatch { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 8px; }
+.imatch .chips { display: contents; }
+/* per match: values to copy into ResultsVault, and the admin pages that fix the issue */
+.fixbar { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 14px; margin: 4px 0 2px; font-size: 12.5px; color: var(--muted); }
+.cvs { display: flex; flex-wrap: wrap; gap: 4px; }
+.cv { display: inline-flex; align-items: baseline; gap: 5px; padding: 1px 7px; border: 1px solid var(--line); border-radius: 4px; background: var(--surface-2); color: var(--fg); font: 600 12px/1.6 var(--font-body); cursor: copy; font-variant-numeric: tabular-nums; }
+.cv small { font-weight: 400; color: var(--muted); font-size: 11px; }
+.cv:hover { border-color: var(--brand-ink); }
+.cv:focus-visible { outline: 2px solid var(--focus); outline-offset: 1px; }
+.fixl a { color: var(--brand-ink); font-weight: 600; text-underline-offset: 2px; }
 .fetch-status { margin: -4px 0 14px; font-weight: 600; color: var(--brand-ink); white-space: pre-line; }
 .fetch-status.err { color: var(--red-ink); }
 .btn:disabled { opacity: .5; cursor: progress; }
@@ -504,7 +515,7 @@ footer p { margin: 0; max-width: 90ch; }
   // ---- state ---------------------------------------------------------------
   const DEFAULT = {
     tab: 'highlights', teams: [], result: 'all', venue: 'all', toss: 'all', months: [], opps: [], player: null,
-    side: 'v', names: 'short', top: 5, ms: { runs: 50, pship: 75, catches: 3, wkts: 5, total: 200, econ: 3, sruns: 250, swkts: 15 }, squadCounts: 'no', issueGroup: 'type', issueOpp: false, issueOff: ['no-runout-fielder'], issueFilterOpen: false,
+    side: 'v', names: 'short', top: 5, ms: { runs: 50, pship: 75, catches: 3, wkts: 5, total: 200, econ: 3, sruns: 250, swkts: 15 }, squadCounts: 'no', issueGroup: 'type', issueOpp: false, issueOff: ['no-runout-fielder'], issueFilterOpen: false, issueMatches: [],
     finder: { ds: 'innings', cond: {}, chips: {} }, sorts: {}, limits: {},
   };
   let state = JSON.parse(JSON.stringify(DEFAULT));
@@ -567,6 +578,17 @@ footer p { margin: 0; max-width: 90ch; }
       const ok = document.execCommand && document.execCommand('copy');
       ta.remove();
       toast(ok ? `Copied ${c.what}.` : 'Copying is blocked here. Select the table and press Ctrl+C instead.');
+    }
+  }
+  async function copyVal(v) {
+    try { await navigator.clipboard.writeText(v); toast(`Copied “${v}”.`); }
+    catch (e) {
+      const ta = document.createElement('textarea');
+      ta.value = v; ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.select();
+      const ok = document.execCommand && document.execCommand('copy');
+      ta.remove();
+      toast(ok ? `Copied “${v}”.` : 'Copying is blocked here.');
     }
   }
   let toastTimer;
@@ -1711,6 +1733,23 @@ footer p { margin: 0; max-width: 90ch; }
       ['no-card', 'Whole scorecard', 'Only the total is entered.'],
     ]],
   ];
+  // ResultsVault admin has no deep links per match: these open the right page, the captain then picks
+  // season, round and grade and presses GO. Which page fixes which kind of issue:
+  const RV = 'https://admin-cricket.resultsvault.co.uk/common/pages/admin/';
+  const RV_PAGES = {
+    players: ['Players', RV + 'rv/selectteam.aspx', 'Select Teams: swap guest or unnamed players for their profile'],
+    scores: ['Match scores', RV + 'framehost.aspx?fhid=%2fcommon%2fpages%2fadmin%2frv%2fcricket%2fmatchscores.aspx', 'Enter Match Results: totals, wickets and overs per innings'],
+    card: ['Scorecard', RV + 'framehost.aspx?fhid=%2fcommon%2fpages%2fadmin%2frv%2fcricket%2fEnterPlayerScores.aspx', 'Enter Player Scores: dismissals, fielders, bowlers, runs and balls per player'],
+  };
+  const RV_FIX = {
+    guest: ['players'], 'guest-registered': ['players'], 'guest-noname': ['players'], 'not-in-lineup': ['players', 'card'],
+    'bat-sum': ['card', 'scores'], wkts: ['card', 'scores'], 'bowl-sum': ['card', 'scores'], 'bowl-overs': ['card', 'scores'], 'no-card': ['card'],
+  };
+  const fixPages = types => Object.keys(RV_PAGES).filter(p => types.some(k => (RV_FIX[k] || ['card']).includes(p)));
+  const copyChip = (label, val) => `<button class="cv" data-copyval="${esc(val)}" title="Copy ${esc(label.toLowerCase())}"><small>${esc(label)}</small>${esc(val)}</button>`;
+  // Everything a captain needs to find the match in ResultsVault, each value one click to copy.
+  const fixBar = (m, types) => `<div class="fixbar"><span class="cvs">${copyChip('Opponent', m.opp)}${copyChip('Round', m.round || '–')}${copyChip('Match ID', m.id)}${copyChip('Grade', teamOf(m).grade)}</span>
+    <span class="fixl">Fix in ResultsVault: ${fixPages(types).map(p => `<a href="${RV_PAGES[p][1]}" target="_blank" rel="noopener" title="${esc(RV_PAGES[p][2])}">${RV_PAGES[p][0]}<span aria-hidden="true"> ↗</span></a>`).join(' · ')}</span></div>`;
   const dcat = (title, note, count, body) => `<details class="dcat"><summary><span><b>${esc(title)}</b>${note ? `<small>${esc(note)}</small>` : ''}</span><span class="dcount">${count}</span></summary>${body}</details>`;
 
   function renderIssues() {
@@ -1720,7 +1759,15 @@ footer p { margin: 0; max-width: 90ch; }
     // Opponent-side issues and switched-off types (run-out fielder by default) are hidden unless asked for.
     const sideOk = x => state.issueOpp || x.side === 'v';
     const typeOn = k => !state.issueOff.includes(k);
-    const list = inTeams.filter(x => sideOk(x) && typeOn(x.type)).sort((a, b) => a.m.date - b.m.date);
+    const shownAll = inTeams.filter(x => sideOk(x) && typeOn(x.type)).sort((a, b) => a.m.date - b.m.date);
+    // With a team picked, chips per match narrow the list to one game; picks from other teams fall away.
+    const issueMs = teamsOn.size ? [...new Set(shownAll.map(x => x.m))] : [];
+    state.issueMatches = state.issueMatches.filter(id => issueMs.some(m => m.id === id));
+    const matchOn = new Set(state.issueMatches);
+    const list = matchOn.size ? shownAll.filter(x => matchOn.has(x.m.id)) : shownAll;
+    const matchChips = issueMs.length > 1 ? `<div class="imatch"><span class="mini">Match</span>
+        ${chips('issueMatch-all', [['all', 'All matches']], matchOn.size ? [] : ['all'], 'All matches')}
+        ${chips('issueMatch', issueMs.map(m => [m.id, `${esc(fmtDate(m.date))} · ${state.teams.length > 1 ? esc(teamOf(m).label) + ' ' : ''}v ${esc(m.opp)} <small>${shownAll.filter(x => x.m === m).length}</small>`]), state.issueMatches, 'Matches')}</div>` : '';
     const perType = {};
     inTeams.filter(sideOk).forEach(x => { perType[x.type] = (perType[x.type] || 0) + 1; });
     const hiddenSide = inTeams.filter(x => !sideOk(x)).length;
@@ -1732,7 +1779,7 @@ footer p { margin: 0; max-width: 90ch; }
     const sideTag = x => (state.issueOpp ? `<span class="iss-side ${x.side}">${x.side === 'v' ? 'VCC' : 'Opponent'}</span>` : '');
     const typeTag = x => `<span class="iss-type"><i class="dot g${typeInfo[x.type].gi}"></i>${esc(typeInfo[x.type].label)}</span>`;
     const ext = (m, text) => `<a href="${scorecard(m)}" target="_blank" rel="noopener">${esc(text)}<span aria-hidden="true"> ↗</span></a>`;
-    const issueRow = (x, meta) => `<li class="iss"><p class="iss-t">${esc(x.text)}</p><p class="iss-m">${meta}</p></li>`;
+    const issueRow = (x, meta, extra = '') => `<li class="iss"><p class="iss-t">${esc(x.text)}</p><p class="iss-m">${meta}</p>${extra}</li>`;
     const teamName = t => `${t.label} (${shortGrade(t)})`;
     let groups;
     if (byTeam) {
@@ -1744,7 +1791,10 @@ footer p { margin: 0; max-width: 90ch; }
         rows.forEach(x => { counts[typeInfo[x.type].label] = (counts[typeInfo[x.type].label] || 0) + 1; });
         const note = Object.entries(counts).sort((a, b) => b[1] - a[1]).map(([l, n]) => `${l} ${n}`).join(' · ');
         const ms = [...new Set(rows.map(x => x.m))];
-        const body = `<div class="ilist">${ms.map(m => `<div class="iss-match"><p class="iss-mh">${ext(m, `${fmtDate(m.date)} · v ${m.opp}`)}</p><ul>${rows.filter(x => x.m === m).map(x => issueRow(x, typeTag(x) + sideTag(x))).join('')}</ul></div>`).join('')}</div>`;
+        const body = `<div class="ilist">${ms.map(m => {
+          const mr = rows.filter(x => x.m === m);
+          return `<div class="iss-match"><p class="iss-mh">${ext(m, `${fmtDate(m.date)} · v ${m.opp}`)}</p>${fixBar(m, mr.map(x => x.type))}<ul>${mr.map(x => issueRow(x, typeTag(x) + sideTag(x))).join('')}</ul></div>`;
+        }).join('')}</div>`;
         return dcat(teamName(t), note, rows.length, body);
       }).join('');
       groups = groups ? `<div class="dcats">${groups}</div>` : '';
@@ -1753,7 +1803,7 @@ footer p { margin: 0; max-width: 90ch; }
         const cats = types.map(([k, label, note]) => {
           const rows = list.filter(x => x.type === k);
           if (!rows.length) return '';
-          return dcat(label, note, rows.length, `<ul class="ilist">${rows.map(x => issueRow(x, ext(x.m, `${fmtDate(x.m.date)} · ${teamOf(x.m).label} v ${x.m.opp}`) + sideTag(x))).join('')}</ul>`);
+          return dcat(label, note, rows.length, `<ul class="ilist">${rows.map(x => issueRow(x, ext(x.m, `${fmtDate(x.m.date)} · ${teamOf(x.m).label} v ${x.m.opp}`) + sideTag(x), fixBar(x.m, [x.type]))).join('')}</ul>`);
         }).join('');
         return cats ? `<div class="dgroup"><h3><span class="u">${esc(title)}</span></h3><div class="dcats">${cats}</div></div>` : '';
       }).join('');
@@ -1761,8 +1811,8 @@ footer p { margin: 0; max-width: 90ch; }
     const copyRows = [...list].sort(byTeam
       ? (a, b) => playedTeams.indexOf(teamOf(a.m)) - playedTeams.indexOf(teamOf(b.m)) || a.m.date - b.m.date
       : (a, b) => typeInfo[a.type].i - typeInfo[b.type].i || a.m.date - b.m.date);
-    copyReg.issues = { what: 'the data issues', tables: [{ title: 'Matchcentre data issues', head: ['Team', 'Issue', 'Match', 'Side', 'Detail', 'Scorecard'],
-      body: copyRows.map(x => [teamName(teamOf(x.m)), typeInfo[x.type].label, matchText(x.m), x.side === 'v' ? 'VCC' : x.m.opp, x.text, scorecard(x.m)]) }] };
+    copyReg.issues = { what: 'the data issues', tables: [{ title: 'Matchcentre data issues', head: ['Team', 'Issue', 'Match', 'Opponent', 'Round', 'Match ID', 'Grade', 'Side', 'Detail', 'Scorecard'],
+      body: copyRows.map(x => [teamName(teamOf(x.m)), typeInfo[x.type].label, matchText(x.m), x.m.opp, x.m.round || '', x.m.id, teamOf(x.m).grade, x.side === 'v' ? 'VCC' : x.m.opp, x.text, scorecard(x.m)]) }] };
     const tools = list.length ? `<div class="head-tools">${seg('issueGroup', [['type', 'By issue'], ['team', 'By team']], byTeam ? 'team' : 'type', 'Group issues', 'sm')}${copyBtn('issues', 'Copy list')}</div>` : '';
     const hidden = [hiddenSide && `${hiddenSide} on the opponents' side`, hiddenType && `${hiddenType} in switched-off types`].filter(Boolean);
     const allTypes = typeOrder.map(t => t[0]);
@@ -1771,7 +1821,8 @@ footer p { margin: 0; max-width: 90ch; }
     const filtersHtml = `<details class="ifilter" id="issue-filter"${state.issueFilterOpen ? ' open' : ''}>
         <summary><span class="btn">Filter issues</span><span class="ifsum">${typesOn === allTypes.length ? 'All' : `${typesOn} of ${allTypes.length}`} issue types · ${state.issueOpp ? 'VCC and opponents' : 'VCC only'}</span></summary>
         <div class="ifbody">
-          <div class="ifside"><span class="mini">Whose figures</span>${seg('issueOpp', [['v', 'VCC only'], ['both', 'VCC and opponents']], state.issueOpp ? 'both' : 'v', 'Whose figures', 'sm')}</div>
+          <div class="ifside"><span class="mini">Whose figures</span>${seg('issueOpp', [['v', 'VCC only'], ['both', 'VCC and opponents']], state.issueOpp ? 'both' : 'v', 'Whose figures', 'sm')}
+            <span class="ilinks iall"><span class="mini">All issue types</span><button class="link" data-issue-all="all" data-on="1">All</button><button class="link" data-issue-all="all" data-on="0">None</button></span></div>
           <div class="igrid">${ISSUE_GROUPS.map(([title, types], gi) => `<fieldset class="icol"><legend><i class="dot g${gi}"></i>${esc(title)}</legend>
             <div class="ilinks"><button class="link" data-issue-all="${gi}" data-on="1">All</button><button class="link" data-issue-all="${gi}" data-on="0">None</button></div>
             ${types.map(([k, label, note]) => `<label class="icheck" title="${esc(note)}"><input type="checkbox" name="issueType" id="it-${k}" value="${k}"${typeOn(k) ? ' checked' : ''}><span>${esc(label)}</span><small>${perType[k] || 0}</small></label>`).join('')}
@@ -1782,8 +1833,9 @@ footer p { margin: 0; max-width: 90ch; }
       <div class="itop">
         <p class="itotal"><span><strong>${n0(list.length)}</strong> shown</span><span><strong>${n0(inTeams.length)}</strong> in total${teamsOn.size ? ' for the picked teams' : ''}</span>${teamsOn.size ? `<span><strong>${n0(all.length)}</strong> for all teams</span>` : ''}</p>
         ${filtersHtml}
+        ${matchChips}
       </div>
-      <p class="sub">${hidden.length ? `Hidden: ${hidden.join(', ')}. ` : ''}Gaps and mistakes in the Matchcentre scorecards that make the numbers above less complete. Fix them in the Resultsvault/Matchcentre, then fetch the data again.</p>
+      <p class="sub">${hidden.length ? `Hidden: ${hidden.join(', ')}. ` : ''}Gaps and mistakes in the Matchcentre scorecards that make the numbers above less complete. Fix them in ResultsVault admin, then fetch the data again. ResultsVault has no direct link per match: open the page, pick season, round and grade, press GO, then pick the match. Click a value to copy it.</p>
       ${list.length ? `<div class="dgroups">${groups}</div>` : '<p class="empty">No issues with these settings. Switch on more issue types or include the opponents.</p>'}`;
   }
 
@@ -1990,6 +2042,11 @@ footer p { margin: 0; max-width: 90ch; }
     if (t.name === 'squadCounts') { state.squadCounts = t.value; return render(); }
     if (t.name === 'issueGroup') { state.issueGroup = t.value; issuesFor = null; return render(); }
     if (t.name === 'issueOpp') { state.issueOpp = t.value === 'both'; issuesFor = null; return render(); }
+    if (t.name === 'issueMatch-all') { state.issueMatches = []; issuesFor = null; return render(); }
+    if (t.name === 'issueMatch') {
+      state.issueMatches = [...document.querySelectorAll('input[name=issueMatch]:checked')].map(i => +i.value);
+      issuesFor = null; return render();
+    }
     if (t.name === 'issueType') {
       const on = [...document.querySelectorAll('input[name=issueType]:checked')].map(i => i.value);
       state.issueOff = ISSUE_GROUPS.flatMap(([, ts]) => ts.map(x => x[0])).filter(k => !on.includes(k));
@@ -2082,10 +2139,11 @@ footer p { margin: 0; max-width: 90ch; }
       return render({ finder: false });
     }
     if (t.dataset.copy) return doCopy(t.dataset.copy);
+    if (t.dataset.copyval) return copyVal(t.dataset.copyval);
     if (t.dataset.fetch) return t.dataset.fetch === 'site' ? siteFetch() : runFetch(t.dataset.fetch === 'all');
     if (t.hasAttribute('data-reload-page')) return reloadFresh();
     if (t.dataset.issueAll) {
-      const keys = ISSUE_GROUPS[+t.dataset.issueAll][1].map(x => x[0]);
+      const keys = (t.dataset.issueAll === 'all' ? ISSUE_GROUPS.flatMap(g => g[1]) : ISSUE_GROUPS[+t.dataset.issueAll][1]).map(x => x[0]);
       state.issueOff = t.dataset.on === '1' ? state.issueOff.filter(k => !keys.includes(k)) : [...new Set(state.issueOff.concat(keys))];
       issuesFor = null; return render();
     }
