@@ -8,7 +8,8 @@
 //
 //   GET  ?action=status                  -> { busy, run, cooldownMin, leftToday }
 //   GET  ?action=fixes&season=2026       -> { fixes: [...], admins: [...] }
-//   POST {"action":"saveFix", ...}       -> { fix }   one fix per issue: saving again replaces it
+//   POST {"action":"saveFix", ..., items} -> { fix, fixes }   one entry per issue (items: every issue the fix
+//                                        solves); saving again replaces it. status: saved | rv (changed in ResultsVault)
 //   POST {"action":"setStatus", key, status, note, by} -> { fix }   only for names in data/admins.json
 //   POST (anything else)                 -> { state: started | running | cooldown | limit | error, ... }
 //
@@ -115,7 +116,7 @@ function gh_(method, path, body) {
 
 // ---- captains' fixes ----------------------------------------------------------------
 // One entry per issue (key = match id|type|issue text) in data/fixes-<season>.json on main.
-const FIX_STATUSES = ['saved', 'confirmed', 'rejected'];
+const FIX_STATUSES = ['saved', 'rv', 'confirmed', 'rejected'];
 const FIX_DAILY_MAX = 500; // saves per day, against a runaway script
 
 // A JSON file from main, with its sha (needed to write it back); null when it isn't there yet.
@@ -158,9 +159,9 @@ function updateFixes_(season, change, message) {
     const path = fixesPath_(season);
     const { sha, json } = readRepoJson_(path);
     const file = json || { about: "Captains' fixes saved on the season page. Written by refresh-service/Code.gs.", fixes: [] };
-    const fix = change(file.fixes);
-    writeRepoJson_(path, file, sha, message(fix));
-    return { fix };
+    const out = [].concat(change(file.fixes));
+    writeRepoJson_(path, file, sha, message(out[0], out.length));
+    return { fix: out[0], fixes: out };
   } finally {
     lock.releaseLock();
   }
@@ -176,18 +177,20 @@ function saveFix_(req) {
   if (count >= FIX_DAILY_MAX) throw new Error('Too many fixes saved today. Try again tomorrow.');
   const edits = Array.isArray(req.edits) ? req.edits.slice(0, 20) : [];
   if (JSON.stringify(edits).length > 5000) throw new Error('This fix is too big to save.');
-  const res = updateFixes_(req.season, fixes => {
-    const i = fixes.findIndex(f => f.key === req.key);
+  // One fix can solve several issues of an innings at once: an entry for each.
+  const items = (Array.isArray(req.items) && req.items.length ? req.items : [req]).slice(0, 10).filter(it => it && it.key);
+  const res = updateFixes_(req.season, fixes => items.map(it => {
+    const i = fixes.findIndex(f => f.key === it.key);
     const now = new Date().toISOString();
     const fix = {
-      key: text(req.key, 600), saved: now, updated: now, captain, status: 'saved',
+      key: text(it.key, 600), saved: now, updated: now, captain, status: req.status === 'rv' ? 'rv' : 'saved',
       matchId: text(req.matchId, 20), date: text(req.date, 10), team: text(req.team, 80), opponent: text(req.opponent, 80),
-      round: text(req.round, 10), grade: text(req.grade, 80), side: text(req.side, 80), type: text(req.type, 80),
-      issue: text(req.issue, 600), fix: text(req.fix, 600), steps: text(req.steps, 4000), edits,
+      round: text(req.round, 10), grade: text(req.grade, 80), side: text(req.side, 80), type: text(it.type, 80),
+      issue: text(it.issue, 600), fix: text(req.fix, 600), comment: text(req.comment, 500), steps: text(req.steps, 4000), edits,
     };
     if (i >= 0) fixes[i] = fix; else fixes.push(fix);
     return fix;
-  }, fix => `Fix: ${fix.team} v ${fix.opponent}, ${fix.type} (${fix.captain})`);
+  }), (fix, n) => `Fix${fix.status === 'rv' ? ' (done in ResultsVault)' : ''}: ${fix.team} v ${fix.opponent}, ${fix.type}${n > 1 ? ` +${n - 1}` : ''} (${fix.captain})`);
   props.setProperties({ fixDay: day, fixCount: String(count + 1) });
   return res;
 }

@@ -31,8 +31,12 @@ Their name is asked once and remembered on that device. Saved fixes live in the 
 `data/fixes-<year>.json`, one entry per issue, written by `refresh-service/Code.gs` as a commit, which also rebuilds
 the page. Every fix holds the steps for ResultsVault and machine-readable edits with absolute values (`edits`).
 
-- **Statuses**: *Potentially solved* (saved by a captain), *Confirmed by admin*, *Rejected*, and *In the Matchcentre*
-  once the issue is gone from the fetched data. Issue rows show it; "Not solved yet" hides the solved ones.
+- **Statuses**: *Saved for the jaarverslag* (not changed in ResultsVault yet), *Solved in ResultsVault* (the captain ticked
+  that they changed it there), *Confirmed by admin*, *Rejected*, and *In the Matchcentre* once the issue is gone from the
+  fetched data. Every fix can carry a comment. Issue rows show the status; "Not solved yet" hides the solved ones.
+- **ResultsVault checks**: it only saves a match when, in every innings, batters + extras = total, extras = its parts,
+  bowlers' runs + byes + leg byes = total, and the bowlers' wides, no-balls and overs match the total. The fix dialog shows
+  these checks for the whole match, and one fix for an innings' runs makes all of them hold at once.
 - **Admins** are the names in `data/admins.json`. Typing one of those names on the page gives the Confirm / Reject
   buttons, under "Captains' fixes" and in the fix itself. (Names, not passwords: anyone typing an admin's name could
   confirm. The commit history shows every change.)

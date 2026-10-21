@@ -333,6 +333,10 @@ wanted.forEach(({ listing, teamId }, i) => {
           const wk = bowlers.reduce((a, b) => a + (b.wickets || 0), 0);
           const byBowler = batted.filter(b => HOW_NAME[b.dismissal_id]).length;
           if (wk !== byBowler) issue(fs, 'bowl-wkts', `${total}: bowlers have ${wk} wickets, but ${byBowler} batters were out bowled, caught, lbw, stumped or hit wicket.`, { inn: innRef });
+          // ResultsVault refuses to save a match while these differ (no tolerance), so they block every other fix in it.
+          const wd = bowlers.reduce((a, b) => a + (b.wides || 0), 0), nbs = bowlers.reduce((a, b) => a + (b.no_balls || 0), 0);
+          if (wd !== (inn.wides || 0)) issue(fs, 'bowl-wides', `${total}: the bowlers' wides add up to ${wd}, the wides in the total are ${inn.wides || 0}.`, { inn: innRef });
+          if (nbs !== (inn.no_balls || 0)) issue(fs, 'bowl-nb', `${total}: the bowlers' no-balls add up to ${nbs}, the no-balls in the total are ${inn.no_balls || 0}.`, { inn: innRef });
         }
       }
 

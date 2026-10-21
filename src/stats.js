@@ -298,11 +298,11 @@
       else if (e.op === 'fow' && row) { row[8] = e.v; if (e.no) row[9] = e.no; }
       else if (e.op === 'balls' && row) row[3] = e.v;
       else if (e.op === 'batRuns' && inn) { const r = inn.bat.find(r => r[0] === e.pid); if (r) r[2] = e.v; else continue; }
-      else if (e.op === 'bowl' && bowlRow) bowlRow[{ overs: 2, runs: 4, wkts: 5 }[e.field]] = e.v;
+      else if (e.op === 'bowl' && bowlRow) bowlRow[{ overs: 2, runs: 4, wkts: 5, wides: 6, nb: 7 }[e.field]] = e.v;
       else if (e.op === 'total' && inn) inn.runs = e.v;
       else if (e.op === 'wkts' && inn) inn.wkts = e.v;
       else if (e.op === 'overs' && inn) inn.overs = e.v;
-      else if (e.op === 'extras' && inn) { if (e.E != null) inn.x[0] = e.E; if (e.b != null) inn.x[1] = e.b; if (e.w != null) inn.x[3] = e.w; }
+      else if (e.op === 'extras' && inn) ['E', 'b', 'lb', 'w', 'nb', 'p'].forEach((k, i) => { if (e[k] != null) inn.x[i] = e[k]; });
       else continue;
       n++;
     }
