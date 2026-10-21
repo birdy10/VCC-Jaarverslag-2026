@@ -22,8 +22,25 @@ under "Data updates". The fetch also checks every scorecard for gaps (catcher/ke
 guest players without a profile, cards that don't add up, missing fall of wicket or balls faced); the page lists them
 under "Matchcentre data issues". Each issue carries a reference to its innings, batter row or player, so the page's
 "Fix it" helper can work out the most likely right value (team list pickers for players, the smallest change that
-makes a card add up for sums) and spell out the exact steps in ResultsVault admin. Nothing is written back: captains
-make the change in ResultsVault, and the next reload confirms it.
+makes a card add up for sums) and spell out the exact steps in ResultsVault admin.
+
+## Captains' fixes
+
+A captain saves a fix with "Fix it" (name required). `refresh-service/Code.gs` keeps one row per issue in a Google
+Sheet it creates on the first save ("VCC season facts: captains' fixes", in the Drive of whoever deployed the web app).
+Every fix holds the steps for ResultsVault and machine-readable edits with absolute values (`edits`).
+
+- **Admins** see all fixes under "Captains' fixes" on the page, grouped as to change in ResultsVault / changed in
+  ResultsVault / in the Matchcentre (the issue is gone from the fetched data) / rejected. "Admin" asks for the
+  `ADMIN_KEY` script property; admins can then mark fixes and open the Sheet. The Sheet can be edited directly too.
+- **Numbers**: until the Matchcentre has a fix, the page counts it (`applyFixes` in `src/stats.js`). Fixes whose issue
+  is gone or that were rejected are skipped, so the fetched data always wins. Each viewer can switch this off.
+- **Jaarverslag**: `node scripts/export-tables.mjs 2026 --fixes <web app URL>` (or `REFRESH_URL` set) applies the same
+  fixes before building the tables; `--no-fixes` leaves them out.
+
+Setting it up in the Apps Script project of the refresh service: paste the new `Code.gs`, add the script properties
+`GITHUB_TOKEN` (if the token is still hard-coded in `gh_()`, move it there first) and `ADMIN_KEY`, then Deploy →
+Manage deployments → edit → New version, which keeps the URL. The first save asks for permission to create the Sheet.
 
 Guest players (no Matchcentre profile) have match-local ids like -101 that the API reuses for other people in
 other matches. The fetch gives each guest a stable id from club + name, or the registered player's id when the

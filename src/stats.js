@@ -257,8 +257,60 @@
     };
   }
 
+  // ---- captains' fixes ----------------------------------------------------------
+  // Fixes saved on the page (refresh-service/Code.gs keeps them) until they're made in ResultsVault. Each one
+  // holds absolute values, so applying it twice changes nothing. Only fixes whose issue is still in the data
+  // are applied: once the Matchcentre has the correction, the fetched data wins. Changes `data` in place and
+  // returns the number of edits applied.
+  function applyFixes(data, fixes) {
+    const open = new Set((data.issues || []).map(x => `${x[0]}|${x[2]}|${x[3]}`));
+    const short = pid => (data.players[pid] && data.players[pid][0]) || '?';
+    // The dismissal text follows the fielder and bowler, so scorecards on the page read right.
+    const retext = r => {
+      if (r[6] === 2) r[7] = r[10] && r[10] === r[11] ? `c & b ${short(r[11])}` : `c ${r[10] ? short(r[10]) : '?'} b ${r[11] ? short(r[11]) : '?'}`;
+      else if (r[6] === 5) r[7] = `st ${r[10] ? short(r[10]) : '?'} b ${r[11] ? short(r[11]) : '?'}`;
+      else if (r[6] === 6) r[7] = `run out (${r[10] ? short(r[10]) : '?'})`;
+      else if (r[11] && [3, 4, 7].includes(r[6])) r[7] = `${r[6] === 3 ? 'lbw' : r[6] === 7 ? 'hit wicket' : 'b'} ${short(r[11])}`;
+    };
+    let n = 0;
+    // Edits name players by their id as the Matchcentre has it, so guests are swapped for profiles last.
+    const todo = [];
+    for (const f of fixes || []) {
+      if (f.status === 'rejected' || !open.has(f.key) || !Array.isArray(f.edits)) continue;
+      const m = data.matches.find(x => x.id === +f.matchId);
+      if (m) f.edits.forEach(e => todo.push([m, e]));
+    }
+    todo.sort((a, b) => (a[1].op === 'swap') - (b[1].op === 'swap'));
+    for (const [m, e] of todo) {
+      const inn = e.inn && m.innings.find(i => i.side === e.inn[0] && i.no === e.inn[1]);
+      const row = inn && e.bat != null ? inn.bat[e.bat] : null;
+      const bowlRow = inn && e.pid != null ? inn.bowl.find(r => r[0] === e.pid) : null;
+      if (e.op === 'swap') {
+        const sw = p => (p === e.from ? e.to : p);
+        for (const i of m.innings) {
+          i.bat.forEach(r => { r[0] = sw(r[0]); r[10] = sw(r[10]); r[11] = sw(r[11]); });
+          i.dnb = (i.dnb || []).map(sw);
+          i.bowl.forEach(r => { r[0] = sw(r[0]); });
+          (i.field || []).forEach(r => { r[0] = sw(r[0]); });
+        }
+      } else if (e.op === 'fielder' && row) { row[10] = e.pid; retext(row); }
+      else if (e.op === 'bowler' && row) { row[11] = e.pid; retext(row); }
+      else if (e.op === 'fow' && row) { row[8] = e.v; if (e.no) row[9] = e.no; }
+      else if (e.op === 'balls' && row) row[3] = e.v;
+      else if (e.op === 'batRuns' && inn) { const r = inn.bat.find(r => r[0] === e.pid); if (r) r[2] = e.v; else continue; }
+      else if (e.op === 'bowl' && bowlRow) bowlRow[{ overs: 2, runs: 4, wkts: 5 }[e.field]] = e.v;
+      else if (e.op === 'total' && inn) inn.runs = e.v;
+      else if (e.op === 'wkts' && inn) inn.wkts = e.v;
+      else if (e.op === 'overs' && inn) inn.overs = e.v;
+      else if (e.op === 'extras' && inn) { if (e.E != null) inn.x[0] = e.E; if (e.b != null) inn.x[1] = e.b; if (e.w != null) inn.x[3] = e.w; }
+      else continue;
+      n++;
+    }
+    return n;
+  }
+
   root.VCCStats = {
-    prepare, apply, matchFilter, batting, bowling, fielding, fieldingByMatch, summary, partnerships,
+    prepare, apply, applyFixes, matchFilter, batting, bowling, fielding, fieldingByMatch, summary, partnerships,
     toBalls, toOvers, HOW, NOT_OUT,
   };
   if (typeof module !== 'undefined') module.exports = root.VCCStats;

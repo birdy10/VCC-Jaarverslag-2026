@@ -399,7 +399,21 @@ details.dcat > summary small { display: block; color: var(--muted); font-size: 1
 .fixl a { color: var(--brand-ink); font-weight: 600; text-underline-offset: 2px; }
 .btn.sm { padding: 2px 10px; font-size: 12.5px; }
 .iss-m .fixbtn { margin-left: auto; }
-.iss-done { color: var(--win); font-weight: 700; }
+.fx-badge { font-weight: 700; }
+.fx-badge.todo { color: var(--s4); } .fx-badge.rv { color: var(--win); } .fx-badge.rej { color: var(--red-ink); }
+.fx-savedby { margin: 0; padding: 8px 12px; border-radius: var(--radius); background: var(--barfill); font-size: 13.5px; }
+.fx-savedby.rej { background: transparent; border: 1px solid var(--red); }
+.fx-name { display: grid; gap: 4px; max-width: 320px; }
+.fx-name span { font-weight: 600; font-size: 13.5px; }
+.fx-name input { font: inherit; font-size: 14px; padding: 6px 10px; border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface); color: var(--fg); }
+.btn.primary { background: var(--brand); border-color: var(--brand); color: var(--on-brand); }
+.btn.primary:disabled { opacity: .45; }
+.sf-use { display: flex; align-items: baseline; gap: 8px; font-size: 14px; margin: 0 0 10px; cursor: pointer; }
+.sf-use input { accent-color: var(--brand); }
+.sf-use small { color: var(--muted); }
+.sf-stale { margin: 0 0 10px; padding: 8px 12px; border-radius: var(--radius); background: var(--barfill); font-weight: 600; display: flex; flex-wrap: wrap; align-items: center; gap: 6px 12px; }
+.sf-adm { display: inline-flex; flex-wrap: wrap; gap: 6px; }
+#saved-fixes .iss-m { gap: 4px 12px; }
 .iss.done .iss-t { color: var(--muted); }
 
 /* ---- fix dialog: three numbered steps, scorecard in between ---- */
@@ -551,6 +565,7 @@ footer p { margin: 0; max-width: 90ch; }
   <div id="view-standings" role="tabpanel" aria-labelledby="tab-standings" hidden></div>
 
   <section class="card" id="data-issues" aria-labelledby="h-issues"></section>
+  <section class="card" id="saved-fixes" aria-labelledby="h-fixes"></section>
   <section class="card" id="data-updates" aria-labelledby="h-updates"></section>
 
   <footer>
@@ -576,6 +591,20 @@ footer p { margin: 0; max-width: 90ch; }
 (function () {
   'use strict';
   const V = window.VCCStats;
+  // Captains' saved fixes count in the numbers until the Matchcentre has them. The list as this browser last
+  // fetched it is applied before anything is counted; a newer list is fetched after the page is up.
+  const FIX_CACHE = 'vcc-fixes-' + window.SEASON_DATA.season, FIX_USE = 'vcc-use-fixes';
+  const FIX_URL = window.VCC_SITE && window.VCC_SITE.refresh; // the same web app as "Reload all data"
+  let savedFixes = [], useFixes = true, captainName = '';
+  try {
+    savedFixes = JSON.parse(localStorage.getItem(FIX_CACHE) || '[]');
+    useFixes = localStorage.getItem(FIX_USE) !== 'no';
+    captainName = localStorage.getItem('vcc-captain') || '';
+  } catch (e) {}
+  // The fix helper works on the scorecards as the Matchcentre has them.
+  const RAW = JSON.parse(JSON.stringify(window.SEASON_DATA));
+  const rawById = new Map(RAW.matches.map(m => [m.id, m]));
+  const fixesApplied = useFixes ? V.applyFixes(window.SEASON_DATA, savedFixes) : 0;
   const S = V.prepare(window.SEASON_DATA);
   const D = S.data;
   const $ = s => document.querySelector(s);
@@ -594,7 +623,7 @@ footer p { margin: 0; max-width: 90ch; }
   // ---- state ---------------------------------------------------------------
   const DEFAULT = {
     tab: 'highlights', teams: [], result: 'all', venue: 'all', toss: 'all', months: [], opps: [], player: null,
-    side: 'v', names: 'short', top: 5, ms: { runs: 50, pship: 75, catches: 3, wkts: 5, total: 200, econ: 3, sruns: 250, swkts: 15 }, squadCounts: 'no', issueGroup: 'type', issueOpp: false, issueOff: ['no-runout-fielder'], issueFilterOpen: false, issueMatches: [],
+    side: 'v', names: 'short', top: 5, ms: { runs: 50, pship: 75, catches: 3, wkts: 5, total: 200, econ: 3, sruns: 250, swkts: 15 }, squadCounts: 'no', issueGroup: 'type', issueOpp: false, issueOff: ['no-runout-fielder'], issueFilterOpen: false, issueMatches: [], issueSaved: 'all',
     finder: { ds: 'innings', cond: {}, chips: {} }, sorts: {}, limits: {},
   };
   let state = JSON.parse(JSON.stringify(DEFAULT));
@@ -1849,7 +1878,8 @@ footer p { margin: 0; max-width: 90ch; }
     // Opponent-side issues and switched-off types (run-out fielder by default) are hidden unless asked for.
     const sideOk = x => state.issueOpp || x.side === 'v';
     const typeOn = k => !state.issueOff.includes(k);
-    const shownAll = inTeams.filter(x => sideOk(x) && typeOn(x.type)).sort((a, b) => a.m.date - b.m.date);
+    const savedOk = x => state.issueSaved !== 'open' || !fixByKey.has(issueKey(x));
+    const shownAll = inTeams.filter(x => sideOk(x) && typeOn(x.type) && savedOk(x)).sort((a, b) => a.m.date - b.m.date);
     // With a team picked, chips per match narrow the list to one game; picks from other teams fall away.
     const issueMs = teamsOn.size ? [...new Set(shownAll.map(x => x.m))] : [];
     state.issueMatches = state.issueMatches.filter(id => issueMs.some(m => m.id === id));
@@ -1871,8 +1901,8 @@ footer p { margin: 0; max-width: 90ch; }
     const ext = (m, text) => `<a href="${scorecard(m)}" target="_blank" rel="noopener">${esc(text)}<span aria-hidden="true"> ↗</span></a>`;
     // Ticked as fixed by this browser's user: faded, still listed until the reload confirms it.
     const issueRow = (x, meta, extra = '') => {
-      const done = fixedSet.has(issueKey(x));
-      return `<li class="iss${done ? ' done' : ''}"><p class="iss-t">${esc(x.text)}</p><p class="iss-m">${meta}${done ? '<span class="iss-done">✓ Marked fixed</span>' : ''}<button class="btn sm fixbtn" data-fix="${x.k}">${done ? 'Steps' : 'Fix it'}</button></p>${extra}</li>`;
+      const f = fixByKey.get(issueKey(x));
+      return `<li class="iss${f && f.status !== 'rejected' ? ' done' : ''}"><p class="iss-t">${esc(x.text)}</p><p class="iss-m">${meta}${fixBadge(f)}<button class="btn sm fixbtn" data-fix="${x.k}">${f ? 'View fix' : 'Fix it'}</button></p>${extra}</li>`;
     };
     const teamName = t => `${t.label} (${shortGrade(t)})`;
     let groups;
@@ -1908,7 +1938,8 @@ footer p { margin: 0; max-width: 90ch; }
     copyReg.issues = { what: 'the data issues', tables: [{ title: 'Matchcentre data issues', head: ['Team', 'Issue', 'Match', 'Opponent', 'Round', 'Match ID', 'Grade', 'Side', 'Detail', 'Scorecard'],
       body: copyRows.map(x => [teamName(teamOf(x.m)), typeInfo[x.type].label, matchText(x.m), x.m.opp, x.m.round || '', x.m.id, teamOf(x.m).grade, x.side === 'v' ? 'VCC' : x.m.opp, x.text, scorecard(x.m)]) }] };
     const tools = list.length ? `<div class="head-tools">${seg('issueGroup', [['type', 'By issue'], ['team', 'By team']], byTeam ? 'team' : 'type', 'Group issues', 'sm')}<button class="btn" data-issue-expand="${matchOn.size ? '0' : '1'}" aria-pressed="${matchOn.size ? 'true' : 'false'}">${matchOn.size ? 'Collapse all' : 'Expand all'}</button>${copyBtn('issues', 'Copy list')}</div>` : '';
-    const hidden = [hiddenSide && `${hiddenSide} on the opponents' side`, hiddenType && `${hiddenType} in switched-off types`].filter(Boolean);
+    const hiddenSaved = inTeams.filter(x => sideOk(x) && typeOn(x.type) && !savedOk(x)).length;
+    const hidden = [hiddenSide && `${hiddenSide} on the opponents' side`, hiddenType && `${hiddenType} in switched-off types`, hiddenSaved && `${hiddenSaved} with a saved fix`].filter(Boolean);
     const allTypes = typeOrder.map(t => t[0]);
     const typesOn = allTypes.filter(typeOn).length;
     // Filters sit in a folded panel: four short checkbox columns, one per kind of mistake.
@@ -1916,6 +1947,7 @@ footer p { margin: 0; max-width: 90ch; }
         <summary><span class="btn">Filter issues</span><span class="ifsum">${typesOn === allTypes.length ? 'All' : `${typesOn} of ${allTypes.length}`} issue types · ${state.issueOpp ? 'VCC and opponents' : 'VCC only'}</span></summary>
         <div class="ifbody">
           <div class="ifside"><span class="mini">Whose figures</span>${seg('issueOpp', [['v', 'VCC only'], ['both', 'VCC and opponents']], state.issueOpp ? 'both' : 'v', 'Whose figures', 'sm')}
+            ${seg('issueSaved', [['all', 'All issues'], ['open', 'Without a saved fix']], state.issueSaved, 'Saved fixes', 'sm')}
             <span class="ilinks iall"><span class="mini">All issue types</span><button class="link" data-issue-all="all" data-on="1">All</button><button class="link" data-issue-all="all" data-on="0">None</button></span></div>
           <div class="igrid">${ISSUE_GROUPS.map(([title, types], gi) => `<fieldset class="icol"><legend><i class="dot g${gi}"></i>${esc(title)}</legend>
             <div class="ilinks"><button class="link" data-issue-all="${gi}" data-on="1">All</button><button class="link" data-issue-all="${gi}" data-on="0">None</button></div>
@@ -1936,16 +1968,16 @@ footer p { margin: 0; max-width: 90ch; }
   // ---- fix helper ---------------------------------------------------------------
   // Captains fix issues in ResultsVault admin, which has no links per match and a crowded screen. For each
   // issue the helper works out the most likely right value from the rest of the scorecard, lets the captain
-  // confirm it or pick something else, and turns that into exact steps for ResultsVault. Nothing is saved
-  // here: the fix shows on this page after the next reload. "Fixed" ticks are kept in this browser only.
-  const FIXED_KEY = 'vcc-fixed-' + D.season;
-  let fixedSet = new Set();
-  try { fixedSet = new Set(JSON.parse(localStorage.getItem(FIXED_KEY) || '[]')); } catch (e) {}
+  // confirm it or pick something else, and turns that into exact steps for ResultsVault. Saving sends the fix
+  // to refresh-service/Code.gs, which keeps every captain's fixes in a Google Sheet for the admins.
   const issueKey = x => `${x.m.id}|${x.type}|${x.text}`;
-  function setFixed(x, on) {
-    if (on) fixedSet.add(issueKey(x)); else fixedSet.delete(issueKey(x));
-    try { localStorage.setItem(FIXED_KEY, JSON.stringify([...fixedSet])); } catch (e) {}
-  }
+  let fixByKey = new Map(savedFixes.map(f => [f.key, f]));
+  const FIX_STATUS = { saved: ['To change in ResultsVault', 'todo'], 'done-rv': ['Changed in ResultsVault', 'rv'], rejected: ['Rejected', 'rej'] };
+  const fixBadge = f => {
+    if (!f) return '';
+    const [label, cls] = FIX_STATUS[f.status] || FIX_STATUS.saved;
+    return `<span class="fx-badge ${cls}" title="Saved by ${esc(f.captain)}, ${esc(fmtTime(Date.parse(f.updated || f.saved)))}">${f.status === 'rejected' ? '✗' : '✓'} Fix saved · ${label}</span>`;
+  };
   const NOT_OUT = new Set([0, 1, 13, 14, 15]);
   const BY_BOWLER = new Set([2, 3, 4, 5, 7]); // bowled, caught, lbw, stumped, hit wicket
   const toB = o => (o == null ? 0 : Math.trunc(o) * 6 + Math.round((o - Math.trunc(o)) * 10));
@@ -2062,7 +2094,7 @@ footer p { margin: 0; max-width: 90ch; }
     const role = t === 'not-in-lineup' ? ref.role : t === 'no-bowler' ? 'bowler' : t === 'no-keeper' ? 'wicketkeeper' : t === 'no-runout-fielder' ? 'run-out fielder' : 'catcher';
     const col = role === 'bowler' ? 'Bowler' : 'Fielder';
     const team = lineup(m, fs).sort((a, b) => S.fullName(a).localeCompare(S.fullName(b)));
-    const set = pid => [{ page: 'card', team: rvTeam(m, bs), text: `In the row of <b>${esc(rvName(r[0]))}</b>, set <b>${col}</b> to <b>${esc(rvName(pid))}</b>.` }];
+    const set = pid => [{ page: 'card', team: rvTeam(m, bs), text: `In the row of <b>${esc(rvName(r[0]))}</b>, set <b>${col}</b> to <b>${esc(rvName(pid))}</b>.`, data: { op: role === 'bowler' ? 'bowler' : 'fielder', inn: ref.inn, bat: ref.bat, pid: +pid } }];
     // A best guess where the rest of the card gives one away.
     let guess = null, why = '';
     if (t === 'cqb' && r[11]) { guess = r[11]; why = 'Caught and bowled: the bowler took the catch. That\'s what "c ? b" usually means.'; }
@@ -2088,7 +2120,7 @@ footer p { margin: 0; max-width: 90ch; }
   function profileSpec(x, m, ref, t) {
     const s = x.side, team = rvTeam(m, s), guest = ref.guest || S.fullName(ref.pid);
     const swap = pid => [
-      { page: 'players', team, text: `Under <b>Selected Players</b>, find the guest entry <b>${esc(guest)}</b> (it may show as "Last, First").` },
+      { page: 'players', team, text: `Under <b>Selected Players</b>, find the guest entry <b>${esc(guest)}</b> (it may show as "Last, First").`, data: +pid !== ref.pid ? { op: 'swap', from: ref.pid, to: +pid } : null },
       { page: 'players', team, text: `Find <b>${esc(rvName(pid))}</b> under <b>Available Players</b> (type the first name in the search box) and drag it onto that guest's slot.` },
       { page: 'players', team, text: `A <b>Confirm score replacement</b> box opens. On the row ${esc(guest)} → ${esc(rvName(pid))}, choose <b>Move scores</b>, so the runs and wickets go along. Press <b>Confirm</b>.` },
     ];
@@ -2121,7 +2153,7 @@ footer p { margin: 0; max-width: 90ch; }
     const prev = no ? Math.max(0, ...known.filter(o => o[9] < no).map(o => o[8])) : 0;
     const nextOnes = no ? known.filter(o => o[9] > no).map(o => o[8]) : [];
     const max = nextOnes.length ? Math.min(...nextOnes) : inn.runs;
-    const set = v => [{ page: 'card', team, text: `In the row of <b>${esc(rvName(r[0]))}</b>, enter <b>${v}</b> under <b>FOW</b>${!r[9] && no ? ` and <b>${no}</b> in the <b>Num</b> box just before it` : ''}.` }];
+    const set = v => [{ page: 'card', team, text: `In the row of <b>${esc(rvName(r[0]))}</b>, enter <b>${v}</b> under <b>FOW</b>${!r[9] && no ? ` and <b>${no}</b> in the <b>Num</b> box just before it` : ''}.`, data: { op: 'fow', inn: ref.inn, bat: ref.bat, v, no: !r[9] && no ? no : null } }];
     const options = [];
     // The last wicket of an all-out innings falls at the final total.
     if (no && no === inn.wkts && inn.wkts >= 10 && !nextOnes.length) options.push({ label: `<b>${inn.runs}</b>, the final total`, note: 'This was the last wicket of an all-out innings, so it fell at the final score.', rec: true, edits: () => set(inn.runs) });
@@ -2132,7 +2164,7 @@ footer p { margin: 0; max-width: 90ch; }
   function ballsSpec(m, inn, ref) {
     const r = inn.bat[ref.bat], team = rvTeam(m, inn.side);
     const min = (r[4] || 0) + (r[5] || 0) + ((r[2] || 0) > (r[4] || 0) * 4 + (r[5] || 0) * 6 ? 1 : 0);
-    const set = v => [{ page: 'card', team, text: `In the row of <b>${esc(rvName(r[0]))}</b>, enter <b>${v}</b> under <b>BF</b>.` }];
+    const set = v => [{ page: 'card', team, text: `In the row of <b>${esc(rvName(r[0]))}</b>, enter <b>${v}</b> under <b>BF</b>.`, data: { op: 'balls', inn: ref.inn, bat: ref.bat, v } }];
     const options = [];
     // With only this batter's balls missing: the innings' balls (plus no-balls, which are faced too) minus the others'.
     const missing = inn.bat.filter(o => o[3] == null && o[2] != null);
@@ -2227,10 +2259,11 @@ footer p { margin: 0; max-width: 90ch; }
         edits: v => {
           if (inputs.some(i => v[i.key] == null)) return null;
           const e = [];
-          if (st.T !== T) e.push({ page: 'scores', team: bteam, text: `Set the total runs to <b>${st.T}</b>.` });
-          if (xtra || st.E !== E) e.push({ page: 'scores', team: bteam, text: `Set ${[st.w !== w && `Wides to <b>${st.w}</b>`, st.b !== b && `Byes to <b>${st.b}</b>`, st.E !== E && `Extras to <b>${st.E}</b>`].filter(Boolean).join(', ')}.` });
-          if (st.bat) { const r = inn.bat.find(r => r[0] === +v.bat); e.push({ page: 'card', team: bteam, text: `In the row of <b>${esc(rvName(r[0]))}</b>, set <b>Runs</b> to <b>${(r[2] || 0) + st.bat}</b>.` }); }
-          if (st.bowl) { const r = inn.bowl.find(r => r[0] === +v.bowl); e.push({ page: 'card', team: fteam, text: `In the row of <b>${esc(rvName(r[0]))}</b>, set bowling <b>R</b> to <b>${(r[4] || 0) + st.bowl}</b>.` }); }
+          const ir = [inn.side, inn.no];
+          if (st.T !== T) e.push({ page: 'scores', team: bteam, text: `Set the total runs to <b>${st.T}</b>.`, data: { op: 'total', inn: ir, v: st.T } });
+          if (xtra || st.E !== E) e.push({ page: 'scores', team: bteam, text: `Set ${[st.w !== w && `Wides to <b>${st.w}</b>`, st.b !== b && `Byes to <b>${st.b}</b>`, st.E !== E && `Extras to <b>${st.E}</b>`].filter(Boolean).join(', ')}.`, data: { op: 'extras', inn: ir, E: st.E, b: st.b, w: st.w } });
+          if (st.bat) { const r = inn.bat.find(r => r[0] === +v.bat); e.push({ page: 'card', team: bteam, text: `In the row of <b>${esc(rvName(r[0]))}</b>, set <b>Runs</b> to <b>${(r[2] || 0) + st.bat}</b>.`, data: { op: 'batRuns', inn: ir, pid: r[0], v: (r[2] || 0) + st.bat } }); }
+          if (st.bowl) { const r = inn.bowl.find(r => r[0] === +v.bowl); e.push({ page: 'card', team: fteam, text: `In the row of <b>${esc(rvName(r[0]))}</b>, set bowling <b>R</b> to <b>${(r[4] || 0) + st.bowl}</b>.`, data: { op: 'bowl', inn: ir, pid: r[0], field: 'runs', v: (r[4] || 0) + st.bowl } }); }
           return e;
         } });
     });
@@ -2250,7 +2283,7 @@ footer p { margin: 0; max-width: 90ch; }
     const fows = inn.bat.filter(r => r[8] != null).length;
     const notOuts = inn.bat.map((r, i) => [r, i]).filter(([r]) => NOT_OUT.has(r[6])), outRows = inn.bat.map((r, i) => [r, i]).filter(([r]) => !NOT_OUT.has(r[6]));
     const totalOpt = { label: `Total wickets ${W} → <b>${outs}</b>`, note: 'Only the team score changes, no player\'s figures.' + (fows === outs ? ` The card has ${outs} fall-of-wicket scores too.` : ''),
-      edits: () => [{ page: 'scores', team, text: `Set the wickets to <b>${outs}</b>.` }] };
+      edits: () => [{ page: 'scores', team, text: `Set the wickets to <b>${outs}</b>.`, data: { op: 'wkts', inn: [inn.side, inn.no], v: outs } }] };
     const rowOpt = W > outs
       ? { label: `A batter shown as not out was out`, note: 'Changes that batter\'s average.', inputs: [pickIn('bat', 'Which batter was out?', [{ title: `${team} batting`, items: notOuts.map(([r]) => [r[0], (r[7] || '').trim() || 'not out']) }])],
         edits: v => v.bat != null && [{ page: 'card', team, text: `In the row of <b>${esc(rvName(+v.bat))}</b>, set <b>How out</b> (and Fielder, Bowler, FOW) from the scorebook.` }] }
@@ -2269,7 +2302,7 @@ footer p { margin: 0; max-width: 90ch; }
     const options = [];
     if (rows.length) options.push({ rec: true, label: rows.map(([r, n]) => `${esc(S.fullName(r[0]))} ${r[5] || 0} → <b>${n}</b>`).join(' · '),
       note: 'Sets the bowlers\' wickets to the dismissals on the batting card, which name the bowler for every wicket.' + (loose ? ` ${plural(loose, 'dismissal has', 'dismissals have')} no bowler yet: fix the "Bowler missing" issue first, then check this again.` : ''),
-      edits: () => rows.map(([r, n]) => ({ page: 'card', team, text: `In the row of <b>${esc(rvName(r[0]))}</b>, set bowling <b>W</b> to <b>${n}</b>.` })) });
+      edits: () => rows.map(([r, n]) => ({ page: 'card', team, text: `In the row of <b>${esc(rvName(r[0]))}</b>, set bowling <b>W</b> to <b>${n}</b>.`, data: { op: 'bowl', inn: [inn.side, inn.no], pid: r[0], field: 'wkts', v: n } })) });
     options.push({ rec: !rows.length, label: 'The bowling figures are right, the dismissals are wrong', note: 'Check who bowled each batter out in the scorebook.',
       edits: () => [{ page: 'card', team: rvTeam(m, inn.side), text: 'Check the <b>Bowler</b> of every batter who was bowled, caught, lbw, stumped or hit wicket against the scorebook.' }] });
     return { inn, card: { bowlers: rows.map(([r]) => r[0]) }, intro: 'The bowlers\' wickets don\'t match the batters out bowled, caught, lbw, stumped or hit wicket.', options };
@@ -2282,11 +2315,15 @@ footer p { margin: 0; max-width: 90ch; }
     const full = I === max && (inn.wkts ?? 0) < 10;
     const options = [];
     if (B > 0 && B <= max) options.push({ cost: full ? 5 : 2, label: `Innings overs ${inn.overs} → <b>${ovs(B)}</b>`, note: 'No player\'s figures change.' + (full ? ` But the innings went the full ${m.maxOvers} overs, so its length is probably right.` : ''),
-      edits: () => [{ page: 'scores', team: bteam, text: `Set the overs of the innings to <b>${ovs(B)}</b>.` }] });
+      edits: () => [{ page: 'scores', team: bteam, text: `Set the overs of the innings to <b>${ovs(B)}</b>.`, data: { op: 'overs', inn: [inn.side, inn.no], v: +ovs(B) } }] });
     const fit = inn.bowl.filter(r => toB(r[2]) + d >= 0 && toB(r[2]) + d <= cap);
     if (fit.length) options.push({ cost: 3, label: `One bowler ${d > 0 ? '+' : '−'}${ovs(Math.abs(d))} overs`, note: `Changes that bowler's figures.${cap < Infinity ? ` Only bowlers who stay within ${cap / 6} overs are listed.` : ''}`,
       inputs: [pickIn('bowl', 'Which bowler?', [{ title: `${fteam} bowling`, items: fit.map(r => [r[0], `${r[2]} → ${ovs(toB(r[2]) + d)}`]) }])],
-      edits: v => v.bowl != null && [{ page: 'card', team: fteam, text: `In the row of <b>${esc(rvName(+v.bowl))}</b>, set bowling <b>O</b> to <b>${ovs(toB(inn.bowl.find(r => r[0] === +v.bowl)[2]) + d)}</b>.` }] });
+      edits: v => {
+        if (v.bowl == null) return null;
+        const o = ovs(toB(inn.bowl.find(r => r[0] === +v.bowl)[2]) + d);
+        return [{ page: 'card', team: fteam, text: `In the row of <b>${esc(rvName(+v.bowl))}</b>, set bowling <b>O</b> to <b>${o}</b>.`, data: { op: 'bowl', inn: [inn.side, inn.no], pid: +v.bowl, field: 'overs', v: +o } }];
+      } });
     if (d >= 6) options.push({ cost: fit.length ? 4 : 1, label: 'A bowler is missing from the bowling card', note: `${ovsW(d)} aren't on anyone's figures.`,
       edits: () => [{ page: 'card', team: fteam, text: `Fill in the missing bowler's figures (about <b>${ovsW(d)}</b>, plus M, R, W, Wd, Nb from the scorebook).` }] });
     options.sort((a, b) => a.cost - b.cost);
@@ -2297,6 +2334,8 @@ footer p { margin: 0; max-width: 90ch; }
   // ---- the fix dialog ----
   let fixCur = null;
   function openFix(x) {
+    // Work out fixes on the scorecard as the Matchcentre has it, not with saved fixes already applied.
+    x = { ...x, m: { ...x.m, innings: (rawById.get(x.m.id) || x.m).innings } };
     const spec = fixSpec(x);
     if (!spec) return toast('No helper for this one yet. Use the ResultsVault links next to it.');
     // An option whose list has nobody in it is a dead end: leave it out, and recommend the next one.
@@ -2322,6 +2361,7 @@ footer p { margin: 0; max-width: 90ch; }
     const steps = fixSteps();
     $('#fx-steps').innerHTML = steps ? `<ol class="fx-steps">${steps.map(s => `<li>${s}</li>`).join('')}</ol>` : '<p class="fx-wait">Make a choice above first.</p>';
     $('#fx-copy').disabled = !steps;
+    $('#fx-save').disabled = !steps || !FIX_URL;
   }
   function renderFix() {
     const { x, spec, choice, vals } = fixCur, m = x.m, info = typeInfoOf(x.type);
@@ -2334,15 +2374,20 @@ footer p { margin: 0; max-width: 90ch; }
     const inns = fixCur.whole ? m.innings.filter(i => i.bat.length || i.bowl.length) : spec.inn ? [spec.inn] : [];
     const card = spec.inn ? `<details class="fx-sc" open><summary>Scorecard</summary>${inns.map(i => cardHtml(m, i, i === spec.inn ? spec.card : {})).join('')}
         ${m.innings.length > 1 ? `<button class="link" data-fx-whole>${fixCur.whole ? 'Show only this innings' : 'Show the whole match'}</button>` : ''}</details>` : '';
-    const done = fixedSet.has(issueKey(x));
+    const f = fixByKey.get(issueKey(x));
+    const savedNote = f ? `<p class="fx-savedby ${(FIX_STATUS[f.status] || FIX_STATUS.saved)[1]}">✓ <b>${esc(f.captain)}</b> saved a fix on ${esc(fmtTime(Date.parse(f.updated || f.saved)))}: <b>${esc(f.fix)}</b>. ${esc((FIX_STATUS[f.status] || FIX_STATUS.saved)[0])}.${f.note ? ` Note: ${esc(f.note)}` : ''} Saving again replaces it.</p>` : '';
     $('#fix-body').innerHTML = `<div class="fx-head"><div><p class="mini"><i class="dot g${info.gi}"></i> ${esc(info.label)} · ${x.side === 'v' ? 'VCC' : esc(m.opp)}</p><h2 id="fx-title">${esc(x.text)}</h2></div><button class="fx-x" data-fx-close aria-label="Close">×</button></div>
-      <p class="fx-m">${esc(fmtDate(m.date))} · ${esc(teamOf(m).label)} v ${esc(m.opp)} · <a href="${scorecard(m)}" target="_blank" rel="noopener">Matchcentre ↗</a></p>${fixBar(m, [x.type])}
+      <p class="fx-m">${esc(fmtDate(m.date))} · ${esc(teamOf(m).label)} v ${esc(m.opp)} · <a href="${scorecard(m)}" target="_blank" rel="noopener">Matchcentre ↗</a></p>${fixBar(m, [x.type])}${savedNote}
       <section class="fx-s"><h3><span>1</span> What is right?</h3><p class="fx-intro">${spec.intro}</p><div class="fx-opts" role="radiogroup">${opts}</div></section>
       ${card}
       <section class="fx-s"><h3><span>2</span> Change it in ResultsVault</h3><div id="fx-steps"></div>
         <p class="fx-btns"><button class="btn" id="fx-copy" data-fx-copy>Copy these steps</button><small>To send to someone with a ResultsVault login.</small></p></section>
-      <section class="fx-s"><h3><span>3</span> Done?</h3><label class="fx-done"><input type="checkbox" data-fx-done${done ? ' checked' : ''}><span>I changed it in ResultsVault</span></label>
-        <p class="fx-note">Then press <b>Reload all data</b> at the top of this page. The issue disappears from the list once the fix is in the Matchcentre. Ticked issues stay marked in this browser.</p></section>`;
+      <section class="fx-s"><h3><span>3</span> Save the fix</h3>
+        <p class="fx-note">The admins see every saved fix and make the change in ResultsVault where you can't. Until the Matchcentre has it, a saved fix already counts in the numbers on this page and in the jaarverslag.</p>
+        <label class="fx-name"><span>Your name</span><input type="text" data-fx-name maxlength="60" autocomplete="name" value="${esc(captainName)}" placeholder="First and last name"></label>
+        <label class="fx-done"><input type="checkbox" data-fx-rv${f && f.status === 'done-rv' ? ' checked' : ''}><span>I already changed it in ResultsVault myself</span></label>
+        <p class="fx-btns"><button class="btn primary" id="fx-save" data-fx-save>${f ? 'Save again' : 'Save fix'}</button><small id="fx-save-msg" role="status">${FIX_URL ? '' : 'Saving works on the published page only.'}</small></p>
+        <p class="fx-note">After a change in ResultsVault, press <b>Reload all data</b> at the top of this page: the issue leaves the list once the Matchcentre has the fix.</p></section>`;
     renderFixSteps();
   }
   function fixText() {
@@ -2368,7 +2413,6 @@ footer p { margin: 0; max-width: 90ch; }
     const t = e.target;
     if (t.name === 'fx-opt') { fixCur.choice = +t.value; renderFix(); return; }
     if (t.name && t.name.startsWith('fxp-')) { fixCur.vals[t.name.slice(4)] = t.value; renderFixSteps(); return; }
-    if (t.hasAttribute('data-fx-done')) { setFixed(fixCur.x, t.checked); issuesFor = null; render(); }
   });
   fixDlg.addEventListener('input', e => {
     const t = e.target;
@@ -2389,6 +2433,134 @@ footer p { margin: 0; max-width: 90ch; }
     if (!t) return;
     if (t.hasAttribute('data-fx-whole')) { fixCur.whole = !fixCur.whole; renderFix(); }
     if (t.hasAttribute('data-fx-copy')) copyText(fixText(), 'Copied the steps. Paste them in a message or email.');
+    if (t.hasAttribute('data-fx-save')) saveFix();
+  });
+
+  // ---- saved fixes: one list for all captains and admins ----
+  const openKeys = new Set(issueAll.map(issueKey));
+  let fixAdmin = null, fixesStale = false, fixLoadErr = '';
+  let adminKey = '';
+  try { adminKey = localStorage.getItem('vcc-admin-key') || ''; } catch (e) {}
+  async function fixCall(body, query = '') {
+    const r = await fetch(FIX_URL + query, body ? { method: 'POST', body: JSON.stringify(body) } : {});
+    if (!r.ok) throw new Error(`The fix service answered ${r.status}.`);
+    const res = await r.json();
+    if (res.state === 'error') throw new Error(res.message);
+    return res;
+  }
+  function useFixList(list) {
+    // Fixes that would change the numbers differently from what this page counted: offer to count them again.
+    const sig = l => JSON.stringify(l.filter(f => f.status !== 'rejected' && openKeys.has(f.key)).map(f => [f.key, f.edits]).sort());
+    if (useFixes && sig(list) !== sig(savedFixes)) fixesStale = true;
+    savedFixes = list;
+    fixByKey = new Map(list.map(f => [f.key, f]));
+    try { localStorage.setItem(FIX_CACHE, JSON.stringify(list)); } catch (e) {}
+    issuesFor = null; render();
+    renderSavedFixes();
+  }
+  async function loadFixes() {
+    if (!FIX_URL) return;
+    try {
+      const res = await fixCall(null, `?action=fixes&season=${encodeURIComponent(D.season)}${adminKey ? '&key=' + encodeURIComponent(adminKey) : ''}`);
+      fixAdmin = res.admin ? { sheet: res.sheet } : null;
+      fixLoadErr = '';
+      useFixList(res.fixes || []);
+    } catch (e) { fixLoadErr = e.message; renderSavedFixes(); }
+  }
+  async function saveFix() {
+    const { x, spec, choice, vals } = fixCur, m = x.m, o = spec.options[choice];
+    const edits = o.edits(vals), msg = $('#fx-save-msg'), nameIn = $('[data-fx-name]');
+    const name = nameIn.value.trim();
+    if (!edits) { msg.textContent = 'Make a choice above first.'; return; }
+    if (!name) { msg.textContent = 'Fill in your name first.'; nameIn.focus(); return; }
+    captainName = name;
+    try { localStorage.setItem('vcc-captain', name); } catch (e) {}
+    const tmp = document.createElement('div');
+    tmp.innerHTML = o.label;
+    const picked = (o.inputs || []).map(i => (i.kind === 'pick' ? S.fullName(+vals[i.key]) : vals[i.key])).filter(v => v != null && v !== '');
+    const body = {
+      action: 'saveFix', season: D.season, key: issueKey(x), matchId: m.id, date: new Date(m.date).toISOString().slice(0, 10),
+      team: teamOf(m).label, opponent: m.opp, round: m.round || '', grade: teamOf(m).grade, side: x.side === 'v' ? 'VCC' : m.opp,
+      type: typeInfoOf(x.type).label, issue: x.text, fix: [tmp.textContent.trim(), ...picked].join(': '), steps: fixText(),
+      edits: edits.filter(e => e.data).map(e => e.data), captain: name, status: $('[data-fx-rv]').checked ? 'done-rv' : 'saved',
+    };
+    const btn = $('#fx-save');
+    btn.disabled = true; msg.textContent = 'Saving…';
+    try {
+      const res = await fixCall(body);
+      useFixList([...savedFixes.filter(f => f.key !== res.fix.key), res.fix]);
+      renderFix();
+      $('#fx-save-msg').textContent = 'Saved. Thank you!';
+      toast('Fix saved. The admins can see it now.');
+    } catch (e) {
+      btn.disabled = false;
+      msg.textContent = `Not saved: ${e.message}`;
+    }
+  }
+  async function setFixStatus(key, status) {
+    const note = status === 'rejected' ? (prompt('Why is this fix rejected? (optional, the captain sees it)') ?? null) : '';
+    if (note === null) return;
+    try {
+      const res = await fixCall({ action: 'setStatus', season: D.season, key, status, note, adminKey });
+      useFixList([...savedFixes.filter(f => f.key !== key), res.fix]);
+      toast('Status changed.');
+    } catch (e) { toast(`Not changed: ${e.message}`); }
+  }
+  function adminLogin() {
+    if (fixAdmin) {
+      adminKey = ''; fixAdmin = null;
+      try { localStorage.removeItem('vcc-admin-key'); } catch (e) {}
+      return renderSavedFixes();
+    }
+    const k = prompt('Admin key (from the refresh service\'s script properties):');
+    if (!k) return;
+    adminKey = k.trim();
+    try { localStorage.setItem('vcc-admin-key', adminKey); } catch (e) {}
+    loadFixes().then(() => toast(fixAdmin ? 'Admin mode on.' : 'That key is not right.'));
+  }
+
+  function renderSavedFixes() {
+    const el = $('#saved-fixes');
+    const list = [...savedFixes].sort((a, b) => Date.parse(b.updated || b.saved) - Date.parse(a.updated || a.saved));
+    // Where each fix is: still to do, done in ResultsVault but not fetched yet, in the Matchcentre, or rejected.
+    const where = f => (f.status === 'rejected' ? 'rej' : !openKeys.has(f.key) ? 'in' : f.status === 'done-rv' ? 'rv' : 'todo');
+    const GROUPS = [
+      ['todo', 'To change in ResultsVault', 'Saved by a captain, not yet changed in ResultsVault.'],
+      ['rv', 'Changed in ResultsVault', 'Waiting for the next "Reload all data" to come through.'],
+      ['in', 'In the Matchcentre', 'The issue is gone from the fetched data: done.'],
+      ['rej', 'Rejected', 'Not counted in the numbers.'],
+    ];
+    const adminBtns = f => (fixAdmin ? `<span class="sf-adm">${[
+      f.status !== 'done-rv' && `<button class="btn sm" data-fix-status="done-rv" data-key="${esc(f.key)}">Changed in ResultsVault</button>`,
+      f.status !== 'rejected' && `<button class="btn sm" data-fix-status="rejected" data-key="${esc(f.key)}">Reject</button>`,
+      f.status !== 'saved' && `<button class="btn sm" data-fix-status="saved" data-key="${esc(f.key)}">Back to to-do</button>`,
+    ].filter(Boolean).join('')}</span>` : '');
+    const row = f => {
+      const x = issueAll.find(i => issueKey(i) === f.key);
+      return `<li class="iss"><p class="iss-t"><b>${esc(f.fix)}</b></p>
+        <p class="iss-m"><span>${esc(f.issue)}</span></p>
+        <p class="iss-m"><span>${esc(f.date)} · ${esc(f.team)} v ${esc(f.opponent)} · round ${esc(f.round || '?')} · match ID ${esc(f.matchId)}</span><span>by <b>${esc(f.captain)}</b>, ${esc(fmtTime(Date.parse(f.updated || f.saved)))}</span>${f.note ? `<span>Note: ${esc(f.note)}</span>` : ''}
+          ${x ? `<button class="btn sm" data-fix="${x.k}">Open</button>` : ''}<button class="btn sm" data-copysteps="${esc(f.key)}">Copy steps</button>${adminBtns(f)}</p></li>`;
+    };
+    const groups = GROUPS.map(([k, title, note]) => {
+      const rows = list.filter(f => where(f) === k);
+      return rows.length ? dcat(title, note, rows.length, `<ul class="ilist">${rows.map(row).join('')}</ul>`, k === 'todo') : '';
+    }).join('');
+    copyReg.fixes = { what: 'the saved fixes', tables: [{ title: 'Captains\' fixes', head: ['Saved', 'Captain', 'Team', 'Opponent', 'Date', 'Round', 'Match ID', 'Grade', 'Issue', 'Fix', 'Status', 'Note'],
+      body: list.map(f => [fmtTime(Date.parse(f.updated || f.saved)), f.captain, f.team, f.opponent, f.date, f.round, f.matchId, f.grade, f.issue, f.fix, GROUPS.find(g => g[0] === where(f))[1], f.note || '']) }] };
+    const tools = `<div class="head-tools">${fixAdmin && fixAdmin.sheet ? `<a class="btn" href="${esc(fixAdmin.sheet)}" target="_blank" rel="noopener">Open the Sheet ↗</a>` : ''}${list.length ? copyBtn('fixes', 'Copy list') : ''}${FIX_URL ? `<button class="btn" data-fix-admin aria-pressed="${!!fixAdmin}">${fixAdmin ? 'Admin: on' : 'Admin'}</button>` : ''}</div>`;
+    const counted = list.filter(f => f.status !== 'rejected' && openKeys.has(f.key)).length;
+    el.innerHTML = `<div class="card-head"><h2 id="h-fixes">Captains' fixes</h2>${tools}</div>
+      <p class="sub">Fixes captains saved with <b>Fix it</b>. Admins change them in ResultsVault where a captain couldn't, and mark them here. ${FIX_URL ? '' : 'Saved fixes are kept by the published page; this copy can\'t reach them.'}</p>
+      ${fixLoadErr ? `<p class="fetch-status err">Couldn't load the saved fixes: ${esc(fixLoadErr)}</p>` : ''}
+      ${fixesStale ? '<p class="sf-stale">Captains saved new fixes since this page opened. <button class="btn sm" data-reload-page>Count them in the numbers</button></p>' : ''}
+      ${list.length ? `<label class="sf-use"><input type="checkbox" data-use-fixes${useFixes ? ' checked' : ''}> Count saved fixes in the numbers on this page <small>(${plural(counted, 'fix', 'fixes')} not in the Matchcentre yet${useFixes && fixesApplied ? `, ${plural(fixesApplied, 'change', 'changes')} counted now` : ''})</small></label>` : ''}
+      ${groups ? `<div class="dcats">${groups}</div>` : `<p class="empty">${FIX_URL ? 'No fixes saved yet.' : 'No saved fixes here.'}</p>`}`;
+  }
+  document.addEventListener('change', e => {
+    if (!e.target.hasAttribute('data-use-fixes')) return;
+    try { localStorage.setItem(FIX_USE, e.target.checked ? 'yes' : 'no'); } catch (err) {}
+    location.reload();
   });
 
   function renderUpdates() {
@@ -2528,7 +2700,7 @@ footer p { margin: 0; max-width: 90ch; }
   // ---- section links (right sidebar) -----------------------------------------
   function renderToc() {
     const panel = $('#view-' + state.tab);
-    const secs = [...panel.querySelectorAll('section.card'), $('#data-issues'), $('#data-updates')];
+    const secs = [...panel.querySelectorAll('section.card'), $('#data-issues'), $('#saved-fixes'), $('#data-updates')];
     const items = secs.map(s => {
       const h = s.querySelector('h2');
       const label = s.dataset.toc || (h && h.textContent.trim());
@@ -2593,6 +2765,7 @@ footer p { margin: 0; max-width: 90ch; }
     if (t.name === 'top') { state.top = t.value === 'all' ? 'all' : +t.value; return render(); }
     if (t.name === 'squadCounts') { state.squadCounts = t.value; return render(); }
     if (t.name === 'issueGroup') { state.issueGroup = t.value; issuesFor = null; return render(); }
+    if (t.name === 'issueSaved') { state.issueSaved = t.value; issuesFor = null; return render(); }
     if (t.name === 'issueOpp') { state.issueOpp = t.value === 'both'; issuesFor = null; return render(); }
     if (t.name === 'issueMatch-all') { state.issueMatches = []; issuesFor = null; return render(); }
     if (t.name === 'issueMatch') {
@@ -2693,6 +2866,9 @@ footer p { margin: 0; max-width: 90ch; }
     if (t.dataset.copy) return doCopy(t.dataset.copy);
     if (t.dataset.copyval) return copyVal(t.dataset.copyval);
     if (t.dataset.fix) return openFix(issueAll.find(x => x.k === +t.dataset.fix));
+    if (t.dataset.copysteps) { const f = fixByKey.get(t.dataset.copysteps); return f && copyText(f.steps, 'Copied the steps. Paste them in a message or email.'); }
+    if (t.dataset.fixStatus) return setFixStatus(t.dataset.key, t.dataset.fixStatus);
+    if (t.hasAttribute('data-fix-admin')) return adminLogin();
     if (t.dataset.issueExpand) {
       const open = t.dataset.issueExpand === '1';
       document.querySelectorAll('#data-issues details.dcat').forEach(d => { d.open = open; });
@@ -2754,5 +2930,7 @@ footer p { margin: 0; max-width: 90ch; }
   renderUpdates();
   render({ filters: true });
   if (SITE && SITE.refresh) checkSite();
+  renderSavedFixes();
+  loadFixes();
 })();
 </script>
