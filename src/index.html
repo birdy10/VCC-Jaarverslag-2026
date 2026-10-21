@@ -20,6 +20,8 @@
   --chip: #ffffff;
   --on-brand: #ffffff;
   --focus: #5b61d6;
+  --mc: #f07c20;         /* KNCB Matchcentre orange */
+  --mc-ink: #b4530c;
   /* chart series, validated for colour-blind separation on both surfaces */
   --s1: #4a51b8; --s2: #d0654a; --s3: #8f95e3; --s4: #b08a12; --s0: #c3c6d8;
   --barfill: rgba(74, 81, 184, .13);
@@ -32,14 +34,14 @@
   :root:not([data-theme="light"]) {
     --brand: #2f337d; --brand-ink: #b4b8ff; --red: #b8203f; --red-ink: #f08ba0; --win: #2f9e66; --draw: #8a8eab;
     --bg: #0f1126; --surface: #181b38; --surface-2: #1e2244; --line: #2d3260; --fg: #e9eaf6; --muted: #a3a6c8;
-    --chip: #181b38; --focus: #9aa0ff; color-scheme: dark;
+    --chip: #181b38; --focus: #9aa0ff; --mc-ink: #f6a35e; color-scheme: dark;
     --s1: #7a80e6; --s2: #d36a4f; --s3: #5a61d0; --s4: #a8850f; --s0: #4a4f78; --barfill: rgba(122, 128, 230, .2); --grid: #262a52;
   }
 }
 :root[data-theme="dark"] {
   --brand: #2f337d; --brand-ink: #b4b8ff; --red: #b8203f; --red-ink: #f08ba0; --win: #2f9e66; --draw: #8a8eab;
   --bg: #0f1126; --surface: #181b38; --surface-2: #1e2244; --line: #2d3260; --fg: #e9eaf6; --muted: #a3a6c8;
-  --chip: #181b38; --focus: #9aa0ff; color-scheme: dark;
+  --chip: #181b38; --focus: #9aa0ff; --mc-ink: #f6a35e; color-scheme: dark;
   --s1: #7a80e6; --s2: #d36a4f; --s3: #5a61d0; --s4: #a8850f; --s0: #4a4f78; --barfill: rgba(122, 128, 230, .2); --grid: #262a52;
 }
 
@@ -320,6 +322,9 @@ td.bar { min-width: 72px; background-image: linear-gradient(var(--barfill), var(
 .squad p { margin: 0; line-height: 1.6; max-width: 75ch; }
 #tip { position: fixed; z-index: 20; pointer-events: none; background: var(--fg); color: var(--bg); padding: 6px 10px; border-radius: 4px; font-size: 12.5px; line-height: 1.35; max-width: 280px; white-space: pre-line; }
 
+/* Matchcentre links: KNCB orange with the Matchcentre icon (not the W/L form squares) */
+a[href^="https://matchcentre.kncb.nl/"]:not(.form *) { color: var(--mc-ink); }
+a[href^="https://matchcentre.kncb.nl/"]:not(.form *)::before { content: ""; display: inline-block; width: 1.05em; height: 1.05em; margin-right: .3em; vertical-align: -.18em; background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAMAAABEpIrGAAAABGdBTUEAALGPC/xhBQAAAAFzUkdCAK7OHOkAAAAJcEhZcwAALiMAAC4jAXilP3YAAAF0UExURUxpcf/////////////////////////////////////////////////////////////////////////////////+/v/7+f////B8IP////CAKPGMPe97Hv/8+v/+/f749PSgYPfCmvCFMfOdWv3v5fe8kPWvev3t4PjGn+5xIOtjIf76+Pzj1fSjaPnJpPB9IfvdxfWsdPz8/fanaP3w6fOlde99SfKQRvGJN/7z7PSiYu95Gfe/l/Wpbfvhz+1qIfOXTvjNvPrUuOpXIvnPsfzp3vGOUf718PCLa/KXXvrawfe2g/WzhOpeIu53IpejvuxjLrjB0/3y7fOcZe+EYffCrPzm1fjJp/nMqPazfva3hva5lrvD1PL09623zPCJReDY2KGuxtrQz+xoNniJrO1yPtPHxvCRbvSpfu+CX+xrPO55RPSqk/W0kPfFs+11Nn2Or6u2yvW4n/CDTs3R3OPm6+51LfCSdO9+QPnWy+hNGu59WiZOjyYAAAAXdFJOUwBKh7h1yPMf1gvi+aJnFSe+vxRmo9b5+iMrjgAAAmpJREFUOMt1U1V74lAQDdYG6rJ788WIEFksuFtZIJDSQgu0hbp71/3PbwzpdjsPkZlzz8ydOQNBI1u2WG2wywXbrJZl6KVN2x1TQDVCBmDKYZ/+J+xcgbXodi/28Kfwaw0AeMX57PjsjBYHvtv63e96XQWAmdUJkoUlYBjxcNvt/qivRQ4PAVhaGJ1fNOPbn68TicS998vJxyP1d9HkcM4O443vtXeqbSbPTg8iqmPWqGNuxuR3N5NNFpGQVPBb6xOp1TGnJ4BNAkXc6wc5VEWUzi62dBesJbGbcSArodxeWJIkPHV1ehTRfXYImnfoX4XBbhoUkpKEIAgWvdraMgCOecii9w/0s3hYzmMpFGWYZPDrRcsATFkgq8HvpyRGDK6XSiWWyqyftA5Iw2+FbGYFZT4T3ctHo9FApxHwRMw4sEHGHci0IAQDjVri8rzd3rirDgsHMOTS36F+uJNov1dtY8Pr/TAGuAwAKTbuz6+7l16vt1gsHsc9EwAjRfXpqUcS/p9FtdGbKEdMpDCLJH3ytpvIHWMojuDYmMGmXZOQ/Wu9x/jN426uydEZJssII4BVbZTbX9m/6dQ68XiAb4bzXJCnRgxqo+Ydvpi/vB+vMRhFcxRFD9j1ijAsQm21OSwyXWHxFFfNMHSIx7AMLQ+HNR53msIl0cMieaUgUuEdj88c90gwoIDhqYIQwFE2JyhJTDEFM5Yc2EVxtuoWWSYf26G59FByY9H6eBzHch73Dh0YlImRaCdkH+PRLCrGBmhWosmx7FWO1aFwy7zikxU6XHm7Ov2f1dPuazzfzDlfWV69fy+X9/X1/wtsM32wac8FfQAAAFd6VFh0UmF3IHByb2ZpbGUgdHlwZSBpcHRjAAB4nOPyDAhxVigoyk/LzEnlUgADIwsuYwsTIxNLkxQDEyBEgDTDZAMjs1Qgy9jUyMTMxBzEB8uASKBKLgDqFxF08kI1lQAAAABJRU5ErkJggg==) center / contain no-repeat; }
 /* ---- data updates & issues ---- */
 .dgroups { display: grid; gap: 22px; }
 .dgroup > h3 { margin-bottom: 4px; }
@@ -373,7 +378,6 @@ details.dcat > summary small { display: block; color: var(--muted); font-size: 1
 .iss-t { margin: 0; font-size: 15px; line-height: 1.4; color: var(--fg); overflow-wrap: anywhere; }
 .iss-m { margin: 3px 0 0; display: flex; flex-wrap: wrap; align-items: center; gap: 2px 12px; font-size: 12.5px; color: var(--muted); }
 .iss-m a, .iss-mh a { color: inherit; text-underline-offset: 2px; }
-.iss-type { display: inline-flex; align-items: center; gap: 6px; }
 .iss-side { font-weight: 700; color: var(--brand-ink); }
 .iss-side.o { color: var(--red-ink); }
 /* each match (by team) or each issue (by issue) sits in its own faint block, so neighbours don't run together */
@@ -387,13 +391,12 @@ details.dcat > summary small { display: block; color: var(--muted); font-size: 1
 .iss-act { flex: 0 0 auto; margin-left: auto; display: flex; flex-wrap: wrap; justify-content: flex-end; align-items: center; gap: 6px 8px; }
 .ilist > .iss.g0 { border-left-color: var(--red); } .ilist > .iss.g1 { border-left-color: var(--s1); }
 .ilist > .iss.g2 { border-left-color: var(--s4); } .ilist > .iss.g3 { border-left-color: var(--s0); }
-.iss-type { padding: 0 8px 0 6px; border-radius: 999px; background: var(--surface); border: 1px solid var(--line); color: var(--fg); font-weight: 600; }
 .iss.st-rv, .iss.st-ok, .iss.st-in { background: #eef8f2; }
 .iss.st-rv .iss-t, .iss.st-ok .iss-t, .iss.st-in .iss-t { color: var(--muted); }
 :root[data-theme="dark"] .iss.st-rv, :root[data-theme="dark"] .iss.st-ok, :root[data-theme="dark"] .iss.st-in { background: #16301f; }
 @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .iss.st-rv, :root:not([data-theme="light"]) .iss.st-ok, :root:not([data-theme="light"]) .iss.st-in { background: #16301f; } }
 .cvs.sm .cv { padding: 0 6px; font-size: 11.5px; background: transparent; }
-.fx-badge { display: inline-flex; align-items: center; gap: 4px; padding: 2px 9px; border-radius: 999px; font: 700 12px/1.5 var(--font-body); white-space: nowrap; }
+.fx-badge { display: inline-flex; align-items: center; gap: 0; padding: 2px 9px; border-radius: 999px; font: 700 12px/1.5 var(--font-body); white-space: nowrap; }
 .fx-badge.todo { background: #fbf1d9; color: #7a5a00; }
 .fx-badge.rv, .fx-badge.ok, .fx-badge.in { background: var(--win); color: #fff; }
 .fx-badge.rej { border: 1px solid var(--red); color: var(--red-ink); }
@@ -426,8 +429,6 @@ details.dcat > summary small { display: block; color: var(--muted); font-size: 1
 .fixdlg::backdrop { background: rgba(14, 16, 40, .55); }
 #fix-body { height: 100%; display: grid; grid-template-rows: auto minmax(0, 1fr); }
 .fx-top { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 12px; align-items: start; padding: 16px 24px 14px; border-bottom: 1px solid var(--line); }
-.fx-kind { margin: 0 0 2px; display: flex; align-items: center; gap: 7px; font: 700 11px/1.3 var(--font-display); letter-spacing: .09em; text-transform: uppercase; color: var(--muted); }
-.fx-top h2 { margin: 0; font: 800 21px/1.25 var(--font-display); color: var(--brand-ink); text-transform: none; letter-spacing: 0; }
 .fx-m { margin: 4px 0 0; font-size: 13.5px; color: var(--muted); display: flex; flex-wrap: wrap; align-items: center; gap: 4px 6px; }
 .fx-m a { color: inherit; }
 .fx-x { border: 0; background: none; font-size: 30px; line-height: 1; color: var(--muted); cursor: pointer; padding: 0 4px; }
@@ -470,7 +471,6 @@ details.dcat > summary small { display: block; color: var(--muted); font-size: 1
 .fx-opt.on { border-color: var(--brand); box-shadow: inset 4px 0 0 var(--brand); }
 .fx-ol { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 12px; padding: 12px 14px; cursor: pointer; font-size: 15px; line-height: 1.4; }
 .fx-ol input { margin: 3px 0 0; width: 18px; height: 18px; accent-color: var(--brand); }
-.fx-ol small { display: block; color: var(--muted); font-size: 13px; margin-top: 3px; }
 .fx-rec { font: 700 10px/1.6 var(--font-display); font-style: normal; letter-spacing: .06em; text-transform: uppercase; color: #fff; background: var(--win); padding: 1px 7px; border-radius: 3px; margin-left: 6px; vertical-align: 2px; white-space: nowrap; }
 .fx-in { padding: 0 14px 14px calc(14px + 18px + 12px); display: grid; gap: 10px; }
 .fx-pickw { display: grid; gap: 6px; }
@@ -502,18 +502,49 @@ details.dcat > summary small { display: block; color: var(--muted); font-size: 1
 .fx-savedby { margin: 0; padding: 10px 14px; border-radius: var(--radius); font-size: 14px; background: var(--barfill); }
 .fx-savedby.ok, .fx-savedby.in { background: #d6f0e1; color: #0f5132; }
 .fx-savedby.rej { background: transparent; border: 1px solid var(--red); }
-/* the details a captain types into ResultsVault, big enough to read and copy */
-.fx-meta { display: flex; flex-wrap: wrap; align-items: stretch; gap: 8px; margin-top: 10px; }
-.fx-meta .cv, .fx-mi { display: inline-grid; gap: 0; padding: 5px 12px; font: 700 17px/1.25 var(--font-body); border-radius: 6px; background: var(--surface-2); border: 1px solid var(--line); color: var(--fg); }
-.fx-meta .cv small, .fx-mi small { font: 600 10.5px/1.3 var(--font-display); letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
-.fx-meta .cv:hover { border-color: var(--brand); }
-.fx-meta .cv::after { content: "copy"; font: 600 10px/1 var(--font-body); color: var(--brand-ink); opacity: .7; }
-.fx-mc { align-self: center; font-size: 13.5px; color: var(--muted); }
+/* icons, tooltips and coloured labels */
+.i { width: 1.05em; height: 1.05em; flex: none; vertical-align: -.17em; }
+.btn .i, .fx-badge .i, .lbl .i, .gh .i, .fx-lb .i, .fx-who .i, .fx-name .i, .fx-rv summary .i, .fx-ck-h .i, .fx-ck-inn li .i, .cv .i { margin-right: .35em; }
+.tip { position: relative; display: inline-flex; vertical-align: -.12em; margin-left: .3em; color: var(--muted); cursor: help; font-weight: 400; text-transform: none; letter-spacing: 0; }
+.tip .i { width: .95em; height: .95em; }
+.tip:hover, .tip:focus-visible { color: var(--brand-ink); outline: none; }
+.tip::after { content: attr(data-tip); position: absolute; left: 50%; bottom: calc(100% + 8px); transform: translateX(-50%); width: max-content; max-width: 280px; padding: 8px 10px; border-radius: 6px; background: var(--fg); color: var(--bg); font: 400 12.5px/1.45 var(--font-body); white-space: normal; text-align: left; box-shadow: 0 6px 20px rgba(0, 0, 0, .2); opacity: 0; pointer-events: none; transition: opacity .12s; z-index: 30; }
+.tip:hover::after, .tip:focus-visible::after { opacity: 1; }
+.lbl { display: inline-flex; align-items: center; padding: 1px 8px; border-radius: 999px; font-weight: 700; font-size: 11.5px; line-height: 1.6; }
+.lbl.g0 { background: color-mix(in srgb, var(--red) 12%, transparent); color: var(--red-ink); }
+.lbl.g1 { background: color-mix(in srgb, var(--s1) 14%, transparent); color: var(--s1); }
+.lbl.g2 { background: color-mix(in srgb, var(--s4) 18%, transparent); color: #7d6000; }
+.lbl.g3 { background: color-mix(in srgb, var(--s0) 30%, transparent); color: var(--fg); }
+.lbl.side-v { background: var(--brand); color: var(--on-brand); }
+.lbl.side-o { background: color-mix(in srgb, var(--red) 14%, transparent); color: var(--red-ink); }
+.gh { display: inline-flex; align-items: center; }
+.gh.g0 { color: var(--red-ink); } .gh.g1 { color: var(--s1); } .gh.g2 { color: #8a6a00; } .gh.g3 { color: var(--muted); }
+:root[data-theme="dark"] .lbl.g2, :root[data-theme="dark"] .gh.g2 { color: #e5c45a; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .lbl.g2, :root:not([data-theme="light"]) .gh.g2 { color: #e5c45a; } }
+/* dialog header: kind and match on the left, what to type into ResultsVault on the right */
+.fx-hd { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px 24px; }
+.fx-kind { margin: 0 0 2px; font: 700 11px/1.3 var(--font-display); letter-spacing: .09em; text-transform: uppercase; }
+.fx-top h2 { margin: 0; font: 800 22px/1.2 var(--font-display); color: var(--brand-ink); text-transform: none; letter-spacing: 0; }
+.fx-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
+.fx-meta .cv { display: grid; grid-template-columns: auto auto; grid-template-rows: auto auto; column-gap: 7px; align-items: center; padding: 5px 12px 6px 10px; border-radius: 10px; background: var(--surface-2); border: 1px solid var(--line); color: var(--fg); cursor: copy; text-align: left; }
+.fx-meta .cv .i { grid-row: 1 / 3; width: 18px; height: 18px; margin: 0; color: var(--brand-ink); }
+.fx-meta .cv small { font: 700 9.5px/1.2 var(--font-display); letter-spacing: .09em; text-transform: uppercase; color: var(--muted); }
+.fx-meta .cv > span { font: 700 16px/1.2 var(--font-body); white-space: nowrap; }
+.fx-meta .cv:not(.fx-mi):hover { border-color: var(--brand); background: var(--barfill); }
+.fx-meta .fx-mi { cursor: default; }
+.fx-mc { display: inline-flex; align-items: center; padding: 8px 12px; border-radius: 10px; border: 1px solid color-mix(in srgb, var(--mc) 45%, transparent); background: color-mix(in srgb, var(--mc) 10%, transparent); font-weight: 700; font-size: 14px; text-decoration: none; }
+.fx-mc:hover { background: color-mix(in srgb, var(--mc) 18%, transparent); }
+.fx-rv > summary { display: flex; align-items: center; }
+.fx-lb { margin: 0; font-weight: 600; display: flex; align-items: center; }
+.fx-lb small { font-weight: 400; color: var(--muted); margin-left: .35em; }
+.fx-ta { font: inherit; font-size: 14px; padding: 8px 12px; border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface); color: var(--fg); resize: vertical; }
+.fx-go { display: flex; align-items: center; gap: 6px; }
+.fx-name span { display: flex; align-items: center; }
 /* ResultsVault's checks for the whole match */
 .fx-checks { border-radius: var(--radius); padding: 10px 14px; background: var(--surface); border: 1px solid var(--line); }
 .fx-checks.bad { border-color: var(--red); }
 .fx-checks.ok { border-color: var(--win); }
-.fx-ck-h { margin: 0 0 6px; font-weight: 700; font-size: 14px; }
+.fx-ck-h { margin: 0 0 6px; font-weight: 700; font-size: 14px; display: flex; align-items: center; }
 .fx-checks.ok .fx-ck-h { color: var(--win); margin: 0; }
 .fx-checks.bad .fx-ck-h { color: var(--red-ink); }
 .fx-ck-inn { font-size: 13.5px; }
@@ -523,17 +554,12 @@ details.dcat > summary small { display: block; color: var(--muted); font-size: 1
 .fx-ck-inn li.bad { color: var(--red-ink); font-weight: 600; }
 .fx-ck-inn li .link { font-size: 12.5px; margin-left: 6px; }
 /* "I changed this in ResultsVault": a big tick the captain can't miss */
-.fx-rvdone { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 12px; align-items: center; padding: 10px 14px; border: 2px dashed var(--line); border-radius: 8px; cursor: pointer; }
+.fx-rvdone { display: flex; gap: 12px; align-items: center; padding: 10px 14px; border: 2px dashed var(--line); border-radius: 8px; cursor: pointer; }
 .fx-rvdone input { position: absolute; opacity: 0; pointer-events: none; }
 .fx-tick { display: grid; place-items: center; width: 30px; height: 30px; border-radius: 50%; border: 2px solid var(--line); color: transparent; font-weight: 800; font-size: 17px; }
-.fx-rvdone small { display: block; color: var(--muted); font-size: 12.5px; }
 .fx-rvdone.on { border: 2px solid var(--win); background: #eef8f2; }
 .fx-rvdone.on .fx-tick { background: var(--win); border-color: var(--win); color: #fff; }
 .fx-rvdone:has(input:focus-visible) { outline: 2px solid var(--focus); outline-offset: 2px; }
-.fx-comment { display: grid; gap: 4px; }
-.fx-comment span { font-weight: 600; }
-.fx-comment small { font-weight: 400; color: var(--muted); }
-.fx-comment textarea { font: inherit; font-size: 14px; padding: 8px 12px; border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface); color: var(--fg); resize: vertical; }
 .fx-canned { display: flex; flex-wrap: wrap; gap: 6px; margin-top: -4px; }
 .fx-cn { border: 1px solid var(--line); background: var(--surface-2); border-radius: 999px; padding: 3px 10px; font: 500 12.5px/1.4 var(--font-body); color: var(--fg); cursor: pointer; text-align: left; }
 .fx-cn:hover { border-color: var(--brand); }
@@ -1927,14 +1953,39 @@ footer p { margin: 0; max-width: 90ch; }
     scores: ['Match scores', RV + 'framehost.aspx?fhid=%2fcommon%2fpages%2fadmin%2frv%2fcricket%2fmatchscores.aspx', 'Enter Match Results: totals, wickets and overs per innings', 'Enter Match Results'],
     card: ['Scorecard', RV + 'framehost.aspx?fhid=%2fcommon%2fpages%2fadmin%2frv%2fcricket%2fEnterPlayerScores.aspx', 'Enter Player Scores: dismissals, fielders, bowlers, runs and balls per player', 'Enter Player Scores'],
   };
-  const copyChip = (label, val) => `<button class="cv" data-copyval="${esc(val)}" title="Copy ${esc(label.toLowerCase())}"><small>${esc(label)}</small>${esc(val)}</button>`;
+  // Small line icons (Lucide shapes), drawn in the text colour.
+  const ICONS = {
+    target: '<circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/>',
+    user: '<path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>',
+    calc: '<rect x="4" y="2" width="16" height="20" rx="2"/><path d="M8 6h8M8 10h.01M12 10h.01M16 10h.01M8 14h.01M12 14h.01M16 14h.01M8 18h.01M12 18h.01M16 18h.01"/>',
+    clip: '<rect x="8" y="2" width="8" height="4" rx="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2M12 11h4M12 16h4M8 11h.01M8 16h.01"/>',
+    check: '<circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/>',
+    shield: '<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/>',
+    book: '<path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20V2H6.5A2.5 2.5 0 0 0 4 4.5v15z"/><path d="M6.5 17A2.5 2.5 0 0 0 4 19.5 2.5 2.5 0 0 0 6.5 22H20v-5"/>',
+    x: '<circle cx="12" cy="12" r="10"/><path d="m15 9-6 6M9 9l6 6"/>',
+    alert: '<path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><path d="M12 9v4M12 17h.01"/>',
+    info: '<circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/>',
+    cal: '<rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/>',
+    round: '<path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/>',
+    trophy: '<path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6M18 9h1.5a2.5 2.5 0 0 0 0-5H18M4 22h16M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22M18 2H6v7a6 6 0 0 0 12 0V2Z"/>',
+    hash: '<path d="M4 9h16M4 15h16M10 3 8 21M16 3l-2 18"/>',
+    copy: '<rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>',
+    wrench: '<path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/>',
+    msg: '<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>',
+    save: '<path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><path d="M17 21v-8H7v8M7 3v5h8"/>',
+  };
+  const ico = name => `<svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICONS[name]}</svg>`;
+  // Explanations live in a tooltip behind a small (i), so the page stays calm; keyboard users get it on focus.
+  const infoTip = text => (text ? `<span class="tip" tabindex="0" role="img" aria-label="${esc(text)}" data-tip="${esc(text)}">${ico('info')}</span>` : '');
+  const GROUP_ICON = ['target', 'user', 'calc', 'clip'];
+  const copyChip = (label, val, icon) => `<button class="cv" data-copyval="${esc(val)}" title="Copy ${esc(label.toLowerCase())}">${icon ? ico(icon) : ''}<small>${esc(label)}</small><span>${esc(val)}</span></button>`;
   const typeInfoOf = k => {
     const gi = ISSUE_GROUPS.findIndex(g => g[1].some(t => t[0] === k));
     return { gi, label: gi < 0 ? k : ISSUE_GROUPS[gi][1].find(t => t[0] === k)[1] };
   };
   // Every issue once, k = its place in the list, for the fix buttons.
   const issueAll = (D.issues || []).map(([id, side, type, text, ref], k) => ({ k, m: matchById.get(id), side, type, text, ref })).filter(x => x.m);
-  const dcat = (title, note, count, body, open) => `<details class="dcat"${open ? ' open' : ''}><summary><span><b>${esc(title)}</b>${note ? `<small>${esc(note)}</small>` : ''}</span><span class="dcount">${count}</span></summary>${body}</details>`;
+  const dcat = (title, note, count, body, open, shown) => `<details class="dcat"${open ? ' open' : ''}><summary><span><b>${esc(title)}</b>${shown ? `<small>${esc(note)}</small>` : infoTip(note)}</span><span class="dcount">${count}</span></summary>${body}</details>`;
 
   function renderIssues() {
     const teamsOn = new Set(state.teams);
@@ -1961,16 +2012,16 @@ footer p { margin: 0; max-width: 90ch; }
     const typeOrder = ISSUE_GROUPS.flatMap(([group, types]) => types.map(([k, label]) => [k, label, group]));
     const typeInfo = Object.fromEntries(typeOrder.map(([k, label, group], i) => [k, { label, group, i, gi: ISSUE_GROUPS.findIndex(g => g[0] === group) }]));
     // Only worth saying whose figures it is when opponents are shown too.
-    const sideTag = x => (state.issueOpp ? `<span class="iss-side ${x.side}">${x.side === 'v' ? 'VCC' : 'Opponent'}</span>` : '');
-    const typeTag = x => `<span class="iss-type"><i class="dot g${typeInfo[x.type].gi}"></i>${esc(typeInfo[x.type].label)}</span>`;
-    const ext = (m, text) => `<a href="${scorecard(m)}" target="_blank" rel="noopener">${esc(text)}<span aria-hidden="true"> ↗</span></a>`;
+    const sideTag = x => (state.issueOpp ? `<span class="lbl side-${x.side}">${x.side === 'v' ? 'VCC' : 'Opponent'}</span>` : '');
+    const typeTag = x => `<span class="lbl g${typeInfo[x.type].gi}">${ico(GROUP_ICON[typeInfo[x.type].gi])}${esc(typeInfo[x.type].label)}</span>`;
+    const ext = (m, text) => `<a href="${scorecard(m)}" target="_blank" rel="noopener" title="Open the scorecard on the Matchcentre">${esc(text)}</a>`;
     // Ticked as fixed by this browser's user: faded, still listed until the reload confirms it.
     // One row per issue: a stripe in the colour of its kind, the sentence, where it is, and on the right
     // whether it's been solved and the button to fix it.
     const issueRow = (x, meta) => {
       const f = fixByKey.get(issueKey(x)), st = f ? fixState(f)[1] : 'open';
       return `<li class="iss g${typeInfo[x.type].gi} st-${st}"><div class="iss-body"><p class="iss-t">${esc(x.text)}</p><p class="iss-m">${meta}</p></div>
-        <div class="iss-act">${fixBadge(f)}<button class="btn sm fixbtn${f ? '' : ' primary'}" data-fix="${x.k}">${f ? 'View fix' : 'Fix it'}</button></div></li>`;
+        <div class="iss-act">${fixBadge(f)}<button class="btn sm fixbtn${f ? '' : ' primary'}" data-fix="${x.k}">${ico('wrench')}${f ? 'View fix' : 'Fix it'}</button></div></li>`;
     };
     // Round and match ID, to find the match in ResultsVault; the rest is in the fix dialog.
     const ids = m => `<span class="cvs sm">${copyChip('Round', m.round || '–')}${copyChip('Match ID', m.id)}</span>`;
@@ -1989,7 +2040,7 @@ footer p { margin: 0; max-width: 90ch; }
           const mr = rows.filter(x => x.m === m);
           return `<div class="iss-match"><p class="iss-mh">${ext(m, `${fmtDate(m.date)} · v ${m.opp}`)}</p>${ids(m)}<ul>${mr.map(x => issueRow(x, typeTag(x) + sideTag(x))).join('')}</ul></div>`;
         }).join('')}</div>`;
-        return dcat(teamName(t), note, rows.length, body, matchOn.size);
+        return dcat(teamName(t), note, rows.length, body, matchOn.size, true);
       }).join('');
       groups = groups ? `<div class="dcats">${groups}</div>` : '';
     } else {
@@ -1999,7 +2050,7 @@ footer p { margin: 0; max-width: 90ch; }
           if (!rows.length) return '';
           return dcat(label, note, rows.length, `<ul class="ilist">${rows.map(x => issueRow(x, ext(x.m, `${fmtDate(x.m.date)} · ${teamOf(x.m).label} v ${x.m.opp}`) + sideTag(x) + ids(x.m))).join('')}</ul>`, matchOn.size);
         }).join('');
-        return cats ? `<div class="dgroup"><h3><span class="u">${esc(title)}</span></h3><div class="dcats">${cats}</div></div>` : '';
+        return cats ? `<div class="dgroup"><h3 class="gh g${ISSUE_GROUPS.findIndex(g => g[0] === title)}">${ico(GROUP_ICON[ISSUE_GROUPS.findIndex(g => g[0] === title)])}<span class="u">${esc(title)}</span></h3><div class="dcats">${cats}</div></div>` : '';
       }).join('');
     }
     const copyRows = [...list].sort(byTeam
@@ -2019,19 +2070,19 @@ footer p { margin: 0; max-width: 90ch; }
           <div class="ifside"><span class="mini">Whose figures</span>${seg('issueOpp', [['v', 'VCC only'], ['both', 'VCC and opponents']], state.issueOpp ? 'both' : 'v', 'Whose figures', 'sm')}
             ${seg('issueSaved', [['all', 'All issues'], ['open', 'Not solved yet']], state.issueSaved, 'Solved issues', 'sm')}
             <span class="ilinks iall"><span class="mini">All issue types</span><button class="link" data-issue-all="all" data-on="1">All</button><button class="link" data-issue-all="all" data-on="0">None</button></span></div>
-          <div class="igrid">${ISSUE_GROUPS.map(([title, types], gi) => `<fieldset class="icol"><legend><i class="dot g${gi}"></i>${esc(title)}</legend>
+          <div class="igrid">${ISSUE_GROUPS.map(([title, types], gi) => `<fieldset class="icol"><legend class="gh g${gi}">${ico(GROUP_ICON[gi])}${esc(title)}</legend>
             <div class="ilinks"><button class="link" data-issue-all="${gi}" data-on="1">All</button><button class="link" data-issue-all="${gi}" data-on="0">None</button></div>
             ${types.map(([k, label, note]) => `<label class="icheck" title="${esc(note)}"><input type="checkbox" name="issueType" id="it-${k}" value="${k}"${typeOn(k) ? ' checked' : ''}><span>${esc(label)}</span><small>${perType[k] || 0}</small></label>`).join('')}
           </fieldset>`).join('')}</div>
         </div>
       </details>`;
-    $('#data-issues').innerHTML = `<div class="card-head"><h2 id="h-issues">Matchcentre data issues</h2>${tools}</div>
+    $('#data-issues').innerHTML = `<div class="card-head"><h2 id="h-issues">Matchcentre data issues ${infoTip('Gaps and mistakes in the Matchcentre scorecards that make the numbers above less complete. Press Fix it on an issue: it works out the right value with you and tells you what to change in ResultsVault. Click a round or match ID to copy it.')}</h2>${tools}</div>
       <div class="itop">
         <p class="itotal"><span><strong>${n0(list.length)}</strong> shown</span><span><strong>${n0(inTeams.length)}</strong> in total${teamsOn.size ? ' for the picked teams' : ''}</span>${teamsOn.size ? `<span><strong>${n0(all.length)}</strong> for all teams</span>` : ''}</p>
         ${filtersHtml}
         ${matchChips}
       </div>
-      <p class="sub">${hidden.length ? `Hidden: ${hidden.join(', ')}. ` : ''}Gaps and mistakes in the Matchcentre scorecards that make the numbers above less complete. Press <b>Fix it</b> on an issue: it works out the right value with you and lists exactly what to change in ResultsVault admin. Click a value to copy it.</p>
+      ${hidden.length ? `<p class="sub">Hidden: ${hidden.join(', ')}.</p>` : ''}
       ${list.length ? `<div class="dgroups">${groups}</div>` : '<p class="empty">No issues with these settings. Switch on more issue types or include the opponents.</p>'}`;
   }
 
@@ -2043,10 +2094,11 @@ footer p { margin: 0; max-width: 90ch; }
   const issueKey = x => `${x.m.id}|${x.type}|${x.text}`;
   let fixByKey = new Map(savedFixes.map(f => [f.key, f]));
   const FIX_STATUS = { saved: ['Saved for the jaarverslag', 'todo'], rv: ['Solved in ResultsVault', 'rv'], confirmed: ['Confirmed by admin', 'ok'], rejected: ['Fix rejected', 'rej'] };
+  const STATUS_ICON = { todo: 'book', rv: 'check', ok: 'shield', rej: 'x', in: 'check' };
   const fixBadge = f => {
     if (!f) return '';
     const [label, cls] = FIX_STATUS[f.status] || FIX_STATUS.saved;
-    return `<span class="fx-badge ${cls}" title="Saved by ${esc(f.captain)}, ${esc(fmtTime(Date.parse(f.updated || f.saved)))}">${f.status === 'rejected' ? '✗' : '✓'} ${label}</span>`;
+    return `<span class="fx-badge ${cls}" title="Saved by ${esc(f.captain)}, ${esc(fmtTime(Date.parse(f.updated || f.saved)))}${f.comment ? `: ${esc(f.comment)}` : ''}">${ico(STATUS_ICON[cls])}${label}</span>`;
   };
   const NOT_OUT = new Set([0, 1, 13, 14, 15]);
   const BY_BOWLER = new Set([2, 3, 4, 5, 7]); // bowled, caught, lbw, stumped, hit wicket
@@ -2438,6 +2490,7 @@ footer p { margin: 0; max-width: 90ch; }
   // Ready-made comments, one click each.
   const CANNED = [
     'The opposition team has already entered results for this match.',
+    'This match has been locked for further changes by competing teams.',
     'Checked against the scorebook.',
     'No scorebook: this is a best guess.',
     'Asked the other captain.',
@@ -2493,11 +2546,11 @@ footer p { margin: 0; max-width: 90ch; }
       const who = inn.side === 'v' ? teamOf(m).label : m.opp;
       return `<div class="fx-ck-inn"><b>${esc(who)} batting</b><ul>${list.map(c => {
         const other = !c.ok && issueAll.find(i => i.m.id === m.id && i.type === CHECK_TYPE[c.id] && i.ref && i.ref.inn && i.ref.inn.join() === [inn.side, inn.no].join() && !fixCur.keys.includes(issueKey(i)));
-        return `<li class="${c.ok ? 'ok' : 'bad'}"><span>${c.ok ? '✓' : '✗'}</span> ${esc(c.text)}${other ? ` <button class="link" data-fix="${other.k}">Fix this</button>` : ''}</li>`;
+        return `<li class="${c.ok ? 'ok' : 'bad'}">${ico(c.ok ? 'check' : 'alert')}${esc(c.text)}${other ? ` <button class="link" data-fix="${other.k}">Fix this</button>` : ''}</li>`;
       }).join('')}</ul></div>`;
     }).join('');
     const allOk = m.innings.every((inn, n) => rvChecks(after[n]).every(c => c.ok));
-    return `<div class="fx-checks ${allOk ? 'ok' : 'bad'}"><p class="fx-ck-h">${allOk ? '✓ ResultsVault will accept this match' : 'ResultsVault only saves this match when everything below is ✓'}</p>${blocks}</div>`;
+    return `<div class="fx-checks ${allOk ? 'ok' : 'bad'}"><p class="fx-ck-h">${allOk ? `${ico('check')}ResultsVault will accept this match` : `${ico('alert')}ResultsVault won't save this match yet ${infoTip('ResultsVault checks the whole match, both innings, and only saves it when every check below holds.')}`}</p>${blocks}</div>`;
   }
   // Left column, redrawn on every change: scorecard(s) with the changed cells marked, and the ResultsVault steps.
   function renderLive() {
@@ -2510,15 +2563,14 @@ footer p { margin: 0; max-width: 90ch; }
     $('#fx-checks').innerHTML = checksHtml(after);
     const steps = fixSteps();
     $('#fx-steps').innerHTML = steps ? `<ol class="fx-steps">${steps.map(s => `<li>${s}</li>`).join('')}</ol>` : '<p class="fx-wait">Make a choice first.</p>';
-    $('#fx-copy').disabled = !steps;
     const ready = !!edits;
     const btn = $('#fx-save');
     btn.disabled = !ready || !FIX_URL;
-    btn.textContent = fixCur.rv ? '✓ Save: solved in ResultsVault' : 'Save for the jaarverslag only';
+    btn.innerHTML = fixCur.rv ? `${ico('check')}Save: solved in ResultsVault` : `${ico('book')}Save for the jaarverslag only`;
     btn.classList.toggle('rv', fixCur.rv);
-    $('#fx-save-note').textContent = fixCur.rv
-      ? 'Marked as solved. It leaves the list after the next "Reload all data", once the Matchcentre has it.'
-      : 'Not changed in ResultsVault: the fix is kept here and counts for the jaarverslag. The admins see it and can change it in ResultsVault.';
+    $('#fx-save-tip').innerHTML = infoTip(fixCur.rv
+      ? 'Saved as solved. It leaves the list after the next "Reload all data", once the Matchcentre has it.'
+      : 'Not changed in ResultsVault: the fix is kept here and counts for the jaarverslag. The admins see it and can change it in ResultsVault.');
     $('#fx-hint').textContent = !FIX_URL ? 'Saving works on the published page only.' : ready ? fixCur.msg : 'Make a choice first.';
   }
   function renderFix() {
@@ -2527,22 +2579,23 @@ footer p { margin: 0; max-width: 90ch; }
       ? `<label class="fx-num"><span>${esc(i.label)}</span><input type="number" inputmode="numeric" data-fx-num="${i.key}" min="${i.min}" max="${i.max}" value="${esc(vals[i.key] ?? '')}"><small>${i.max < 999 ? `${i.min} to ${i.max}` : `at least ${i.min}`}</small></label>`
       : `<div class="fx-pickw">${i.groups.reduce((n, g) => n + g.items.length, 0) > 8 ? `<input type="search" class="fx-q" data-fx-q="${i.key}" placeholder="Type a name" aria-label="Search names">` : ''}
           <div class="fx-pick" role="radiogroup" aria-label="${esc(i.label)}">${i.groups.map(g => `<p class="fx-pg">${esc(g.title)}</p>${g.items.map(([pid, hint]) => `<label data-name="${esc(S.fullName(pid).toLowerCase())}"><input type="radio" name="fxp-${i.key}" value="${pid}"${String(vals[i.key]) === String(pid) ? ' checked' : ''}><span>${esc(S.fullName(pid))}</span>${hint ? `<small>${esc(hint)}</small>` : ''}</label>`).join('') || '<p class="empty">Nobody to pick.</p>'}`).join('')}</div></div>`;
-    const opts = spec.options.map((o, i) => `<div class="fx-opt${i === choice ? ' on' : ''}"><label class="fx-ol"><input type="radio" name="fx-opt" value="${i}"${i === choice ? ' checked' : ''}><span>${o.label}${o.rec ? ' <em class="fx-rec">Best guess</em>' : ''}${o.note && i === choice ? `<small>${o.note}</small>` : ''}</span></label>
+    const opts = spec.options.map((o, i) => `<div class="fx-opt${i === choice ? ' on' : ''}"><label class="fx-ol"><input type="radio" name="fx-opt" value="${i}"${i === choice ? ' checked' : ''}><span>${o.label}${o.rec ? ' <em class="fx-rec">Best guess</em>' : ''}${infoTip(o.note)}</span></label>
         ${i === choice && o.inputs && o.inputs.length ? `<div class="fx-in">${o.inputs.map(inputHtml).join('')}</div>` : ''}</div>`).join('');
     const f = fixByKey.get(issueKey(x));
     const st = f && fixState(f);
     const savedNote = f ? `<p class="fx-savedby ${st[1]}"><b>${esc(st[0])}</b> · ${esc(f.captain)} saved “${esc(f.fix)}” on ${esc(fmtTime(Date.parse(f.updated || f.saved)))}.${f.by ? ` ${f.status === 'rejected' ? 'Rejected' : 'Confirmed'} by ${esc(f.by)}.` : ''}${f.comment ? ` <i>“${esc(f.comment)}”</i>` : ''}${f.note ? ` ${esc(f.note)}` : ''}</p>` : '';
     const adminBtns = f && isAdmin() ? `<p class="fx-adm"><span>Admin:</span>${f.status !== 'confirmed' ? `<button class="btn sm" data-fix-status="confirmed" data-key="${esc(f.key)}">Confirm solved</button>` : ''}${f.status !== 'rejected' ? `<button class="btn sm" data-fix-status="rejected" data-key="${esc(f.key)}">Reject</button>` : ''}${f.status !== 'saved' ? `<button class="btn sm" data-fix-status="saved" data-key="${esc(f.key)}">Undo</button>` : ''}</p>` : '';
     const who = captainName
-      ? `<p class="fx-who">Saving as <b>${esc(captainName)}</b>${isAdmin() ? ' (admin)' : ''} · <button class="link" data-fx-rename>not you?</button></p>`
-      : `<label class="fx-name"><span>Your name</span><input type="text" data-fx-name maxlength="60" autocomplete="name" placeholder="First and last name"><small>Asked once, remembered on this device.</small></label>`;
+      ? `<p class="fx-who">${ico('user')}Saving as <b>${esc(captainName)}</b>${isAdmin() ? ' (admin)' : ''} · <button class="link" data-fx-rename>not you?</button></p>`
+      : `<label class="fx-name"><span>${ico('user')}Your name ${infoTip('Asked once, remembered on this device.')}</span><input type="text" data-fx-name maxlength="60" autocomplete="name" placeholder="First and last name"></label>`;
     const t = teamOf(m);
     // What a captain has to find and type in ResultsVault: big, and one click to copy.
-    const meta = `<div class="fx-meta"><span class="fx-mi"><small>Date</small>${esc(fmtDate(m.date))}</span>${copyChip('Round', m.round || '?')}${copyChip('League', t.grade)}${copyChip('Match ID', m.id)}<a class="fx-mc" href="${scorecard(m)}" target="_blank" rel="noopener">Matchcentre ↗</a></div>`;
+    const meta = `<div class="fx-meta"><span class="cv fx-mi">${ico('cal')}<small>Date</small><span>${esc(fmtDate(m.date))}</span></span>${copyChip('Round', m.round || '?', 'round')}${copyChip('League', t.grade, 'trophy')}${copyChip('Match ID', m.id, 'hash')}<a class="fx-mc" href="${scorecard(m)}" target="_blank" rel="noopener">Matchcentre</a></div>`;
     const canned = CANNED.map((c, i) => `<button class="fx-cn" data-fx-canned="${i}">${esc(c)}</button>`).join('');
+    const intro = spec.intro.replace(/<small class="fx-sub">([\s\S]*?)<\/small>/, (_, t) => infoTip(t.replace(/<[^>]+>/g, '')));
     $('#fix-body').innerHTML = `<header class="fx-top">
-        <div><p class="fx-kind"><i class="dot g${info.gi}"></i>${esc(info.label)}</p>
-          <h2 id="fx-title">${esc(t.label)} v ${esc(m.opp)}</h2>${meta}</div>
+        <div class="fx-hd"><div class="fx-tt"><p class="fx-kind gh g${info.gi}">${ico(GROUP_ICON[info.gi])}${esc(info.label)}</p>
+          <h2 id="fx-title">${esc(t.label)} v ${esc(m.opp)}</h2></div>${meta}</div>
         <button class="fx-x" data-fx-close aria-label="Close">×</button></header>
       <div class="fx-cols">
         <section class="fx-left" aria-label="What's wrong">
@@ -2550,21 +2603,20 @@ footer p { margin: 0; max-width: 90ch; }
           <div id="fx-checks"></div>
           <div id="fx-preview" aria-live="polite"></div>
           ${m.innings.length > 1 && spec.inn ? `<button class="link fx-whole" data-fx-whole>${fixCur.whole ? 'Show only this innings' : 'Show the whole match'}</button>` : ''}
-          <details class="fx-rv"><summary>How to change it in ResultsVault</summary><div id="fx-steps"></div>
-            <p class="fx-btns"><button class="btn sm" id="fx-copy" data-fx-copy>Copy the steps</button><small>To send to someone with a ResultsVault login.</small></p></details>
+          <details class="fx-rv"><summary>${ico('wrench')}How to change it in ResultsVault</summary><div id="fx-steps"></div></details>
         </section>
         <section class="fx-right" aria-label="Your fix">
           ${savedNote}${adminBtns}
-          <h3 class="fx-q-title">${spec.intro}</h3>
+          <h3 class="fx-q-title">${intro}</h3>
           <div class="fx-opts" role="radiogroup">${opts}</div>
           <div class="fx-save">
-            <label class="fx-rvdone${fixCur.rv ? ' on' : ''}"><input type="checkbox" data-fx-rv${fixCur.rv ? ' checked' : ''}><span class="fx-tick" aria-hidden="true">✓</span><span><b>I changed this in ResultsVault</b><small>and ResultsVault saved the match</small></span></label>
-            <label class="fx-comment"><span>Comment <small>(optional)</small></span><textarea data-fx-comment rows="2" maxlength="500" placeholder="Anything the admins should know">${esc(fixCur.comment)}</textarea></label>
+            <p class="fx-lb">${ico('msg')}Comment <small>(optional)</small></p>
             <div class="fx-canned">${canned}</div>
+            <textarea class="fx-ta" data-fx-comment rows="2" maxlength="500" aria-label="Comment" placeholder="Or type your own">${esc(fixCur.comment)}</textarea>
             ${who}
-            <button class="btn primary big" id="fx-save" data-fx-save></button>
+            <label class="fx-rvdone${fixCur.rv ? ' on' : ''}"><input type="checkbox" data-fx-rv${fixCur.rv ? ' checked' : ''}><span class="fx-tick" aria-hidden="true">✓</span><b>I changed this in ResultsVault</b>${infoTip('Tick this once ResultsVault has accepted the change and saved the match.')}</label>
+            <div class="fx-go"><button class="btn primary big" id="fx-save" data-fx-save></button><span id="fx-save-tip"></span></div>
             <p class="fx-hint" id="fx-hint" role="status"></p>
-            <p class="fx-note" id="fx-save-note"></p>
           </div>
         </section>
       </div>`;
@@ -2614,7 +2666,6 @@ footer p { margin: 0; max-width: 90ch; }
     if (e.target === fixDlg || (t && t.hasAttribute('data-fx-close'))) return fixDlg.close();
     if (!t) return;
     if (t.hasAttribute('data-fx-whole')) { fixCur.whole = !fixCur.whole; renderFix(); }
-    if (t.hasAttribute('data-fx-copy')) copyText(fixText(), 'Copied the steps. Paste them in a message or email.');
     if (t.hasAttribute('data-fx-save')) saveFix();
     if (t.dataset.fxCanned) {
       const ta = $('[data-fx-comment]'), c = CANNED[+t.dataset.fxCanned];
@@ -2744,11 +2795,10 @@ footer p { margin: 0; max-width: 90ch; }
     copyReg.fixes = { what: 'the saved fixes', tables: [{ title: 'Captains\' fixes', head: ['Saved', 'Captain', 'Team', 'Opponent', 'Date', 'Round', 'Match ID', 'Grade', 'Issue', 'Fix', 'Comment', 'Status', 'By', 'Note'],
       body: list.map(f => [fmtTime(Date.parse(f.saved)), f.captain, f.team, f.opponent, f.date, f.round, f.matchId, f.grade, f.issue, f.fix, f.comment || '', fixState(f)[0], f.by || '', f.note || '']) }] };
     const counted = list.filter(f => f.status !== 'rejected' && openKeys.has(f.key)).length;
-    el.innerHTML = `<div class="card-head"><h2 id="h-fixes">Captains' fixes</h2><div class="head-tools">${list.length ? copyBtn('fixes', 'Copy list') : ''}</div></div>
-      <p class="sub">Fixes saved with <b>Fix it</b>, kept with the season data. ${admin ? `You're an admin (${esc(captainName)}): confirm or reject them here or in a fix.` : `Admins confirm them${ADMINS.length ? '' : ' (add their names to data/admins.json)'}.`}</p>
+    el.innerHTML = `<div class="card-head"><h2 id="h-fixes">Captains' fixes ${infoTip(`Fixes saved with Fix it, kept with the season data. ${admin ? 'You are an admin: confirm or reject them here or in a fix.' : `Admins confirm them${ADMINS.length ? '' : ' (add their names to data/admins.json)'}.`}`)}</h2><div class="head-tools">${list.length ? copyBtn('fixes', 'Copy list') : ''}</div></div>
       ${fixLoadErr ? `<p class="fetch-status err">Couldn't load the latest fixes: ${esc(fixLoadErr)}</p>` : ''}
       ${fixesStale ? '<p class="sf-stale">New fixes were saved since this page opened. The numbers include them after the page updates itself, in a few minutes. <button class="btn sm" data-reload-page>Reload</button></p>' : ''}
-      ${list.length ? `<label class="sf-use"><input type="checkbox" data-use-fixes${useFixes ? ' checked' : ''}> Count saved fixes in the numbers <small>(${plural(counted, 'fix', 'fixes')} not in the Matchcentre yet)</small></label>` : ''}
+      ${list.length ? `<label class="sf-use"><input type="checkbox" data-use-fixes${useFixes ? ' checked' : ''}> Count saved fixes in the numbers ${infoTip(`${plural(counted, 'fix', 'fixes')} not in the Matchcentre yet. Switched off, the numbers are the Matchcentre's alone.`)}</label>` : ''}
       ${groups ? `<div class="dcats">${groups}</div>` : '<p class="empty">No fixes saved yet.</p>'}`;
   }
   document.addEventListener('change', e => {
