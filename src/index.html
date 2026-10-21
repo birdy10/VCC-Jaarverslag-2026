@@ -525,14 +525,14 @@ details.dcat > summary small { display: block; color: var(--muted); font-size: 1
 .fx-hd { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px 24px; }
 .fx-kind { margin: 0 0 2px; font: 700 11px/1.3 var(--font-display); letter-spacing: .09em; text-transform: uppercase; }
 .fx-top h2 { margin: 0; font: 800 22px/1.2 var(--font-display); color: var(--brand-ink); text-transform: none; letter-spacing: 0; }
-.fx-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
-.fx-meta .cv { display: grid; grid-template-columns: auto auto; grid-template-rows: auto auto; column-gap: 7px; align-items: center; padding: 5px 12px 6px 10px; border-radius: 10px; background: var(--surface-2); border: 1px solid var(--line); color: var(--fg); cursor: copy; text-align: left; }
+.fx-meta { display: flex; flex-wrap: wrap; align-items: stretch; gap: 8px; }
+.fx-meta .cv { display: grid; grid-template-columns: auto auto; grid-template-rows: auto auto; column-gap: 9px; align-content: center; align-items: center; height: 54px; box-sizing: border-box; padding: 0 18px 0 14px; border-radius: 10px; background: var(--surface-2); border: 1px solid var(--line); color: var(--fg); cursor: copy; text-align: left; }
 .fx-meta .cv .i { grid-row: 1 / 3; width: 18px; height: 18px; margin: 0; color: var(--brand-ink); }
 .fx-meta .cv small { font: 700 9.5px/1.2 var(--font-display); letter-spacing: .09em; text-transform: uppercase; color: var(--muted); }
 .fx-meta .cv > span { font: 700 16px/1.2 var(--font-body); white-space: nowrap; }
 .fx-meta .cv:not(.fx-mi):hover { border-color: var(--brand); background: var(--barfill); }
 .fx-meta .fx-mi { cursor: default; }
-.fx-mc { display: inline-flex; align-items: center; padding: 8px 12px; border-radius: 10px; border: 1px solid color-mix(in srgb, var(--mc) 45%, transparent); background: color-mix(in srgb, var(--mc) 10%, transparent); font-weight: 700; font-size: 14px; text-decoration: none; }
+.fx-mc { display: inline-flex; align-items: center; height: 54px; box-sizing: border-box; padding: 0 18px; border-radius: 10px; border: 1px solid color-mix(in srgb, var(--mc) 45%, transparent); background: color-mix(in srgb, var(--mc) 10%, transparent); font-weight: 700; font-size: 14px; text-decoration: none; }
 .fx-mc:hover { background: color-mix(in srgb, var(--mc) 18%, transparent); }
 .fx-rv > summary { display: flex; align-items: center; }
 .fx-lb { margin: 0; font-weight: 600; display: flex; align-items: center; }
@@ -540,6 +540,14 @@ details.dcat > summary small { display: block; color: var(--muted); font-size: 1
 .fx-ta { font: inherit; font-size: 14px; padding: 8px 12px; border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface); color: var(--fg); resize: vertical; }
 .fx-go { display: flex; align-items: center; gap: 6px; }
 .fx-name span { display: flex; align-items: center; }
+/* club logos: both clubs of the match, the one the issue is about in full colour */
+.logos { display: inline-flex; align-items: center; gap: 4px; flex: none; }
+.logo { width: 30px; height: 30px; object-fit: contain; border-radius: 6px; background: #fff; border: 1px solid var(--line); padding: 2px; box-sizing: border-box; }
+.logo.dim { opacity: .35; filter: grayscale(1); }
+.iss .logos { margin-left: auto; }
+.iss .logos + .iss-act { margin-left: 0; }
+.fx-top h2 .logos { margin-right: 10px; vertical-align: -6px; }
+.fx-top h2 .logo { width: 34px; height: 34px; }
 /* ResultsVault's checks for the whole match */
 .fx-checks { border-radius: var(--radius); padding: 10px 14px; background: var(--surface); border: 1px solid var(--line); }
 .fx-checks.bad { border-color: var(--red); }
@@ -1981,6 +1989,11 @@ footer p { margin: 0; max-width: 90ch; }
   // Explanations live in a tooltip behind a small (i), so the page stays calm; keyboard users get it on focus.
   const infoTip = text => (text ? `<span class="tip" tabindex="0" role="img" aria-label="${esc(text)}" data-tip="${esc(text)}">${ico('info')}</span>` : '');
   const GROUP_ICON = ['target', 'user', 'calc', 'clip'];
+  // Club logos as the Matchcentre shows them (ResultsVault draws initials when a club has none).
+  const logoUrl = (id, name) => `https://api.resultsvault.co.uk/logo.ashx?txt=${encodeURIComponent(name || '')}&width=90&mode=2${id ? `&entityid=${id}` : ''}`;
+  const logo = (id, name, cls = '') => `<img class="logo ${cls}" src="${esc(logoUrl(id, name))}" alt="${esc(name)}" title="${esc(name)}" width="30" height="30" loading="lazy">`;
+  // Both clubs of a match; with a side given, that club's logo is in full colour and the other faded.
+  const matchLogos = (m, side) => `<span class="logos">${logo(m.clubs && m.clubs[0], teamOf(m).label, side === 'o' ? 'dim' : '')}${logo(m.clubs && m.clubs[1], m.opp, side === 'v' ? 'dim' : '')}</span>`;
   const copyChip = (label, val, icon) => `<button class="cv" data-copyval="${esc(val)}" title="Copy ${esc(label.toLowerCase())}">${icon ? ico(icon) : ''}<small>${esc(label)}</small><span>${esc(val)}</span></button>`;
   const typeInfoOf = k => {
     const gi = ISSUE_GROUPS.findIndex(g => g[1].some(t => t[0] === k));
@@ -2024,7 +2037,7 @@ footer p { margin: 0; max-width: 90ch; }
     const issueRow = (x, meta) => {
       const f = fixByKey.get(issueKey(x)), st = f ? fixState(f)[1] : 'open';
       return `<li class="iss g${typeInfo[x.type].gi} st-${st}"><div class="iss-body"><p class="iss-t">${esc(x.text)}</p><p class="iss-m">${meta}</p></div>
-        <div class="iss-act">${fixBadge(f)}<button class="btn sm fixbtn${f ? '' : ' primary'}" data-fix="${x.k}">${ico('wrench')}${f ? 'View fix' : 'Fix it'}</button></div></li>`;
+        ${matchLogos(x.m, x.side)}<div class="iss-act">${fixBadge(f)}<button class="btn sm fixbtn${f ? '' : ' primary'}" data-fix="${x.k}">${ico('wrench')}${f ? 'View fix' : 'Fix it'}</button></div></li>`;
     };
     // Round and match ID, to find the match in ResultsVault; the rest is in the fix dialog.
     const ids = m => `<span class="cvs sm">${copyChip('Round', m.round || '–')}${copyChip('Match ID', m.id)}</span>`;
@@ -2571,13 +2584,13 @@ footer p { margin: 0; max-width: 90ch; }
     $('#fx-steps').innerHTML = steps ? `<ol class="fx-steps">${steps.map(s => `<li>${s}</li>`).join('')}</ol>` : '<p class="fx-wait">Make a choice first.</p>';
     const ready = !!edits;
     const btn = $('#fx-save');
-    btn.disabled = !ready || !FIX_URL;
+    btn.disabled = !ready || !fixReady;
     btn.innerHTML = fixCur.rv ? `${ico('check')}Save: solved in ResultsVault` : `${ico('book')}Save for the jaarverslag only`;
     btn.classList.toggle('rv', fixCur.rv);
     $('#fx-save-tip').innerHTML = infoTip(fixCur.rv
       ? 'Saved as solved. It leaves the list after the next "Reload all data", once the Matchcentre has it.'
       : 'Not changed in ResultsVault: the fix is kept here and counts for the jaarverslag. The admins see it and can change it in ResultsVault.');
-    $('#fx-hint').textContent = !FIX_URL ? 'Saving works on the published page only.' : ready ? fixCur.msg : 'Make a choice first.';
+    $('#fx-hint').textContent = !FIX_URL ? 'Saving works on the published page only.' : !fixReady ? `Saving isn't possible right now${fixLoadErr ? `: ${fixLoadErr}` : ' (checking the fix service…)'}` : ready ? fixCur.msg : 'Make a choice first.';
   }
   function renderFix() {
     const { x, spec, choice, vals } = fixCur, m = x.m, info = typeInfoOf(x.type);
@@ -2601,7 +2614,7 @@ footer p { margin: 0; max-width: 90ch; }
     const intro = spec.intro.replace(/<small class="fx-sub">([\s\S]*?)<\/small>/, (_, t) => infoTip(t.replace(/<[^>]+>/g, '')));
     $('#fix-body').innerHTML = `<header class="fx-top">
         <div class="fx-hd"><div class="fx-tt"><p class="fx-kind gh g${info.gi}">${ico(GROUP_ICON[info.gi])}${esc(info.label)}</p>
-          <h2 id="fx-title">${esc(t.label)} v ${esc(m.opp)}</h2></div>${meta}</div>
+          <h2 id="fx-title">${matchLogos(m, x.side)}${esc(t.label)} v ${esc(m.opp)}</h2></div>${meta}</div>
         <button class="fx-x" data-fx-close aria-label="Close">×</button></header>
       <div class="fx-cols">
         <section class="fx-left" aria-label="What's wrong">
@@ -2686,7 +2699,7 @@ footer p { margin: 0; max-width: 90ch; }
   // commits new fixes. Captains and admins are known by the name they type once; admins are listed in
   // data/admins.json.
   const openKeys = new Set(issueAll.map(issueKey));
-  let fixesStale = false, fixLoadErr = '';
+  let fixesStale = false, fixLoadErr = '', fixReady = false;
   // Where a fix is: in the Matchcentre already (its issue is gone), confirmed by an admin, rejected, or saved.
   const fixState = f => (!openKeys.has(f.key) && f.status !== 'rejected' ? ['In the Matchcentre', 'in'] : FIX_STATUS[f.status] || FIX_STATUS.saved);
   function setName(name) {
@@ -2713,10 +2726,14 @@ footer p { margin: 0; max-width: 90ch; }
     if (!FIX_URL) return;
     try {
       const res = await fixCall(null, `?action=fixes&season=${encodeURIComponent(D.season)}`);
+      // An older refresh service answers with its reload status instead of the fixes: saving can't work then.
+      if (!Array.isArray(res.fixes)) throw new Error('the refresh service is an older version without fixes. Update it with refresh-service/Code.gs (see the README); until then fixes can\'t be saved.');
       fixLoadErr = '';
+      fixReady = true;
       if (res.admins) ADMINS = res.admins.map(a => a.trim().toLowerCase());
-      useFixList(res.fixes || []);
+      useFixList(res.fixes);
     } catch (e) { fixLoadErr = e.message; renderSavedFixes(); }
+    if (fixDlg.open && fixCur) renderLive();
   }
   function solvedKeys(edits) {
     const { x } = fixCur, after = previewInnings(edits);
@@ -2752,7 +2769,8 @@ footer p { margin: 0; max-width: 90ch; }
     $('#fx-hint').textContent = 'Saving…';
     try {
       const res = await fixCall(body);
-      const saved = res.fixes || [res.fix];
+      const saved = res.fixes || (res.fix ? [res.fix] : null);
+      if (!saved) throw new Error('the refresh service did not store it (is it the updated version?)');
       useFixList([...savedFixes.filter(f => !saved.some(s => s.key === f.key)), ...saved]);
       fixCur.msg = saved.length > 1 ? `Saved, for ${saved.length} issues of this innings. Thank you!` : 'Saved. Thank you!';
       renderFix();

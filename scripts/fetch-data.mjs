@@ -355,6 +355,7 @@ wanted.forEach(({ listing, teamId }, i) => {
   const leader = m.leader_text || '';
   matches.push({
     id: m.match_id, team: teamId, date: msDate(m.date1), round: m.round, opp: them.team_name, oppClub: them.club_name,
+    clubs: [us.entity_id, them.entity_id], // club ids, for the logos (ResultsVault's logo.ashx)
     home: !!us.is_home, venue: m.venue_name || '', status: m.status_id, result: resultOf(m, us, them),
     leader, score: m.score_text || '', toss: m.toss_won_by === us.team_name ? 'v' : (m.toss_won_by ? 'o' : null),
     maxOvers: m.MatchConfig?.max_overs ?? null, innings, detail: !!details[i],
