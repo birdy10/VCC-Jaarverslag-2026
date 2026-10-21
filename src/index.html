@@ -542,12 +542,13 @@ details.dcat > summary small { display: block; color: var(--muted); font-size: 1
 .fx-name span { display: flex; align-items: center; }
 /* club logos: both clubs of the match, the one the issue is about in full colour */
 .logos { display: inline-flex; align-items: center; gap: 4px; flex: none; }
-.logo { width: 30px; height: 30px; object-fit: contain; border-radius: 6px; background: #fff; border: 1px solid var(--line); padding: 2px; box-sizing: border-box; }
-.logo.dim { opacity: .35; filter: grayscale(1); }
+.logo { width: 37px; height: 37px; object-fit: cover; border-radius: 35px; background: #fff; border: 0px solid var(--line); padding: 0; box-sizing: border-box; }
+.lbl.lock { background: color-mix(in srgb, var(--s4) 18%, transparent); color: #7d6000; }
+.fx-locked { margin: 0; display: flex; gap: 10px; align-items: flex-start; padding: 10px 14px; border-radius: var(--radius); background: #fbf1d9; color: #5c4400; font-size: 14px; }
+.fx-locked .i { flex: none; margin-top: 2px; }
 .iss .logos { margin-left: auto; }
 .iss .logos + .iss-act { margin-left: 0; }
 .fx-top h2 .logos { margin-right: 10px; vertical-align: -6px; }
-.fx-top h2 .logo { width: 34px; height: 34px; }
 /* ResultsVault's checks for the whole match */
 .fx-checks { border-radius: var(--radius); padding: 10px 14px; background: var(--surface); border: 1px solid var(--line); }
 .fx-checks.bad { border-color: var(--red); }
@@ -1991,9 +1992,42 @@ footer p { margin: 0; max-width: 90ch; }
   const GROUP_ICON = ['target', 'user', 'calc', 'clip'];
   // Club logos as the Matchcentre shows them (ResultsVault draws initials when a club has none).
   const logoUrl = (id, name) => `https://api.resultsvault.co.uk/logo.ashx?txt=${encodeURIComponent(name || '')}&width=90&mode=2${id ? `&entityid=${id}` : ''}`;
-  const logo = (id, name, cls = '') => `<img class="logo ${cls}" src="${esc(logoUrl(id, name))}" alt="${esc(name)}" title="${esc(name)}" width="30" height="30" loading="lazy">`;
-  // Both clubs of a match; with a side given, that club's logo is in full colour and the other faded.
-  const matchLogos = (m, side) => `<span class="logos">${logo(m.clubs && m.clubs[0], teamOf(m).label, side === 'o' ? 'dim' : '')}${logo(m.clubs && m.clubs[1], m.opp, side === 'v' ? 'dim' : '')}</span>`;
+  const logo = (id, name) => `<img class="logo" src="${esc(logoUrl(id, name))}" alt="${esc(name)}" title="${esc(name)}" width="37" height="37" loading="lazy" crossorigin="anonymous" onload="logoFill(this)">`;
+  // Round logos: the circle takes the logo's own background colour (the commonest solid colour along its
+  // edge), white where the edge is see-through. ResultsVault serves the logos with CORS, so they can be read.
+  const logoBgs = new Map();
+  window.logoFill = img => {
+    if (logoBgs.has(img.src)) { img.style.background = logoBgs.get(img.src); return; }
+    let bg = '#fff';
+    try {
+      const w = img.naturalWidth, h = img.naturalHeight, c = document.createElement('canvas');
+      c.width = w; c.height = h;
+      const ctx = c.getContext('2d');
+      ctx.drawImage(img, 0, 0);
+      const px = ctx.getImageData(0, 0, w, h).data, count = new Map();
+      let edge = 0, solid = 0;
+      const look = (x, y) => {
+        const i = (y * w + x) * 4;
+        edge++;
+        if (px[i + 3] < 200) return;
+        solid++;
+        const k = [px[i], px[i + 1], px[i + 2]].map(v => Math.round(v / 16) * 16).join();
+        count.set(k, (count.get(k) || 0) + 1);
+      };
+      for (let x = 0; x < w; x++) { look(x, 0); look(x, h - 1); }
+      for (let y = 1; y < h - 1; y++) { look(0, y); look(w - 1, y); }
+      if (solid / edge > 0.5) {
+        const [k] = [...count].sort((a, b) => b[1] - a[1])[0];
+        bg = `rgb(${k.split(',').map(v => Math.min(255, +v)).join(',')})`;
+      }
+    } catch (e) {}
+    logoBgs.set(img.src, bg);
+    img.style.background = bg;
+  };
+  const matchLogos = m => `<span class="logos">${logo(m.clubs && m.clubs[0], teamOf(m).label)}${logo(m.clubs && m.clubs[1], m.opp)}</span>`;
+  // A league only HCC's admins can open in ResultsVault (the combined women's team is entered by HCC).
+  // Not the women's T20 Topklasse, which VCC's admins do see.
+  const rvLocked = m => teamOf(m).grade === "Inspire Women's Topklasse";
   const copyChip = (label, val, icon) => `<button class="cv" data-copyval="${esc(val)}" title="Copy ${esc(label.toLowerCase())}">${icon ? ico(icon) : ''}<small>${esc(label)}</small><span>${esc(val)}</span></button>`;
   const typeInfoOf = k => {
     const gi = ISSUE_GROUPS.findIndex(g => g[1].some(t => t[0] === k));
@@ -2037,9 +2071,10 @@ footer p { margin: 0; max-width: 90ch; }
     const issueRow = (x, meta) => {
       const f = fixByKey.get(issueKey(x)), st = f ? fixState(f)[1] : 'open';
       return `<li class="iss g${typeInfo[x.type].gi} st-${st}"><div class="iss-body"><p class="iss-t">${esc(x.text)}</p><p class="iss-m">${meta}</p></div>
-        ${matchLogos(x.m, x.side)}<div class="iss-act">${fixBadge(f)}<button class="btn sm fixbtn${f ? '' : ' primary'}" data-fix="${x.k}">${ico('wrench')}${f ? 'View fix' : 'Fix it'}</button></div></li>`;
+        ${matchLogos(x.m)}<div class="iss-act">${fixBadge(f)}<button class="btn sm fixbtn${f ? '' : ' primary'}" data-fix="${x.k}">${ico('wrench')}${f ? 'View fix' : 'Fix it'}</button></div></li>`;
     };
     // Round and match ID, to find the match in ResultsVault; the rest is in the fix dialog.
+    const lockTag = m => (rvLocked(m) ? `<span class="lbl lock" title="This league is only available to HCC's admins in ResultsVault">Only HCC can edit in ResultsVault</span>` : '');
     const ids = m => `<span class="cvs sm">${copyChip('Round', m.round || '–')}${copyChip('Match ID', m.id)}</span>`;
     const teamName = t => `${t.label} (${shortGrade(t)})`;
     let groups;
@@ -2054,7 +2089,7 @@ footer p { margin: 0; max-width: 90ch; }
         const ms = [...new Set(rows.map(x => x.m))];
         const body = `<div class="ilist">${ms.map(m => {
           const mr = rows.filter(x => x.m === m);
-          return `<div class="iss-match"><p class="iss-mh">${ext(m, `${fmtDate(m.date)} · v ${m.opp}`)}</p>${ids(m)}<ul>${mr.map(x => issueRow(x, typeTag(x) + sideTag(x))).join('')}</ul></div>`;
+          return `<div class="iss-match"><p class="iss-mh">${ext(m, `${fmtDate(m.date)} · v ${m.opp}`)}</p>${ids(m)}${lockTag(m)}<ul>${mr.map(x => issueRow(x, typeTag(x) + sideTag(x))).join('')}</ul></div>`;
         }).join('')}</div>`;
         return dcat(teamName(t), note, rows.length, body, matchOn.size, true);
       }).join('');
@@ -2064,7 +2099,7 @@ footer p { margin: 0; max-width: 90ch; }
         const cats = types.map(([k, label, note]) => {
           const rows = list.filter(x => x.type === k);
           if (!rows.length) return '';
-          return dcat(label, note, rows.length, `<ul class="ilist">${rows.map(x => issueRow(x, ext(x.m, `${fmtDate(x.m.date)} · ${teamOf(x.m).label} v ${x.m.opp}`) + sideTag(x) + ids(x.m))).join('')}</ul>`, matchOn.size);
+          return dcat(label, note, rows.length, `<ul class="ilist">${rows.map(x => issueRow(x, ext(x.m, `${fmtDate(x.m.date)} · ${teamOf(x.m).label} v ${x.m.opp}`) + sideTag(x) + ids(x.m) + lockTag(x.m))).join('')}</ul>`, matchOn.size);
         }).join('');
         return cats ? `<div class="dgroup"><h3 class="gh g${ISSUE_GROUPS.findIndex(g => g[0] === title)}">${ico(GROUP_ICON[ISSUE_GROUPS.findIndex(g => g[0] === title)])}<span class="u">${esc(title)}</span></h3><div class="dcats">${cats}</div></div>` : '';
       }).join('');
@@ -2514,6 +2549,7 @@ footer p { margin: 0; max-width: 90ch; }
     'No scorebook: this is a best guess.',
     'Asked the other captain.',
     'ResultsVault would not save the match: please help.',
+    'League is missing in ResultsVault, probably visible for HCC admin.',
   ];
   let fixCur = null;
   function openFix(x) {
@@ -2614,7 +2650,7 @@ footer p { margin: 0; max-width: 90ch; }
     const intro = spec.intro.replace(/<small class="fx-sub">([\s\S]*?)<\/small>/, (_, t) => infoTip(t.replace(/<[^>]+>/g, '')));
     $('#fix-body').innerHTML = `<header class="fx-top">
         <div class="fx-hd"><div class="fx-tt"><p class="fx-kind gh g${info.gi}">${ico(GROUP_ICON[info.gi])}${esc(info.label)}</p>
-          <h2 id="fx-title">${matchLogos(m, x.side)}${esc(t.label)} v ${esc(m.opp)}</h2></div>${meta}</div>
+          <h2 id="fx-title">${matchLogos(m)}${esc(t.label)} v ${esc(m.opp)}</h2></div>${meta}</div>
         <button class="fx-x" data-fx-close aria-label="Close">×</button></header>
       <div class="fx-cols">
         <section class="fx-left" aria-label="What's wrong">
@@ -2625,7 +2661,7 @@ footer p { margin: 0; max-width: 90ch; }
           <details class="fx-rv"><summary>${ico('wrench')}How to change it in ResultsVault</summary><div id="fx-steps"></div></details>
         </section>
         <section class="fx-right" aria-label="Your fix">
-          ${savedNote}${adminBtns}
+          ${rvLocked(m) ? `<p class="fx-locked">${ico('alert')}<span><b>Only HCC can change this match in ResultsVault.</b> The ${esc(t.grade)} isn't available to VCC's admins. Save the fix for the jaarverslag.</span></p>` : ''}${savedNote}${adminBtns}
           <h3 class="fx-q-title">${intro}</h3>
           <div class="fx-opts" role="radiogroup">${opts}</div>
           <div class="fx-save">
