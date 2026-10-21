@@ -212,7 +212,8 @@ for (const d of details) {
 const hashId = s => { let h = 7; for (const c of s) h = (h * 31 + c.charCodeAt(0)) | 0; return -(1000 + (Math.abs(h) % 1e9)); };
 
 // ---- data issues ------------------------------------------------------------------
-// [match id, side 'v'|'o', type, description]; the page groups them by type.
+// [match id, side 'v'|'o', type, description, ref]; the page groups them by type. ref points the page's fix
+// helper at the spot: inn = [batting side, innings no], bat = row on that batting card, pid = the player involved.
 const issues = [];
 const HOW_NAME = { 2: 'caught', 3: 'lbw', 4: 'bowled', 5: 'stumped', 7: 'hit wicket' };
 const toBalls = o => (o == null ? 0 : Math.trunc(o) * 6 + Math.round((o - Math.trunc(o)) * 10));
@@ -226,7 +227,7 @@ wanted.forEach(({ listing, teamId }, i) => {
   const them = m.MatchTeams.find(t => t !== us);
   if (!them || /^bye$/i.test(them.team_name)) return;
   const sideOf = t => (t === us ? 'v' : 'o');
-  const issue = (side, type, text) => issues.push([m.match_id, side, type, text]);
+  const issue = (side, type, text, ref) => issues.push(ref ? [m.match_id, side, type, text, ref] : [m.match_id, side, type, text]);
   // Youth pairs cricket (U11 and younger) scores in its own way, so totals aren't checked there.
   const pairs = /\bU ?(9|10|11)\b/i.test(teams.get(teamId).grade);
 
@@ -241,12 +242,12 @@ wanted.forEach(({ listing, teamId }, i) => {
       const id = reg || hashId(real ? `${t.entity_id}|${nameKey(full)}` : `${m.match_id}|${t.entity_id}|${tm.player_id}`);
       idMap.set(`${t.entity_id}|${tm.player_id}`, id);
       if (reg) {
-        issue(sideOf(t), 'guest-registered', `${full} (${t.team_name}) is entered as a guest player, but has a Matchcentre profile. Counted as that player here.`);
+        issue(sideOf(t), 'guest-registered', `${full} (${t.team_name}) is entered as a guest player, but has a Matchcentre profile. Counted as that player here.`, { pid: reg, guest: full });
       } else {
         addPlayer(id, tm.player_name3 || full, tm.player_name2 || full, tm.player_name);
         issue(sideOf(t), real ? 'guest' : 'guest-noname', real
           ? `${full} (${t.team_name}) has no Matchcentre profile.`
-          : `${t.team_name} has a player entered as "${(tm.player_name || '').trim() || '?'}", without a real name.`);
+          : `${t.team_name} has a player entered as "${(tm.player_name || '').trim() || '?'}", without a real name.`, { pid: id, guest: real ? full : (tm.player_name || '').trim() || '?' });
       }
     }
   }
@@ -273,61 +274,65 @@ wanted.forEach(({ listing, teamId }, i) => {
 
       // A dismissal credited to someone outside the fielding side's team list: keep it when the
       // player is known from other matches, drop it when nobody knows who it is.
-      const fielderOf = (b, id, role) => {
+      const fielderOf = (b, id, role, ref) => {
         const pid = pidOf(field, id);
         if (!pid) return null;
         if (!fieldIds.size || fieldIds.has(pid)) return pid;
         if (pid > 0 && knownIds.has(pid)) {
-          issue(fs, 'not-in-lineup', `${shortName(field, id)} is credited as ${role} (${b.player_name}: ${b.dismissal_text.trim()}), but isn't in ${field.team_name}'s team list. Probably the wrong player was picked.`);
+          issue(fs, 'not-in-lineup', `${shortName(field, id)} is credited as ${role} (${b.player_name}: ${b.dismissal_text.trim()}), but isn't in ${field.team_name}'s team list. Probably the wrong player was picked.`, { ...ref, pid, role });
           return pid;
         }
         return undefined; // unknown player
       };
-      const bat = batted.map(b => {
+      const innRef = [s, inn.innings_number];
+      const bat = batted.map((b, bi) => {
         const text = (b.dismissal_text || '').trim();
+        const ref = { inn: innRef, bat: bi };
         let fielder = b.dismisser1_id, bowler = b.dismisser2_id;
         if (b.dismissal_id === 2 || b.dismissal_id === 5) {
           const role = b.dismissal_id === 2 ? 'catcher' : 'wicketkeeper';
-          fielder = fielderOf(b, fielder, role);
-          if (!fielder) issue(fs, b.dismissal_id === 2 ? 'no-catcher' : 'no-keeper', `${b.player_name} (${who}) ${HOW_NAME[b.dismissal_id]} "${text}", ${fielder === undefined ? `${role} is a player id without a name` : `${role} not recorded`}.`);
-          else if (/\?|^(c|st)\s*(b\b|$)/.test(text) && !/^c\s*&\s*b/.test(text)) issue(fs, b.dismissal_id === 2 ? 'no-catcher' : 'no-keeper', `${b.player_name} (${who}) "${text}": the scorecard text has no ${role}.`);
+          fielder = fielderOf(b, fielder, role, ref);
+          // "c ? b X": the scorer left the catcher open; in practice that mostly means caught and bowled.
+          if (b.dismissal_id === 2 && /^c\s*\?\s*b\b/.test(text)) issue(fs, 'cqb', `${b.player_name} (${who}) "${text}": catcher not recorded, probably caught and bowled.`, ref);
+          else if (!fielder) issue(fs, b.dismissal_id === 2 ? 'no-catcher' : 'no-keeper', `${b.player_name} (${who}) ${HOW_NAME[b.dismissal_id]} "${text}", ${fielder === undefined ? `${role} is a player id without a name` : `${role} not recorded`}.`, ref);
+          else if (/\?|^(c|st)\s*(b\b|$)/.test(text) && !/^c\s*&\s*b/.test(text)) issue(fs, b.dismissal_id === 2 ? 'no-catcher' : 'no-keeper', `${b.player_name} (${who}) "${text}": the scorecard text has no ${role}.`, ref);
           fielder = fielder || null;
         } else if (b.dismissal_id === 6) {
-          fielder = fielderOf(b, fielder, 'run-out fielder') || null;
-          if (!fielder) issue(fs, 'no-runout-fielder', `${b.player_name} (${who}) run out, fielder not recorded.`);
-          bowler = bowler ? (fielderOf(b, bowler, 'run-out fielder') || null) : null;
+          fielder = fielderOf(b, fielder, 'run-out fielder', ref) || null;
+          if (!fielder) issue(fs, 'no-runout-fielder', `${b.player_name} (${who}) run out, fielder not recorded.`, ref);
+          bowler = bowler ? (fielderOf(b, bowler, 'run-out fielder', ref) || null) : null;
         } else {
           fielder = fielder ? pidOf(field, fielder) : null;
         }
         if (HOW_NAME[b.dismissal_id] && b.dismissal_id !== 6) {
-          const bw = bowler ? fielderOf(b, bowler, 'bowler') : null;
-          if (!bw) issue(fs, 'no-bowler', `${b.player_name} (${who}) ${HOW_NAME[b.dismissal_id]} "${text}", bowler ${bw === undefined ? 'is a player id without a name' : 'not recorded'}.`);
+          const bw = bowler ? fielderOf(b, bowler, 'bowler', ref) : null;
+          if (!bw) issue(fs, 'no-bowler', `${b.player_name} (${who}) ${HOW_NAME[b.dismissal_id]} "${text}", bowler ${bw === undefined ? 'is a player id without a name' : 'not recorded'}.`, ref);
           bowler = bw || null;
         }
-        if (!NOT_OUT_IDS.has(b.dismissal_id) && b.fow == null) issue(s, 'no-fow', `${b.player_name} (${who}) is out "${text}", but has no fall-of-wicket score.`);
-        if (b.dismissal_id !== 15 && b.balls == null && b.runs != null) issue(s, 'no-balls', `${b.player_name} (${who}) scored ${b.runs}, balls faced not recorded.`);
+        if (!NOT_OUT_IDS.has(b.dismissal_id) && b.fow == null) issue(s, 'no-fow', `${b.player_name} (${who}) is out "${text}", but has no fall-of-wicket score.`, ref);
+        if (b.dismissal_id !== 15 && b.balls == null && b.runs != null) issue(s, 'no-balls', `${b.player_name} (${who}) scored ${b.runs}, balls faced not recorded.`, ref);
         return [pidOf(side, b.player_id), b.number, b.runs, b.balls, b.fours, b.sixes, b.dismissal_id, b.dismissal_text, b.fow, b.fow_order, fielder, bowler];
       });
 
       if (inn.runs != null) {
         const total = `${who} ${inn.runs}/${inn.wickets ?? '?'}`;
-        if (!batted.length) issue(s, 'no-card', `${total}: no batting card.`);
-        if (!bowlers.length) issue(fs, 'no-card', `${total}: no bowling card.`);
+        if (!batted.length) issue(s, 'no-card', `${total}: no batting card.`, { inn: innRef });
+        if (!bowlers.length) issue(fs, 'no-card', `${total}: no bowling card.`, { inn: innRef });
         if (!pairs && batted.length) {
           const runs = batted.reduce((a, b) => a + (b.runs || 0), 0);
-          if (runs + (inn.extras || 0) !== inn.runs) issue(s, 'bat-sum', `${total}: batters' runs (${runs}) + extras (${inn.extras || 0}) = ${runs + (inn.extras || 0)}, not ${inn.runs}.`);
+          if (runs + (inn.extras || 0) !== inn.runs) issue(s, 'bat-sum', `${total}: batters' runs (${runs}) + extras (${inn.extras || 0}) = ${runs + (inn.extras || 0)}, not ${inn.runs}.`, { inn: innRef });
           const outs = batted.filter(b => !NOT_OUT_IDS.has(b.dismissal_id)).length;
-          if (inn.wickets != null && outs !== inn.wickets) issue(s, 'wkts', `${total}: ${outs} batters are out, but the total says ${inn.wickets} wickets.`);
+          if (inn.wickets != null && outs !== inn.wickets) issue(s, 'wkts', `${total}: ${outs} batters are out, but the total says ${inn.wickets} wickets.`, { inn: innRef });
         }
         if (!pairs && bowlers.length) {
           const runs = bowlers.reduce((a, b) => a + (b.runs || 0), 0);
           const byes = (inn.byes || 0) + (inn.leg_byes || 0) + (inn.penalty_runs || 0);
-          if (runs + byes !== inn.runs) issue(fs, 'bowl-sum', `${total}: bowlers' runs (${runs}) + byes, leg byes and penalties (${byes}) = ${runs + byes}, not ${inn.runs}.`);
+          if (runs + byes !== inn.runs) issue(fs, 'bowl-sum', `${total}: bowlers' runs (${runs}) + byes, leg byes and penalties (${byes}) = ${runs + byes}, not ${inn.runs}.`, { inn: innRef });
           const balls = bowlers.reduce((a, b) => a + toBalls(b.overs), 0);
-          if (inn.overs_bowled != null && balls !== toBalls(inn.overs_bowled)) issue(fs, 'bowl-overs', `${total}: bowlers' overs add up to ${oversOf(balls)}, the innings lasted ${oversOf(toBalls(inn.overs_bowled))} overs.`);
+          if (inn.overs_bowled != null && balls !== toBalls(inn.overs_bowled)) issue(fs, 'bowl-overs', `${total}: bowlers' overs add up to ${oversOf(balls)}, the innings lasted ${oversOf(toBalls(inn.overs_bowled))} overs.`, { inn: innRef });
           const wk = bowlers.reduce((a, b) => a + (b.wickets || 0), 0);
           const byBowler = batted.filter(b => HOW_NAME[b.dismissal_id]).length;
-          if (wk !== byBowler) issue(fs, 'bowl-wkts', `${total}: bowlers have ${wk} wickets, but ${byBowler} batters were out bowled, caught, lbw, stumped or hit wicket.`);
+          if (wk !== byBowler) issue(fs, 'bowl-wkts', `${total}: bowlers have ${wk} wickets, but ${byBowler} batters were out bowled, caught, lbw, stumped or hit wicket.`, { inn: innRef });
         }
       }
 
@@ -420,7 +425,7 @@ standings.sort((a, b) => a.sort - b.sort || a.grade.localeCompare(b.grade));
 const out = {
   season: SEASON_YEAR, generated: new Date().toISOString(), club: 'VCC', refreshed: REFRESH,
   teams: [...teams.values()].sort((a, b) => a.sort - b.sort || a.label.localeCompare(b.label)),
-  matches, players, standings, issues: issues.map(x => [x[0], x[1], x[2], fixDismissal(rename(x[3]))]),
+  matches, players, standings, issues: issues.map(x => [x[0], x[1], x[2], fixDismissal(rename(x[3])), ...x.slice(4)]),
 };
 await fs.mkdir(path.join(ROOT, 'data'), { recursive: true });
 for (const m of out.matches) {

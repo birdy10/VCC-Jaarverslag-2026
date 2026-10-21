@@ -17,9 +17,13 @@ Or run `node scripts/serve.mjs 2026` and open http://localhost:5178/: the same p
 by itself (the claude.ai viewer blocks calls to other sites), so publish it again after fetching.
 
 Each fetch compares its result with the previous `data/season-<year>.json` and keeps a log of new results,
-changed scorecards and renamed players; the page shows it under "Data updates". The fetch also checks every
-scorecard for gaps (catcher/keeper/bowler not recorded, guest players without a profile, cards that don't add up,
-missing fall of wicket or balls faced); the page lists them under "Matchcentre data issues".
+changed scorecards, renamed players and Matchcentre issues fixed or added (`scripts/changes.mjs`); the page shows it
+under "Data updates". The fetch also checks every scorecard for gaps (catcher/keeper/bowler not recorded, "c ? b",
+guest players without a profile, cards that don't add up, missing fall of wicket or balls faced); the page lists them
+under "Matchcentre data issues". Each issue carries a reference to its innings, batter row or player, so the page's
+"Fix it" helper can work out the most likely right value (team list pickers for players, the smallest change that
+makes a card add up for sums) and spell out the exact steps in ResultsVault admin. Nothing is written back: captains
+make the change in ResultsVault, and the next reload confirms it.
 
 Guest players (no Matchcentre profile) have match-local ids like -101 that the API reuses for other people in
 other matches. The fetch gives each guest a stable id from club + name, or the registered player's id when the

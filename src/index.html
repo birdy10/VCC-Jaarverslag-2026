@@ -397,6 +397,79 @@ details.dcat > summary small { display: block; color: var(--muted); font-size: 1
 .cv:hover { border-color: var(--brand-ink); }
 .cv:focus-visible { outline: 2px solid var(--focus); outline-offset: 1px; }
 .fixl a { color: var(--brand-ink); font-weight: 600; text-underline-offset: 2px; }
+.btn.sm { padding: 2px 10px; font-size: 12.5px; }
+.iss-m .fixbtn { margin-left: auto; }
+.iss-done { color: var(--win); font-weight: 700; }
+.iss.done .iss-t { color: var(--muted); }
+
+/* ---- fix dialog: three numbered steps, scorecard in between ---- */
+.fixdlg { width: min(760px, calc(100% - 24px)); max-height: calc(100dvh - 24px); padding: 0; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); color: var(--fg); box-shadow: 0 20px 60px rgba(10, 12, 40, .35); }
+.fixdlg::backdrop { background: rgba(14, 16, 40, .5); }
+#fix-body { padding: 18px 20px 20px; display: grid; grid-template-columns: minmax(0, 1fr); gap: 14px; }
+.fixdlg { overflow-x: hidden; }
+.fx-head { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 12px; align-items: start; }
+.fx-head .mini { display: flex; align-items: center; gap: 6px; margin: 0 0 4px; }
+.fx-head h2 { margin: 0; font: 600 17px/1.35 var(--font-body); text-transform: none; letter-spacing: 0; color: var(--fg); overflow-wrap: anywhere; }
+.fx-x { border: 0; background: none; font-size: 26px; line-height: 1; color: var(--muted); cursor: pointer; padding: 0 4px; }
+.fx-x:hover { color: var(--fg); }
+.fx-m { margin: -6px 0 0; font-size: 13px; color: var(--muted); }
+.fx-m a { color: inherit; }
+.fixdlg .fixbar { margin: -8px 0 0; }
+.fx-s { display: grid; gap: 8px; }
+.fx-s h3 { margin: 0; display: flex; align-items: center; gap: 8px; font: 700 13px/1.2 var(--font-display); letter-spacing: .06em; text-transform: uppercase; color: var(--brand-ink); }
+.fx-s h3 span { display: inline-grid; place-items: center; width: 22px; height: 22px; border-radius: 50%; background: var(--brand); color: var(--on-brand); font-size: 12px; letter-spacing: 0; }
+.fx-intro { margin: 0; font-size: 14.5px; }
+.fx-opts { display: grid; gap: 6px; }
+.fx-opt { border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface-2); }
+.fx-opt.on { border-color: var(--brand); box-shadow: inset 3px 0 0 var(--brand); }
+.fx-ol { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 10px; padding: 9px 12px; cursor: pointer; font-size: 14.5px; }
+.fx-ol input { margin: 3px 0 0; accent-color: var(--brand); }
+.fx-ol small { display: block; color: var(--muted); font-size: 12.5px; margin-top: 2px; }
+.fx-rec { font: 700 10px/1.6 var(--font-display); font-style: normal; letter-spacing: .06em; text-transform: uppercase; color: #fff; background: var(--win); padding: 1px 6px; border-radius: 3px; margin-left: 6px; vertical-align: 2px; white-space: nowrap; }
+.fx-in { padding: 0 12px 12px calc(12px + 13px + 10px); display: grid; gap: 10px; }
+.fx-pickw { display: grid; gap: 6px; }
+.fx-pl, .fx-num span { font-weight: 600; font-size: 13.5px; }
+.fx-q, .fx-num input { font: inherit; font-size: 14px; padding: 6px 10px; border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface); color: var(--fg); max-width: 320px; }
+.fx-num { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; }
+.fx-num input { width: 110px; }
+.fx-num input[aria-invalid="true"] { border-color: var(--red); }
+.fx-num small { color: var(--muted); font-size: 12.5px; }
+.fx-pick { max-height: 240px; overflow: auto; border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface); padding: 4px 0; }
+.fx-pick label { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 8px; align-items: baseline; padding: 5px 10px; font-size: 14px; cursor: pointer; }
+.fx-pick label[hidden] { display: none; }
+.fx-pick label:hover { background: var(--surface-2); }
+.fx-pick label:has(input:checked) { background: var(--barfill); font-weight: 600; }
+.fx-pick input { accent-color: var(--brand); margin: 0; position: relative; top: 2px; }
+.fx-pick small { color: var(--muted); font-size: 12px; font-weight: 400; }
+.fx-pg { margin: 6px 10px 2px; font: 700 10.5px/1.3 var(--font-display); letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+.fx-sc { border: 1px solid var(--line); border-radius: var(--radius); padding: 8px 12px; background: var(--surface-2); }
+.fx-sc > summary { cursor: pointer; font: 700 13px/1.2 var(--font-display); letter-spacing: .06em; text-transform: uppercase; color: var(--brand-ink); }
+.fx-card { margin-top: 10px; overflow-x: auto; }
+.fx-card + .fx-card { border-top: 1px solid var(--line); padding-top: 10px; }
+.fx-ch { margin: 0 0 6px; font-size: 13.5px; }
+.fx-t { border-collapse: collapse; width: 100%; font-size: 13px; margin-bottom: 6px; }
+.fx-t th { text-align: left; font-weight: 600; color: var(--muted); font-size: 11.5px; padding: 2px 6px; border-bottom: 1px solid var(--line); }
+.fx-t td, .fx-t tbody tr:first-child td { padding: 2px 6px; border-bottom: 1px solid var(--grid); font-weight: 400; }
+.fx-t .n { text-align: right; font-variant-numeric: tabular-nums; }
+.fx-t .how { color: var(--muted); }
+.fx-t td small { color: var(--muted); }
+.fx-t tr.hl td { background: var(--barfill); font-weight: 700; }
+.fx-card .fx-ex { margin: 0 0 8px; font-size: 13px; color: var(--muted); }
+.fx-chk { list-style: none; margin: 0; padding: 0; display: grid; gap: 2px; font-size: 13px; }
+.fx-chk .ok { color: var(--win); }
+.fx-chk .bad { color: var(--red-ink); font-weight: 600; }
+.fx-sc .link { margin-top: 8px; font-size: 13px; }
+.fx-steps { margin: 0; padding-left: 22px; display: grid; gap: 6px; font-size: 14.5px; }
+.fx-steps a { color: var(--brand-ink); font-weight: 600; }
+.fx-wait { margin: 0; color: var(--muted); font-style: italic; }
+.fx-btns { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 12px; margin: 0; }
+.fx-btns small, .fx-note { color: var(--muted); font-size: 12.5px; }
+.fx-note { margin: 0; }
+.fx-done { display: flex; align-items: center; gap: 8px; font-weight: 600; cursor: pointer; }
+.fx-done input { width: 18px; height: 18px; accent-color: var(--win); margin: 0; }
+.fixdlg #toast:not(.on) { display: none; }
+.fixdlg #toast { position: sticky; display: block; width: fit-content; margin: 0 auto 12px; bottom: 12px; left: auto; transform: none; }
+@media (max-width: 560px) { #fix-body { padding: 14px; } .fx-in { padding-left: 12px; } }
 .fetch-status { margin: -4px 0 14px; font-weight: 600; color: var(--brand-ink); white-space: pre-line; }
 .fetch-status.err { color: var(--red-ink); }
 .btn:disabled { opacity: .5; cursor: progress; }
@@ -494,6 +567,7 @@ footer p { margin: 0; max-width: 90ch; }
 </nav>
 </div>
 <div id="toast" role="status" aria-live="polite"></div>
+<dialog id="fix" class="fixdlg" aria-labelledby="fx-title"><div id="fix-body"></div></dialog>
 <div id="tip" hidden></div>
 
 <script>/*__STATS__*/</script>
@@ -598,7 +672,11 @@ footer p { margin: 0; max-width: 90ch; }
   }
   let toastTimer;
   function toast(msg) {
-    const t = $('#toast'); t.textContent = msg; t.classList.add('on');
+    const t = $('#toast'), dlg = $('#fix');
+    // An open dialog sits on top of everything else, so the toast moves inside it.
+    const host = dlg && dlg.open ? dlg : document.body;
+    if (t.parentElement !== host) host.appendChild(t);
+    t.textContent = msg; t.classList.add('on');
     clearTimeout(toastTimer); toastTimer = setTimeout(() => t.classList.remove('on'), 2600);
   }
 
@@ -1714,7 +1792,8 @@ footer p { margin: 0; max-width: 90ch; }
   const fmtStamp = s => new Date(s).toLocaleString('en-GB', { day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' });
   const ISSUE_GROUPS = [
     ['Who took the wicket', [
-      ['no-catcher', 'Catcher missing', 'Caught, but the catcher isn\'t recorded (often "c ? b ..."). The catch counts for nobody.'],
+      ['cqb', 'Caught "c ? b"', 'Caught, but the scorecard says "c ? b": the catcher was left open. Usually caught and bowled. The catch counts for nobody.'],
+      ['no-catcher', 'Catcher missing', 'Caught, but the catcher isn\'t recorded. The catch counts for nobody.'],
       ['no-keeper', 'Wicketkeeper missing', 'Stumped, but the wicketkeeper isn\'t recorded. The stumping counts for nobody.'],
       ['no-runout-fielder', 'Run-out fielder missing', 'Run out without a fielder.'],
       ['no-bowler', 'Bowler missing', 'Bowled, caught, lbw or stumped without the bowler\'s name in the dismissal.'],
@@ -1742,9 +1821,9 @@ footer p { margin: 0; max-width: 90ch; }
   // season, round and grade and presses GO. Which page fixes which kind of issue:
   const RV = 'https://admin-cricket.resultsvault.co.uk/common/pages/admin/';
   const RV_PAGES = {
-    players: ['Players', RV + 'rv/selectteam.aspx', 'Select Teams: swap guest or unnamed players for their profile'],
-    scores: ['Match scores', RV + 'framehost.aspx?fhid=%2fcommon%2fpages%2fadmin%2frv%2fcricket%2fmatchscores.aspx', 'Enter Match Results: totals, wickets and overs per innings'],
-    card: ['Scorecard', RV + 'framehost.aspx?fhid=%2fcommon%2fpages%2fadmin%2frv%2fcricket%2fEnterPlayerScores.aspx', 'Enter Player Scores: dismissals, fielders, bowlers, runs and balls per player'],
+    players: ['Players', RV + 'rv/selectteam.aspx', 'Select Teams: swap guest or unnamed players for their profile', 'Select Teams'],
+    scores: ['Match scores', RV + 'framehost.aspx?fhid=%2fcommon%2fpages%2fadmin%2frv%2fcricket%2fmatchscores.aspx', 'Enter Match Results: totals, wickets and overs per innings', 'Enter Match Results'],
+    card: ['Scorecard', RV + 'framehost.aspx?fhid=%2fcommon%2fpages%2fadmin%2frv%2fcricket%2fEnterPlayerScores.aspx', 'Enter Player Scores: dismissals, fielders, bowlers, runs and balls per player', 'Enter Player Scores'],
   };
   const RV_FIX = {
     guest: ['players'], 'guest-registered': ['players'], 'guest-noname': ['players'], 'not-in-lineup': ['players', 'card'],
@@ -1755,11 +1834,17 @@ footer p { margin: 0; max-width: 90ch; }
   // Everything a captain needs to find the match in ResultsVault, each value one click to copy.
   const fixBar = (m, types) => `<div class="fixbar"><span class="cvs">${copyChip('Opponent', m.opp)}${copyChip('Round', m.round || '–')}${copyChip('Match ID', m.id)}${copyChip('Grade', teamOf(m).grade)}</span>
     <span class="fixl">Fix in ResultsVault: ${fixPages(types).map(p => `<a href="${RV_PAGES[p][1]}" target="_blank" rel="noopener" title="${esc(RV_PAGES[p][2])}">${RV_PAGES[p][0]}<span aria-hidden="true"> ↗</span></a>`).join(' · ')}</span></div>`;
+  const typeInfoOf = k => {
+    const gi = ISSUE_GROUPS.findIndex(g => g[1].some(t => t[0] === k));
+    return { gi, label: gi < 0 ? k : ISSUE_GROUPS[gi][1].find(t => t[0] === k)[1] };
+  };
+  // Every issue once, k = its place in the list, for the fix buttons.
+  const issueAll = (D.issues || []).map(([id, side, type, text, ref], k) => ({ k, m: matchById.get(id), side, type, text, ref })).filter(x => x.m);
   const dcat = (title, note, count, body, open) => `<details class="dcat"${open ? ' open' : ''}><summary><span><b>${esc(title)}</b>${note ? `<small>${esc(note)}</small>` : ''}</span><span class="dcount">${count}</span></summary>${body}</details>`;
 
   function renderIssues() {
     const teamsOn = new Set(state.teams);
-    const all = (D.issues || []).map(([id, side, type, text]) => ({ m: matchById.get(id), side, type, text })).filter(x => x.m);
+    const all = issueAll;
     const inTeams = all.filter(x => !teamsOn.size || teamsOn.has(x.m.team));
     // Opponent-side issues and switched-off types (run-out fielder by default) are hidden unless asked for.
     const sideOk = x => state.issueOpp || x.side === 'v';
@@ -1784,7 +1869,11 @@ footer p { margin: 0; max-width: 90ch; }
     const sideTag = x => (state.issueOpp ? `<span class="iss-side ${x.side}">${x.side === 'v' ? 'VCC' : 'Opponent'}</span>` : '');
     const typeTag = x => `<span class="iss-type"><i class="dot g${typeInfo[x.type].gi}"></i>${esc(typeInfo[x.type].label)}</span>`;
     const ext = (m, text) => `<a href="${scorecard(m)}" target="_blank" rel="noopener">${esc(text)}<span aria-hidden="true"> ↗</span></a>`;
-    const issueRow = (x, meta, extra = '') => `<li class="iss"><p class="iss-t">${esc(x.text)}</p><p class="iss-m">${meta}</p>${extra}</li>`;
+    // Ticked as fixed by this browser's user: faded, still listed until the reload confirms it.
+    const issueRow = (x, meta, extra = '') => {
+      const done = fixedSet.has(issueKey(x));
+      return `<li class="iss${done ? ' done' : ''}"><p class="iss-t">${esc(x.text)}</p><p class="iss-m">${meta}${done ? '<span class="iss-done">✓ Marked fixed</span>' : ''}<button class="btn sm fixbtn" data-fix="${x.k}">${done ? 'Steps' : 'Fix it'}</button></p>${extra}</li>`;
+    };
     const teamName = t => `${t.label} (${shortGrade(t)})`;
     let groups;
     if (byTeam) {
@@ -1818,7 +1907,7 @@ footer p { margin: 0; max-width: 90ch; }
       : (a, b) => typeInfo[a.type].i - typeInfo[b.type].i || a.m.date - b.m.date);
     copyReg.issues = { what: 'the data issues', tables: [{ title: 'Matchcentre data issues', head: ['Team', 'Issue', 'Match', 'Opponent', 'Round', 'Match ID', 'Grade', 'Side', 'Detail', 'Scorecard'],
       body: copyRows.map(x => [teamName(teamOf(x.m)), typeInfo[x.type].label, matchText(x.m), x.m.opp, x.m.round || '', x.m.id, teamOf(x.m).grade, x.side === 'v' ? 'VCC' : x.m.opp, x.text, scorecard(x.m)]) }] };
-    const tools = list.length ? `<div class="head-tools">${seg('issueGroup', [['type', 'By issue'], ['team', 'By team']], byTeam ? 'team' : 'type', 'Group issues', 'sm')}${copyBtn('issues', 'Copy list')}</div>` : '';
+    const tools = list.length ? `<div class="head-tools">${seg('issueGroup', [['type', 'By issue'], ['team', 'By team']], byTeam ? 'team' : 'type', 'Group issues', 'sm')}<button class="btn" data-issue-expand="${matchOn.size ? '0' : '1'}" aria-pressed="${matchOn.size ? 'true' : 'false'}">${matchOn.size ? 'Collapse all' : 'Expand all'}</button>${copyBtn('issues', 'Copy list')}</div>` : '';
     const hidden = [hiddenSide && `${hiddenSide} on the opponents' side`, hiddenType && `${hiddenType} in switched-off types`].filter(Boolean);
     const allTypes = typeOrder.map(t => t[0]);
     const typesOn = allTypes.filter(typeOn).length;
@@ -1840,9 +1929,467 @@ footer p { margin: 0; max-width: 90ch; }
         ${filtersHtml}
         ${matchChips}
       </div>
-      <p class="sub">${hidden.length ? `Hidden: ${hidden.join(', ')}. ` : ''}Gaps and mistakes in the Matchcentre scorecards that make the numbers above less complete. Fix them in ResultsVault admin, then fetch the data again. ResultsVault has no direct link per match: open the page, pick season, round and grade, press GO, then pick the match. Click a value to copy it.</p>
+      <p class="sub">${hidden.length ? `Hidden: ${hidden.join(', ')}. ` : ''}Gaps and mistakes in the Matchcentre scorecards that make the numbers above less complete. Press <b>Fix it</b> on an issue: it works out the right value with you and lists exactly what to change in ResultsVault admin. Click a value to copy it.</p>
       ${list.length ? `<div class="dgroups">${groups}</div>` : '<p class="empty">No issues with these settings. Switch on more issue types or include the opponents.</p>'}`;
   }
+
+  // ---- fix helper ---------------------------------------------------------------
+  // Captains fix issues in ResultsVault admin, which has no links per match and a crowded screen. For each
+  // issue the helper works out the most likely right value from the rest of the scorecard, lets the captain
+  // confirm it or pick something else, and turns that into exact steps for ResultsVault. Nothing is saved
+  // here: the fix shows on this page after the next reload. "Fixed" ticks are kept in this browser only.
+  const FIXED_KEY = 'vcc-fixed-' + D.season;
+  let fixedSet = new Set();
+  try { fixedSet = new Set(JSON.parse(localStorage.getItem(FIXED_KEY) || '[]')); } catch (e) {}
+  const issueKey = x => `${x.m.id}|${x.type}|${x.text}`;
+  function setFixed(x, on) {
+    if (on) fixedSet.add(issueKey(x)); else fixedSet.delete(issueKey(x));
+    try { localStorage.setItem(FIXED_KEY, JSON.stringify([...fixedSet])); } catch (e) {}
+  }
+  const NOT_OUT = new Set([0, 1, 13, 14, 15]);
+  const BY_BOWLER = new Set([2, 3, 4, 5, 7]); // bowled, caught, lbw, stumped, hit wicket
+  const toB = o => (o == null ? 0 : Math.trunc(o) * 6 + Math.round((o - Math.trunc(o)) * 10));
+  const ovs = b => `${Math.floor(b / 6)}${b % 6 ? '.' + (b % 6) : ''}`;
+  const ovsW = b => `${ovs(b)} ${b === 6 ? 'over' : 'overs'}`;
+  const innOf = (m, ref) => ref && ref.inn && m.innings.find(i => i.side === ref.inn[0] && i.no === ref.inn[1]);
+  const otherSide = s => (s === 'v' ? 'o' : 'v');
+  const rvTeam = (m, s) => (s === 'v' ? teamOf(m).teamName : m.opp);
+  // ResultsVault lists people as "Last, First".
+  const rvName = pid => (D.players[pid] && (D.players[pid][2] || D.players[pid][1])) || S.fullName(pid);
+  const signed = n => (n > 0 ? `+${n}` : `−${-n}`);
+  // Everyone in a side's team list for a match: batters, did-not-bat, bowlers and fielders.
+  function lineup(m, s) {
+    const ids = new Set();
+    m.innings.forEach(i => {
+      if (i.side === s) { i.bat.forEach(r => ids.add(r[0])); (i.dnb || []).forEach(p => ids.add(p)); }
+      else { i.bowl.forEach(r => ids.add(r[0])); (i.field || []).forEach(r => ids.add(r[0])); }
+    });
+    return [...ids].filter(p => p != null);
+  }
+  // Players with a profile who played for the same club this season and aren't in this match's team list.
+  // Those who played for this very team come first, then by number of matches.
+  function clubPlayers(m, s) {
+    const count = new Map();
+    for (const mm of S.matches) {
+      if (s === 'o' && mm.oppClub !== m.oppClub) continue;
+      const sameTeam = s === 'v' ? mm.team === m.team : mm.opp === m.opp;
+      for (const pid of lineup(mm, s)) {
+        if (!(pid > 0)) continue;
+        const c = count.get(pid) || { all: 0, team: 0 };
+        c.all++; if (sameTeam) c.team++;
+        count.set(pid, c);
+      }
+    }
+    const inMatch = new Set(lineup(m, s));
+    return [...count].filter(([pid]) => !inMatch.has(pid))
+      .sort((a, b) => b[1].team - a[1].team || b[1].all - a[1].all || S.fullName(a[0]).localeCompare(S.fullName(b[0])));
+  }
+  const nameToks = s => String(s || '').toLowerCase().replace(/[^a-z\s]/g, ' ').split(/\s+/).filter(t => t.length > 1);
+
+  // Steps to reach the right screen in ResultsVault. The team decides whose rows the screen shows.
+  function navSteps(m, page, team) {
+    const p = RV_PAGES[page];
+    const home = m.home ? teamOf(m).teamName : m.opp, away = m.home ? m.opp : teamOf(m).teamName;
+    return [
+      `Open <a href="${p[1]}" target="_blank" rel="noopener"><b>${p[3]}</b> in ResultsVault ↗</a> and log in if asked.`,
+      `Pick Season <b>${esc(D.season)}</b>, Round <b>${esc(m.round || '?')}</b> and Grade <b>KNCB:${esc(teamOf(m).grade)}</b>, then press <b>GO</b>. It's ${esc(home)} v ${esc(away)}, match ID ${m.id}.`,
+      page === 'card' ? `At <b>Enter player scores for</b>, pick <b>${esc(team)}</b>.` : page === 'players' ? `Make sure the team is <b>${esc(team)}</b>.` : `Go to the innings of <b>${esc(team)}</b>.`,
+    ];
+  }
+  // One fix can touch more than one screen: steps grouped per screen, in the order of the edits.
+  function stepsFor(m, edits) {
+    const out = [], seen = [];
+    for (const e of edits) {
+      const key = e.page + '|' + e.team;
+      let g = seen.find(x => x.key === key);
+      if (!g) { g = { key, page: e.page, team: e.team, lines: [] }; seen.push(g); }
+      g.lines.push(e.text);
+    }
+    seen.forEach(g => out.push(...navSteps(m, g.page, g.team), ...g.lines, `Press <b>${g.page === 'players' ? 'Save' : 'SAVE'}</b>.`));
+    return out;
+  }
+
+  // Compact scorecard of one innings, the rows the issue is about highlighted, sums checked underneath.
+  function cardHtml(m, inn, hl = {}) {
+    const who = inn.side === 'v' ? teamOf(m).label : m.opp, them = inn.side === 'v' ? m.opp : teamOf(m).label;
+    const [E, b, lb, w, nb, p] = inn.x.map(v => v || 0);
+    const sb = inn.bat.reduce((a, r) => a + (r[2] || 0), 0), sw = inn.bowl.reduce((a, r) => a + (r[4] || 0), 0);
+    const balls = inn.bowl.reduce((a, r) => a + toB(r[2]), 0), wk = inn.bowl.reduce((a, r) => a + (r[5] || 0), 0);
+    const outs = inn.bat.filter(r => !NOT_OUT.has(r[6])).length;
+    const chk = (ok, text) => `<li class="${ok ? 'ok' : 'bad'}">${ok ? '✓' : '✗'} ${text}</li>`;
+    const bat = inn.bat.map((r, i) => `<tr${hl.bat === i || (hl.bats || []).includes(i) ? ' class="hl"' : ''}><td>${esc(S.fullName(r[0]))}</td><td class="how">${esc((r[7] || '').trim() || (NOT_OUT.has(r[6]) ? 'not out' : ''))}</td><td class="n">${r[2] ?? '–'}</td><td class="n">${r[3] ?? '–'}</td><td class="n">${r[8] != null ? `${r[8]}${r[9] ? `<small>/${r[9]}</small>` : ''}` : '–'}</td></tr>`).join('');
+    const bowl = inn.bowl.map(r => `<tr${(hl.bowlers || []).includes(r[0]) ? ' class="hl"' : ''}><td>${esc(S.fullName(r[0]))}</td><td class="n">${r[2] ?? '–'}</td><td class="n">${r[3] ?? 0}</td><td class="n">${r[4] ?? 0}</td><td class="n">${r[5] ?? 0}</td><td class="n">${r[6] ?? 0}</td><td class="n">${r[7] ?? 0}</td></tr>`).join('');
+    return `<div class="fx-card"><p class="fx-ch"><b>${esc(who)}</b> batting · <b>${inn.runs ?? '–'}/${inn.wkts ?? '–'}</b> in ${inn.overs ?? '–'} overs</p>
+      ${inn.bat.length ? `<table class="fx-t"><thead><tr><th>Batter</th><th>How out</th><th class="n">R</th><th class="n">B</th><th class="n" title="Fall of wicket / wicket number">FoW</th></tr></thead><tbody>${bat}</tbody></table>` : '<p class="empty">No batting card.</p>'}
+      <p class="fx-ex">Extras ${E} (b ${b}, lb ${lb}, w ${w}, nb ${nb}${p ? `, pen ${p}` : ''})</p>
+      ${inn.bowl.length ? `<table class="fx-t"><thead><tr><th>${esc(them)} bowling</th><th class="n">O</th><th class="n">M</th><th class="n">R</th><th class="n">W</th><th class="n">Wd</th><th class="n">Nb</th></tr></thead><tbody>${bowl}</tbody></table>` : '<p class="empty">No bowling card.</p>'}
+      <ul class="fx-chk">${[
+        inn.bat.length && chk(sb + E === inn.runs, `Batters ${sb} + extras ${E} = ${sb + E}${sb + E === inn.runs ? '' : `, total says ${inn.runs}`}`),
+        E !== b + lb + w + nb + p && chk(false, `Extras ${E}, but b + lb + w + nb${p ? ' + pen' : ''} = ${b + lb + w + nb + p}`),
+        inn.bowl.length && chk(sw + b + lb + p === inn.runs, `Bowlers ${sw} + byes, leg byes${p ? ', penalties' : ''} ${b + lb + p} = ${sw + b + lb + p}${sw + b + lb + p === inn.runs ? '' : `, total says ${inn.runs}`}`),
+        inn.bowl.length && inn.overs != null && chk(balls === toB(inn.overs), `Bowlers' overs ${ovs(balls)}${balls === toB(inn.overs) ? '' : `, innings ${inn.overs}`}`),
+        inn.bat.length && inn.wkts != null && chk(outs === inn.wkts, `${outs} batters out${outs === inn.wkts ? '' : `, total says ${inn.wkts} wickets`}`),
+        inn.bowl.length && chk(wk === inn.bat.filter(r => BY_BOWLER.has(r[6])).length, `Bowlers' wickets ${wk}`),
+      ].filter(Boolean).join('')}</ul></div>`;
+  }
+
+  // ---- what the right answer probably is, per kind of issue ----
+  // Each option: label, note (what else it changes), rec, inputs (pickers/numbers) and edits(vals) => steps.
+  const pickIn = (key, label, groups) => ({ key, kind: 'pick', label, groups });
+  const numIn = (key, label, min, max) => ({ key, kind: 'num', label, min, max });
+
+  function fixSpec(x) {
+    const m = x.m, ref = x.ref || {}, t = x.type;
+    const inn = innOf(m, ref);
+    if (['no-catcher', 'cqb', 'no-keeper', 'no-runout-fielder', 'no-bowler', 'not-in-lineup'].includes(t) && inn && inn.bat[ref.bat]) return fielderSpec(x, m, inn, ref, t);
+    if (['guest', 'guest-noname', 'guest-registered'].includes(t) && ref.pid != null) return profileSpec(x, m, ref, t);
+    if (t === 'no-fow' && inn) return fowSpec(m, inn, ref);
+    if (t === 'no-balls' && inn) return ballsSpec(m, inn, ref);
+    if ((t === 'bat-sum' || t === 'bowl-sum') && inn) return { inn, card: {}, intro: 'The runs on the scorecard don\'t add up. First check the scorebook: if it shows which figure is wrong, enter that one. If not, these are the smallest changes that make the card add up again, best first.', options: balanceOptions(m, inn) };
+    if (t === 'wkts' && inn) return wktsSpec(m, inn);
+    if (t === 'bowl-wkts' && inn) return bowlWktsSpec(m, inn);
+    if (t === 'bowl-overs' && inn) return oversSpec(m, inn);
+    if (t === 'no-card' && inn) {
+      const bs = inn.side, fs = otherSide(bs);
+      return { inn, card: {}, intro: 'Part of this scorecard was never entered. Only the scorebook can fill it in.', options: [{ label: 'Enter the missing card from the scorebook', rec: true,
+        edits: () => [{ page: 'card', team: rvTeam(m, inn.bat.length ? fs : bs), text: `Fill in every player's ${inn.bat.length ? 'bowling figures (O, M, R, W, Wd, Nb)' : 'batting (How out, Fielder, Bowler, Runs, BF, FOW)'} from the scorebook.` }] }] };
+    }
+    return null;
+  }
+
+  function fielderSpec(x, m, inn, ref, t) {
+    const r = inn.bat[ref.bat], bs = inn.side, fs = otherSide(bs);
+    const role = t === 'not-in-lineup' ? ref.role : t === 'no-bowler' ? 'bowler' : t === 'no-keeper' ? 'wicketkeeper' : t === 'no-runout-fielder' ? 'run-out fielder' : 'catcher';
+    const col = role === 'bowler' ? 'Bowler' : 'Fielder';
+    const team = lineup(m, fs).sort((a, b) => S.fullName(a).localeCompare(S.fullName(b)));
+    const set = pid => [{ page: 'card', team: rvTeam(m, bs), text: `In the row of <b>${esc(rvName(r[0]))}</b>, set <b>${col}</b> to <b>${esc(rvName(pid))}</b>.` }];
+    // A best guess where the rest of the card gives one away.
+    let guess = null, why = '';
+    if (t === 'cqb' && r[11]) { guess = r[11]; why = 'Caught and bowled: the bowler took the catch. That\'s what "c ? b" usually means.'; }
+    if (t === 'no-keeper') {
+      const k = inn.bat.find((o, i) => i !== ref.bat && o[6] === 5 && o[10]) || null;
+      const f = (inn.field || []).find(f => f[2] > 0 || f[3] > 0);
+      guess = (k && k[10]) || (f && f[0]) || null;
+      if (guess) why = 'The wicketkeeper of this innings, from the other dismissals.';
+    }
+    if (t === 'no-bowler') {
+      const surplus = inn.bowl.filter(w => (w[5] || 0) > inn.bat.filter(o => BY_BOWLER.has(o[6]) && o[11] === w[0]).length);
+      if (surplus.length === 1) { guess = surplus[0][0]; why = 'The only bowler with more wickets in the bowling figures than dismissals on the batting card.'; }
+    }
+    const groups = [{ title: `${rvTeam(m, fs)} team list`, items: team.map(pid => [pid, '']) }];
+    const options = [];
+    if (guess) options.push({ label: `<b>${esc(S.fullName(guess))}</b>`, note: why, rec: true, edits: () => set(guess) });
+    options.push({ label: guess ? 'Someone else' : `Pick the ${role} from the team list`, rec: !guess, inputs: [pickIn('p', `Who was the ${role}?`, groups)], edits: v => v.p != null && set(v.p) });
+    if (t === 'not-in-lineup') options.push({ label: `<b>${esc(S.fullName(ref.pid))}</b> did play`, note: 'Then the team list is wrong, not the dismissal: add the player to the team.',
+      edits: () => [{ page: 'players', team: rvTeam(m, fs), text: `Drag <b>${esc(rvName(ref.pid))}</b> from <b>Available Players</b> to an empty slot under <b>Selected Players</b>.` }] });
+    return { inn, card: { bat: ref.bat }, intro: `<b>${esc(S.fullName(r[0]))}</b>: "${esc((r[7] || '').trim())}". Who was the ${role}?`, options };
+  }
+
+  function profileSpec(x, m, ref, t) {
+    const s = x.side, team = rvTeam(m, s), guest = ref.guest || S.fullName(ref.pid);
+    const swap = pid => [
+      { page: 'players', team, text: `Under <b>Selected Players</b>, find the guest entry <b>${esc(guest)}</b> (it may show as "Last, First").` },
+      { page: 'players', team, text: `Find <b>${esc(rvName(pid))}</b> under <b>Available Players</b> (type the first name in the search box) and drag it onto that guest's slot.` },
+      { page: 'players', team, text: `A <b>Confirm score replacement</b> box opens. On the row ${esc(guest)} → ${esc(rvName(pid))}, choose <b>Move scores</b>, so the runs and wickets go along. Press <b>Confirm</b>.` },
+    ];
+    if (t === 'guest-registered') {
+      return { intro: `<b>${esc(guest)}</b> played as a guest, but has a Matchcentre profile. Swap the guest for the profile, so the match counts for the player.`,
+        options: [{ label: `Swap to the profile of <b>${esc(S.fullName(ref.pid))}</b>`, rec: true, edits: () => swap(ref.pid) }] };
+    }
+    const cands = clubPlayers(m, s);
+    const toks = nameToks(guest);
+    const similar = toks.length ? cands.filter(([pid]) => nameToks(S.fullName(pid)).some(a => toks.includes(a))) : [];
+    const hint = c => `${c.team ? `${plural(c.team, 'match', 'matches')} for ${s === 'v' ? teamOf(m).label : m.opp}` : `${plural(c.all, 'match', 'matches')} for the club`}`;
+    const groups = [
+      similar.length && { title: 'Similar name', items: similar.map(([pid, c]) => [pid, hint(c)]) },
+      { title: `Played for ${s === 'v' ? 'VCC' : m.oppClub || m.opp} this season`, items: cands.map(([pid, c]) => [pid, hint(c)]) },
+    ].filter(Boolean);
+    const options = [{ label: 'Pick the right player', rec: true, inputs: [pickIn('p', 'Who played?', groups)], edits: v => v.p != null && swap(+v.p) }];
+    options.push(t === 'guest'
+      ? { label: `${esc(guest)} has no Matchcentre profile yet`, note: 'New member, or someone from another club.', edits: () => [{ page: 'none', text: `Ask the member administration to register <b>${esc(guest)}</b> with the KNCB. When the profile exists, open this helper again and pick the player.` }] }
+      : { label: 'Nobody knows who it was', note: 'Then it stays a separate, unnamed player.', edits: () => [{ page: 'none', text: 'Nothing to change. Tick "Fixed" below so it doesn\'t come back on your list.' }] });
+    return { intro: t === 'guest' ? `<b>${esc(guest)}</b> is entered as a guest, without a Matchcentre profile. If the player is in the club's list under a slightly different name, pick them.` : `${esc(team)} has a player entered as "<b>${esc(guest)}</b>". Who was it?`, options };
+  }
+
+  function fowSpec(m, inn, ref) {
+    const r = inn.bat[ref.bat], team = rvTeam(m, inn.side);
+    const outs = inn.bat.filter(o => !NOT_OUT.has(o[6]));
+    const known = inn.bat.filter((o, i) => i !== ref.bat && o[8] != null && o[9]);
+    // Wicket number: the one on the card, else the one missing from the others.
+    let no = r[9];
+    if (!no) { const used = new Set(known.map(o => o[9])); const free = outs.map((_, i) => i + 1).filter(n => !used.has(n)); if (free.length === 1) no = free[0]; }
+    const prev = no ? Math.max(0, ...known.filter(o => o[9] < no).map(o => o[8])) : 0;
+    const nextOnes = no ? known.filter(o => o[9] > no).map(o => o[8]) : [];
+    const max = nextOnes.length ? Math.min(...nextOnes) : inn.runs;
+    const set = v => [{ page: 'card', team, text: `In the row of <b>${esc(rvName(r[0]))}</b>, enter <b>${v}</b> under <b>FOW</b>${!r[9] && no ? ` and <b>${no}</b> in the <b>Num</b> box just before it` : ''}.` }];
+    const options = [];
+    // The last wicket of an all-out innings falls at the final total.
+    if (no && no === inn.wkts && inn.wkts >= 10 && !nextOnes.length) options.push({ label: `<b>${inn.runs}</b>, the final total`, note: 'This was the last wicket of an all-out innings, so it fell at the final score.', rec: true, edits: () => set(inn.runs) });
+    options.push({ label: 'From the scorebook', rec: !options.length, note: no ? `Wicket ${no}: between ${prev} and ${max}, from the wickets before and after.` : '', inputs: [numIn('n', 'Score when the wicket fell', prev, max)], edits: v => v.n !== '' && v.n != null && set(+v.n) });
+    return { inn, card: { bat: ref.bat }, intro: `<b>${esc(S.fullName(r[0]))}</b> is out "${esc((r[7] || '').trim())}". At what team score did the wicket fall?`, options };
+  }
+
+  function ballsSpec(m, inn, ref) {
+    const r = inn.bat[ref.bat], team = rvTeam(m, inn.side);
+    const min = (r[4] || 0) + (r[5] || 0) + ((r[2] || 0) > (r[4] || 0) * 4 + (r[5] || 0) * 6 ? 1 : 0);
+    const set = v => [{ page: 'card', team, text: `In the row of <b>${esc(rvName(r[0]))}</b>, enter <b>${v}</b> under <b>BF</b>.` }];
+    const options = [];
+    // With only this batter's balls missing: the innings' balls (plus no-balls, which are faced too) minus the others'.
+    const missing = inn.bat.filter(o => o[3] == null && o[2] != null);
+    if (missing.length === 1 && inn.overs != null) {
+      const est = toB(inn.overs) + (inn.x[4] || 0) - inn.bat.reduce((a, o) => a + (o[3] || 0), 0);
+      if (est >= Math.max(min, 1)) options.push({ label: `About <b>${est}</b> balls`, note: 'Worked out from the length of the innings minus the balls the other batters faced. An estimate: the scorebook is better.', rec: true, edits: () => set(est) });
+    }
+    options.push({ label: 'From the scorebook', rec: !options.length, inputs: [numIn('n', 'Balls faced', min, 999)], edits: v => v.n !== '' && v.n != null && set(+v.n) });
+    return { inn, card: { bat: ref.bat }, intro: `<b>${esc(S.fullName(r[0]))}</b> scored ${r[2]}${r[4] || r[5] ? ` (${r[4] || 0} fours, ${r[5] || 0} sixes)` : ''}. How many balls?`, options };
+  }
+
+  // Batting card + extras = total, and bowling card + byes + leg byes + penalties = total. Look for the one or two
+  // changes that make both hold, the cheapest first: moving extras about changes no player's figures, a batter
+  // or bowler changes one player's, and the total can change the result.
+  function balanceOptions(m, inn) {
+    const bs = inn.side, fs = otherSide(bs), bteam = rvTeam(m, bs), fteam = rvTeam(m, fs);
+    const [E, b, lb, w, nb, p] = inn.x.map(v => v || 0);
+    const T = inn.runs, comp = b + lb + w + nb + p;
+    const sb = inn.bat.reduce((a, r) => a + (r[2] || 0), 0), sw = inn.bowl.reduce((a, r) => a + (r[4] || 0), 0);
+    const hasBat = inn.bat.length > 0, hasBowl = inn.bowl.length > 0;
+    const shortBy = E2 => [hasBat ? T - sb - E2 : 0, hasBowl ? T - sw - b - lb - p : 0];
+    // Effect of +1 of each change on [batting short, bowling short].
+    const KINDS = {
+      total: { v: [1, 1] }, wides: { v: [-1, 0] }, byes: { v: [-1, -1] },
+      move: { v: [0, -1] }, batter: { v: [-1, 0] }, bowler: { v: [0, -1] },
+    };
+    const usable = k => (hasBowl || !['move', 'bowler'].includes(k)) && (hasBat || !['wides', 'batter'].includes(k));
+    const ok = (k, a) => a !== 0 && Number.isInteger(a) && (k !== 'wides' || w + a >= 0) && (k !== 'byes' || b + a >= 0) && (k !== 'move' || (w - a >= 0 && b + a >= 0)) && (k !== 'total' || T + a >= 0);
+    const found = [];
+    for (const fixE of comp !== E ? [true, false] : [false]) {
+      const E2 = fixE ? comp : E;
+      const [e1, e2] = shortBy(E2);
+      if (!e1 && !e2) { found.push({ fixE, ch: [] }); continue; }
+      const ks = Object.keys(KINDS).filter(usable);
+      for (const k of ks) {
+        const [x1, x2] = KINDS[k].v;
+        // a * v = -e for one change
+        const a = x1 ? -e1 / x1 : -e2 / x2;
+        if (x1 * a === -e1 && x2 * a === -e2 && ok(k, a)) found.push({ fixE, ch: [[k, a]] });
+      }
+      for (let i = 0; i < ks.length; i++) for (let j = i + 1; j < ks.length; j++) {
+        const [p1, p2] = [KINDS[ks[i]].v, KINDS[ks[j]].v];
+        const det = p1[0] * p2[1] - p2[0] * p1[1];
+        if (!det) continue;
+        const a1 = (-e1 * p2[1] + e2 * p2[0]) / det, a2 = (-e2 * p1[0] + e1 * p1[1]) / det;
+        if (ok(ks[i], a1) && ok(ks[j], a2)) found.push({ fixE, ch: [[ks[i], a1], [ks[j], a2]] });
+      }
+    }
+    // Describe each solution by where it ends up, so two routes to the same card count once.
+    const ends = new Map();
+    for (const f of found) {
+      const st = { T, E: f.fixE ? comp : E, w, b, bat: 0, bowl: 0 };
+      for (const [k, a] of f.ch) {
+        if (k === 'total') st.T += a;
+        if (k === 'wides') { st.w += a; st.E += a; }
+        if (k === 'byes') { st.b += a; st.E += a; }
+        if (k === 'move') { st.w -= a; st.b += a; }
+        if (k === 'batter') st.bat += a;
+        if (k === 'bowler') st.bowl += a;
+      }
+      const xtra = st.w !== w || st.b !== b;
+      // Cheapest first: extras touch no player, a batter or bowler touches one, the total can change the result.
+      // Both cards agreeing on another total is strong evidence the total itself was typed wrong.
+      st.agree = st.T !== T && !xtra && !st.bat && !st.bowl && hasBat && hasBowl;
+      st.cost = (st.T !== T ? (st.agree ? 1.2 : 6) : 0) + (st.w !== w ? 1.5 : 0) + (st.b !== b ? 1.5 : 0) + (st.E !== E && !xtra ? 0.5 : 0) + (st.bat ? 4 : 0) + (st.bowl ? 4 : 0)
+        + (Math.abs(st.w - w) + Math.abs(st.b - b) + Math.abs(st.bat) + Math.abs(st.bowl)) / 1000;
+      const sig = [st.T, st.E, st.w, st.b, st.bat, st.bowl].join();
+      if (!ends.has(sig) || ends.get(sig).cost > st.cost) ends.set(sig, st);
+    }
+    const options = [];
+    // Bowling card short by whole overs and a plausible number of runs while the batting side adds up:
+    // a bowler is probably missing from the card.
+    const ballsShort = toB(inn.overs) - inn.bowl.reduce((a, r) => a + toB(r[2]), 0);
+    const [e1now, e2now] = shortBy(E);
+    if (hasBowl && !e1now && ballsShort >= 6 && e2now >= ballsShort / 6 && e2now <= ballsShort / 6 * 20) {
+      options.push({ cost: 0.8, label: 'A bowler is missing from the bowling card', note: `The bowlers are ${ovsW(ballsShort)} and ${e2now} runs short together. Add whoever bowled them from the scorebook.`,
+        edits: () => [{ page: 'card', team: fteam, text: `Fill in the missing bowler's figures (about <b>${ovsW(ballsShort)}</b> and <b>${e2now}</b> runs conceded, plus M, W, Wd, Nb from the scorebook).` }] });
+    }
+    const runs = n => `${signed(n)} ${Math.abs(n) === 1 ? 'run' : 'runs'}`;
+    [...ends.values()].sort((a, b2) => a.cost - b2.cost).slice(0, 4).forEach(st => {
+      const parts = [], notes = [], inputs = [];
+      const xtra = st.w !== w || st.b !== b;
+      if (st.T !== T) { parts.push(`Team total ${T} → <b>${st.T}</b>`); notes.push(st.agree ? 'The batting and bowling cards both add up to this total.' : 'Changes the team total: check that the result still stands.'); }
+      if (xtra || st.E !== E) {
+        const xs = [st.w !== w && `wides ${w} → <b>${st.w}</b>`, st.b !== b && `byes ${b} → <b>${st.b}</b>`, st.E !== E && `extras total ${E} → <b>${st.E}</b>`].filter(Boolean);
+        parts.push(`Extras: ${xs.join(', ')}`);
+        notes.push(xtra ? 'No player\'s figures change.' : `The extras total should be the sum of byes, leg byes, wides, no-balls${p ? ' and penalties' : ''}.`);
+      }
+      if (st.bat) { parts.push(`One batter ${runs(st.bat)}`); notes.push('Changes that batter\'s runs.'); inputs.push(pickIn('bat', 'Which batter?', [{ title: `${bteam} batting`, items: inn.bat.filter(r => (r[2] || 0) + st.bat >= 0).map(r => [r[0], `${r[2] ?? 0} → ${(r[2] || 0) + st.bat}`]) }])); }
+      if (st.bowl) { parts.push(`One bowler ${runs(st.bowl)} conceded`); notes.push('Changes that bowler\'s figures.'); inputs.push(pickIn('bowl', 'Which bowler?', [{ title: `${fteam} bowling`, items: inn.bowl.filter(r => (r[4] || 0) + st.bowl >= 0).map(r => [r[0], `${r[4] ?? 0} → ${(r[4] || 0) + st.bowl}`]) }])); }
+      options.push({ cost: st.cost, label: parts.join(' · '), note: notes.join(' '), inputs,
+        edits: v => {
+          if (inputs.some(i => v[i.key] == null)) return null;
+          const e = [];
+          if (st.T !== T) e.push({ page: 'scores', team: bteam, text: `Set the total runs to <b>${st.T}</b>.` });
+          if (xtra || st.E !== E) e.push({ page: 'scores', team: bteam, text: `Set ${[st.w !== w && `Wides to <b>${st.w}</b>`, st.b !== b && `Byes to <b>${st.b}</b>`, st.E !== E && `Extras to <b>${st.E}</b>`].filter(Boolean).join(', ')}.` });
+          if (st.bat) { const r = inn.bat.find(r => r[0] === +v.bat); e.push({ page: 'card', team: bteam, text: `In the row of <b>${esc(rvName(r[0]))}</b>, set <b>Runs</b> to <b>${(r[2] || 0) + st.bat}</b>.` }); }
+          if (st.bowl) { const r = inn.bowl.find(r => r[0] === +v.bowl); e.push({ page: 'card', team: fteam, text: `In the row of <b>${esc(rvName(r[0]))}</b>, set bowling <b>R</b> to <b>${(r[4] || 0) + st.bowl}</b>.` }); }
+          return e;
+        } });
+    });
+    options.sort((a, b2) => a.cost - b2.cost);
+    // A big gap isn't a typo: then no small change is believable and the scorebook is the only way.
+    const gap = Math.max(Math.abs(e1now), Math.abs(e2now), Math.abs(E - comp));
+    const book = { label: 'Correct the card from the scorebook', note: gap > 10 ? `The card is ${gap} runs out: more than a typo.` : 'When the scorebook shows which figure is wrong.',
+      edits: () => [{ page: 'card', team: bteam, text: 'Compare every batter\'s runs and the extras with the scorebook and correct them.' }, { page: 'card', team: fteam, text: 'Compare every bowler\'s figures with the scorebook and correct them.' }] };
+    if (gap > 10 && !(options[0] && options[0].cost < 1)) options.unshift(book); else options.push(book);
+    options[0].rec = true;
+    return options;
+  }
+
+  function wktsSpec(m, inn) {
+    const bs = inn.side, team = rvTeam(m, bs);
+    const outs = inn.bat.filter(r => !NOT_OUT.has(r[6])).length, W = inn.wkts;
+    const fows = inn.bat.filter(r => r[8] != null).length;
+    const notOuts = inn.bat.map((r, i) => [r, i]).filter(([r]) => NOT_OUT.has(r[6])), outRows = inn.bat.map((r, i) => [r, i]).filter(([r]) => !NOT_OUT.has(r[6]));
+    const totalOpt = { label: `Total wickets ${W} → <b>${outs}</b>`, note: 'Only the team score changes, no player\'s figures.' + (fows === outs ? ` The card has ${outs} fall-of-wicket scores too.` : ''),
+      edits: () => [{ page: 'scores', team, text: `Set the wickets to <b>${outs}</b>.` }] };
+    const rowOpt = W > outs
+      ? { label: `A batter shown as not out was out`, note: 'Changes that batter\'s average.', inputs: [pickIn('bat', 'Which batter was out?', [{ title: `${team} batting`, items: notOuts.map(([r]) => [r[0], (r[7] || '').trim() || 'not out']) }])],
+        edits: v => v.bat != null && [{ page: 'card', team, text: `In the row of <b>${esc(rvName(+v.bat))}</b>, set <b>How out</b> (and Fielder, Bowler, FOW) from the scorebook.` }] }
+      : { label: `A batter shown as out was not out`, note: 'Changes that batter\'s average.', inputs: [pickIn('bat', 'Which batter was not out?', [{ title: `${team} batting`, items: outRows.map(([r]) => [r[0], (r[7] || '').trim()]) }])],
+        edits: v => v.bat != null && [{ page: 'card', team, text: `In the row of <b>${esc(rvName(+v.bat))}</b>, set <b>How out</b> to <b>no</b> (not out) and clear Fielder, Bowler and FOW.` }] };
+    // The fall-of-wicket scores are a second witness: whichever count they agree with is probably right.
+    if (fows === W && fows !== outs) { rowOpt.rec = true; rowOpt.note += ` The card has ${W} fall-of-wicket scores, like the total.`; return { inn, card: {}, intro: 'The number of batters out doesn\'t match the wickets in the total.', options: [rowOpt, totalOpt] }; }
+    totalOpt.rec = true;
+    return { inn, card: {}, intro: 'The number of batters out doesn\'t match the wickets in the total.', options: [totalOpt, rowOpt] };
+  }
+
+  function bowlWktsSpec(m, inn) {
+    const fs = otherSide(inn.side), team = rvTeam(m, fs);
+    const rows = inn.bowl.map(r => [r, inn.bat.filter(o => BY_BOWLER.has(o[6]) && o[11] === r[0]).length]).filter(([r, n]) => (r[5] || 0) !== n);
+    const loose = inn.bat.filter(o => BY_BOWLER.has(o[6]) && !o[11]).length;
+    const options = [];
+    if (rows.length) options.push({ rec: true, label: rows.map(([r, n]) => `${esc(S.fullName(r[0]))} ${r[5] || 0} → <b>${n}</b>`).join(' · '),
+      note: 'Sets the bowlers\' wickets to the dismissals on the batting card, which name the bowler for every wicket.' + (loose ? ` ${plural(loose, 'dismissal has', 'dismissals have')} no bowler yet: fix the "Bowler missing" issue first, then check this again.` : ''),
+      edits: () => rows.map(([r, n]) => ({ page: 'card', team, text: `In the row of <b>${esc(rvName(r[0]))}</b>, set bowling <b>W</b> to <b>${n}</b>.` })) });
+    options.push({ rec: !rows.length, label: 'The bowling figures are right, the dismissals are wrong', note: 'Check who bowled each batter out in the scorebook.',
+      edits: () => [{ page: 'card', team: rvTeam(m, inn.side), text: 'Check the <b>Bowler</b> of every batter who was bowled, caught, lbw, stumped or hit wicket against the scorebook.' }] });
+    return { inn, card: { bowlers: rows.map(([r]) => r[0]) }, intro: 'The bowlers\' wickets don\'t match the batters out bowled, caught, lbw, stumped or hit wicket.', options };
+  }
+
+  function oversSpec(m, inn) {
+    const bs = inn.side, fs = otherSide(bs), bteam = rvTeam(m, bs), fteam = rvTeam(m, fs);
+    const B = inn.bowl.reduce((a, r) => a + toB(r[2]), 0), I = toB(inn.overs), d = I - B;
+    const max = m.maxOvers ? m.maxOvers * 6 : Infinity, cap = m.maxOvers ? Math.ceil(m.maxOvers / 5) * 6 : Infinity;
+    const full = I === max && (inn.wkts ?? 0) < 10;
+    const options = [];
+    if (B > 0 && B <= max) options.push({ cost: full ? 5 : 2, label: `Innings overs ${inn.overs} → <b>${ovs(B)}</b>`, note: 'No player\'s figures change.' + (full ? ` But the innings went the full ${m.maxOvers} overs, so its length is probably right.` : ''),
+      edits: () => [{ page: 'scores', team: bteam, text: `Set the overs of the innings to <b>${ovs(B)}</b>.` }] });
+    const fit = inn.bowl.filter(r => toB(r[2]) + d >= 0 && toB(r[2]) + d <= cap);
+    if (fit.length) options.push({ cost: 3, label: `One bowler ${d > 0 ? '+' : '−'}${ovs(Math.abs(d))} overs`, note: `Changes that bowler's figures.${cap < Infinity ? ` Only bowlers who stay within ${cap / 6} overs are listed.` : ''}`,
+      inputs: [pickIn('bowl', 'Which bowler?', [{ title: `${fteam} bowling`, items: fit.map(r => [r[0], `${r[2]} → ${ovs(toB(r[2]) + d)}`]) }])],
+      edits: v => v.bowl != null && [{ page: 'card', team: fteam, text: `In the row of <b>${esc(rvName(+v.bowl))}</b>, set bowling <b>O</b> to <b>${ovs(toB(inn.bowl.find(r => r[0] === +v.bowl)[2]) + d)}</b>.` }] });
+    if (d >= 6) options.push({ cost: fit.length ? 4 : 1, label: 'A bowler is missing from the bowling card', note: `${ovsW(d)} aren't on anyone's figures.`,
+      edits: () => [{ page: 'card', team: fteam, text: `Fill in the missing bowler's figures (about <b>${ovsW(d)}</b>, plus M, R, W, Wd, Nb from the scorebook).` }] });
+    options.sort((a, b) => a.cost - b.cost);
+    if (options[0]) options[0].rec = true;
+    return { inn, card: {}, intro: `The bowlers' overs add up to ${ovs(B)}, but the innings lasted ${inn.overs} overs.`, options };
+  }
+
+  // ---- the fix dialog ----
+  let fixCur = null;
+  function openFix(x) {
+    const spec = fixSpec(x);
+    if (!spec) return toast('No helper for this one yet. Use the ResultsVault links next to it.');
+    // An option whose list has nobody in it is a dead end: leave it out, and recommend the next one.
+    const usable = spec.options.filter(o => !(o.inputs || []).some(i => i.kind === 'pick' && !i.groups.some(g => g.items.length)));
+    if (usable.length) {
+      if (!usable.some(o => o.rec)) usable[0].rec = true;
+      spec.options = usable;
+    }
+    fixCur = { x, spec, choice: Math.max(0, spec.options.findIndex(o => o.rec)), vals: {}, whole: false };
+    renderFix();
+    const dlg = $('#fix');
+    if (!dlg.open) dlg.showModal();
+    dlg.scrollTop = 0;
+  }
+  function fixSteps() {
+    const { x, spec, choice, vals } = fixCur;
+    const edits = spec.options[choice].edits(vals);
+    if (!edits) return null;
+    const none = edits.filter(e => e.page === 'none').map(e => e.text);
+    return [...stepsFor(x.m, edits.filter(e => e.page !== 'none')), ...none];
+  }
+  function renderFixSteps() {
+    const steps = fixSteps();
+    $('#fx-steps').innerHTML = steps ? `<ol class="fx-steps">${steps.map(s => `<li>${s}</li>`).join('')}</ol>` : '<p class="fx-wait">Make a choice above first.</p>';
+    $('#fx-copy').disabled = !steps;
+  }
+  function renderFix() {
+    const { x, spec, choice, vals } = fixCur, m = x.m, info = typeInfoOf(x.type);
+    const inputHtml = i => i.kind === 'num'
+      ? `<label class="fx-num"><span>${esc(i.label)}</span><input type="number" inputmode="numeric" data-fx-num="${i.key}" min="${i.min}" max="${i.max}" value="${esc(vals[i.key] ?? '')}"><small>${i.max < 999 ? `${i.min} to ${i.max}` : `at least ${i.min}`}</small></label>`
+      : `<div class="fx-pickw"><span class="fx-pl">${esc(i.label)}</span>${i.groups.reduce((n, g) => n + g.items.length, 0) > 8 ? `<input type="search" class="fx-q" data-fx-q="${i.key}" placeholder="Type to search" aria-label="Search names">` : ''}
+          <div class="fx-pick" role="radiogroup" aria-label="${esc(i.label)}">${i.groups.map(g => `<p class="fx-pg">${esc(g.title)}</p>${g.items.map(([pid, hint]) => `<label data-name="${esc(S.fullName(pid).toLowerCase())}"><input type="radio" name="fxp-${i.key}" value="${pid}"${String(vals[i.key]) === String(pid) ? ' checked' : ''}><span>${esc(S.fullName(pid))}</span>${hint ? `<small>${esc(hint)}</small>` : ''}</label>`).join('') || '<p class="empty">Nobody to pick.</p>'}`).join('')}</div></div>`;
+    const opts = spec.options.map((o, i) => `<div class="fx-opt${i === choice ? ' on' : ''}"><label class="fx-ol"><input type="radio" name="fx-opt" value="${i}"${i === choice ? ' checked' : ''}><span>${o.label}${o.rec ? ' <em class="fx-rec">Recommended</em>' : ''}${o.note ? `<small>${o.note}</small>` : ''}</span></label>
+        ${i === choice && o.inputs && o.inputs.length ? `<div class="fx-in">${o.inputs.map(inputHtml).join('')}</div>` : ''}</div>`).join('');
+    const inns = fixCur.whole ? m.innings.filter(i => i.bat.length || i.bowl.length) : spec.inn ? [spec.inn] : [];
+    const card = spec.inn ? `<details class="fx-sc" open><summary>Scorecard</summary>${inns.map(i => cardHtml(m, i, i === spec.inn ? spec.card : {})).join('')}
+        ${m.innings.length > 1 ? `<button class="link" data-fx-whole>${fixCur.whole ? 'Show only this innings' : 'Show the whole match'}</button>` : ''}</details>` : '';
+    const done = fixedSet.has(issueKey(x));
+    $('#fix-body').innerHTML = `<div class="fx-head"><div><p class="mini"><i class="dot g${info.gi}"></i> ${esc(info.label)} · ${x.side === 'v' ? 'VCC' : esc(m.opp)}</p><h2 id="fx-title">${esc(x.text)}</h2></div><button class="fx-x" data-fx-close aria-label="Close">×</button></div>
+      <p class="fx-m">${esc(fmtDate(m.date))} · ${esc(teamOf(m).label)} v ${esc(m.opp)} · <a href="${scorecard(m)}" target="_blank" rel="noopener">Matchcentre ↗</a></p>${fixBar(m, [x.type])}
+      <section class="fx-s"><h3><span>1</span> What is right?</h3><p class="fx-intro">${spec.intro}</p><div class="fx-opts" role="radiogroup">${opts}</div></section>
+      ${card}
+      <section class="fx-s"><h3><span>2</span> Change it in ResultsVault</h3><div id="fx-steps"></div>
+        <p class="fx-btns"><button class="btn" id="fx-copy" data-fx-copy>Copy these steps</button><small>To send to someone with a ResultsVault login.</small></p></section>
+      <section class="fx-s"><h3><span>3</span> Done?</h3><label class="fx-done"><input type="checkbox" data-fx-done${done ? ' checked' : ''}><span>I changed it in ResultsVault</span></label>
+        <p class="fx-note">Then press <b>Reload all data</b> at the top of this page. The issue disappears from the list once the fix is in the Matchcentre. Ticked issues stay marked in this browser.</p></section>`;
+    renderFixSteps();
+  }
+  function fixText() {
+    const { x } = fixCur, m = x.m, tmp = document.createElement('div');
+    tmp.innerHTML = $('#fx-steps').innerHTML;
+    const steps = [...tmp.querySelectorAll('li')].map((li, i) => `${i + 1}. ${li.textContent.replace(/\s*↗/g, '')}`);
+    const urls = [...new Set([...tmp.querySelectorAll('a')].map(a => a.href))];
+    return [`Fix for ${fmtDate(m.date)}, ${teamOf(m).label} v ${m.opp} (round ${m.round || '?'}, ${teamOf(m).grade}, match ID ${m.id})`, x.text, '', ...steps, '', ...urls].join('\n');
+  }
+  async function copyText(text, msg) {
+    try { await navigator.clipboard.writeText(text); toast(msg); }
+    catch (e) {
+      const ta = document.createElement('textarea');
+      ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.select();
+      const ok = document.execCommand && document.execCommand('copy');
+      ta.remove();
+      toast(ok ? msg : 'Copying is blocked here.');
+    }
+  }
+  const fixDlg = $('#fix');
+  fixDlg.addEventListener('change', e => {
+    const t = e.target;
+    if (t.name === 'fx-opt') { fixCur.choice = +t.value; renderFix(); return; }
+    if (t.name && t.name.startsWith('fxp-')) { fixCur.vals[t.name.slice(4)] = t.value; renderFixSteps(); return; }
+    if (t.hasAttribute('data-fx-done')) { setFixed(fixCur.x, t.checked); issuesFor = null; render(); }
+  });
+  fixDlg.addEventListener('input', e => {
+    const t = e.target;
+    if (t.dataset.fxNum) {
+      const v = t.value === '' ? '' : +t.value;
+      fixCur.vals[t.dataset.fxNum] = v === '' || v < +t.min || v > +t.max ? null : v;
+      t.setAttribute('aria-invalid', String(v !== '' && fixCur.vals[t.dataset.fxNum] == null));
+      renderFixSteps();
+    }
+    if (t.dataset.fxQ) {
+      const q = t.value.trim().toLowerCase();
+      t.parentElement.querySelectorAll('.fx-pick label').forEach(l => { l.hidden = !!q && !l.dataset.name.includes(q); });
+    }
+  });
+  fixDlg.addEventListener('click', e => {
+    const t = e.target.closest('button');
+    if (e.target === fixDlg || (t && t.hasAttribute('data-fx-close'))) return fixDlg.close();
+    if (!t) return;
+    if (t.hasAttribute('data-fx-whole')) { fixCur.whole = !fixCur.whole; renderFix(); }
+    if (t.hasAttribute('data-fx-copy')) copyText(fixText(), 'Copied the steps. Paste them in a message or email.');
+  });
 
   function renderUpdates() {
     const log = D.changes || [];
@@ -2145,6 +2692,15 @@ footer p { margin: 0; max-width: 90ch; }
     }
     if (t.dataset.copy) return doCopy(t.dataset.copy);
     if (t.dataset.copyval) return copyVal(t.dataset.copyval);
+    if (t.dataset.fix) return openFix(issueAll.find(x => x.k === +t.dataset.fix));
+    if (t.dataset.issueExpand) {
+      const open = t.dataset.issueExpand === '1';
+      document.querySelectorAll('#data-issues details.dcat').forEach(d => { d.open = open; });
+      t.dataset.issueExpand = open ? '0' : '1';
+      t.textContent = open ? 'Collapse all' : 'Expand all';
+      t.setAttribute('aria-pressed', String(open));
+      return;
+    }
     if (t.dataset.fetch) return t.dataset.fetch === 'site' ? siteFetch() : runFetch(t.dataset.fetch === 'all');
     if (t.hasAttribute('data-reload-page')) return reloadFresh();
     if (t.dataset.issueAll) {
