@@ -1,16 +1,16 @@
 // Lets anyone on the season page reload all data ("Refresh data" workflow, every scorecard downloaded again),
-// without a GitHub account, and keeps the fixes captains save with "Fix it" in a Google Sheet for the admins.
+// without a GitHub account, and saves the fixes captains make with "Fix it" in the repository itself:
+// data/fixes-<season>.json, one commit per save (which also rebuilds the page). Admins are the names in
+// data/admins.json; captains and admins are known by the name they type on the page.
 // Runs as a Google Apps Script web app (Execute as: me, Who has access: Anyone).
-// Script properties:
-//   GITHUB_TOKEN  a fine-grained GitHub token for this repository only, with "Actions: Read and write"
-//   ADMIN_KEY     the key admins type on the page to mark fixes as changed in ResultsVault or reject them
-//   FIXES_SHEET   set by the script: the id of the Sheet it made for the fixes on the first save
+// Script property GITHUB_TOKEN: a fine-grained GitHub token for this repository only, with
+// "Actions: Read and write" (reloads) and "Contents: Read and write" (fixes).
 //
-//   GET  ?action=status                     -> { busy, run, cooldownMin, leftToday }
-//   GET  ?action=fixes&season=2026[&key=]   -> { fixes: [...], admin, sheet (admins only) }
-//   POST {"action":"saveFix", ...}          -> { fix }   one fix per issue: saving again replaces it
-//   POST {"action":"setStatus", key, status, note, adminKey} -> { fix }
-//   POST (anything else)                    -> { state: started | running | cooldown | limit | error, ... }
+//   GET  ?action=status                  -> { busy, run, cooldownMin, leftToday }
+//   GET  ?action=fixes&season=2026       -> { fixes: [...], admins: [...] }
+//   POST {"action":"saveFix", ...}       -> { fix }   one fix per issue: saving again replaces it
+//   POST {"action":"setStatus", key, status, note, by} -> { fix }   only for names in data/admins.json
+//   POST (anything else)                 -> { state: started | running | cooldown | limit | error, ... }
 //
 // One fetch at a time: a script lock makes simultaneous presses see the same run instead of starting two.
 // The page posts as text/plain, so browsers send it without a CORS preflight (which Apps Script can't answer).
@@ -22,7 +22,7 @@ const DAILY_MAX = 30;    // fetches started from the page per day (Amsterdam tim
 
 function doGet(e) {
   const p = (e && e.parameter) || {};
-  if (p.action === 'fixes') return respond_(() => listFixes_(p.season, p.key));
+  if (p.action === 'fixes') return respond_(() => listFixes_(p.season));
   return respond_(() => status_());
 }
 
@@ -114,106 +114,94 @@ function gh_(method, path, body) {
 }
 
 // ---- captains' fixes ----------------------------------------------------------------
-// One row per issue (key = match id|type|issue text). Admins can read and edit the Sheet directly; the
-// page reads it back through listFixes_.
-const FIX_COLS = ['key', 'season', 'saved', 'updated', 'captain', 'matchId', 'date', 'team', 'opponent', 'round', 'grade',
-  'side', 'type', 'issue', 'fix', 'steps', 'edits', 'status', 'note'];
-const FIX_STATUSES = ['saved', 'done-rv', 'rejected'];
+// One entry per issue (key = match id|type|issue text) in data/fixes-<season>.json on main.
+const FIX_STATUSES = ['saved', 'confirmed', 'rejected'];
 const FIX_DAILY_MAX = 500; // saves per day, against a runaway script
 
-function fixSheet_() {
-  const props = PropertiesService.getScriptProperties();
-  const id = props.getProperty('FIXES_SHEET');
-  if (id) return SpreadsheetApp.openById(id).getSheets()[0];
-  const ss = SpreadsheetApp.create("VCC season facts: captains' fixes");
-  const sh = ss.getSheets()[0];
-  sh.setName('Fixes');
-  // Plain text, so dates, rounds and match ids stay as the page sent them.
-  sh.getRange(1, 1, sh.getMaxRows(), FIX_COLS.length).setNumberFormat('@');
-  sh.appendRow(FIX_COLS);
-  sh.setFrozenRows(1);
-  props.setProperty('FIXES_SHEET', ss.getId());
-  return sh;
+// A JSON file from main, with its sha (needed to write it back); null when it isn't there yet.
+function readRepoJson_(path) {
+  let res;
+  try { res = gh_('get', `/contents/${path}?ref=main`); } catch (err) {
+    if (/answered 404/.test(err.message)) return { sha: null, json: null };
+    throw err;
+  }
+  // Files over 1 MB come without content: fetch those raw.
+  const text = res.content
+    ? Utilities.newBlob(Utilities.base64Decode(res.content.replace(/\n/g, ''))).getDataAsString('UTF-8')
+    : UrlFetchApp.fetch(res.download_url).getContentText('UTF-8');
+  return { sha: res.sha, json: JSON.parse(text) };
 }
 
-function fixRows_() {
-  const sh = fixSheet_();
-  const values = sh.getDataRange().getValues();
-  return { sh, rows: values.slice(1).map((v, i) => ({ row: i + 2, fix: rowToFix_(v) })) };
+function writeRepoJson_(path, json, sha, message) {
+  const body = { message, branch: 'main', content: Utilities.base64Encode(JSON.stringify(json, null, 1) + '\n', Utilities.Charset.UTF_8) };
+  if (sha) body.sha = sha;
+  gh_('put', `/contents/${path}`, body);
 }
 
-function rowToFix_(v) {
-  const f = {};
-  FIX_COLS.forEach((c, i) => { f[c] = v[i] instanceof Date ? v[i].toISOString() : String(v[i] ?? ''); });
-  try { f.edits = JSON.parse(f.edits || '[]'); } catch (err) { f.edits = []; }
-  return f;
+const fixesPath_ = season => `data/fixes-${String(season).replace(/\D/g, '')}.json`;
+
+function admins_() {
+  const { json } = readRepoJson_('data/admins.json');
+  return ((json && json.admins) || []).map(String);
 }
 
-function fixToRow_(f) {
-  return FIX_COLS.map(c => (c === 'edits' ? JSON.stringify(f.edits || []) : f[c] == null ? '' : String(f[c])));
+function listFixes_(season) {
+  const { json } = readRepoJson_(fixesPath_(season || '2026'));
+  return { fixes: (json && json.fixes) || [], admins: admins_() };
 }
 
-function isAdmin_(key) {
-  const k = PropertiesService.getScriptProperties().getProperty('ADMIN_KEY');
-  return !!k && !!key && key === k;
-}
-
-function listFixes_(season, key) {
-  const admin = isAdmin_(key);
-  const { sh, rows } = fixRows_();
-  return {
-    fixes: rows.map(r => r.fix).filter(f => !season || f.season === String(season)),
-    admin,
-    sheet: admin ? sh.getParent().getUrl() : undefined,
-  };
+// Read, change one fix, write back; the script lock keeps two saves from overwriting each other.
+function updateFixes_(season, change, message) {
+  const lock = LockService.getScriptLock();
+  lock.waitLock(30000);
+  try {
+    const path = fixesPath_(season);
+    const { sha, json } = readRepoJson_(path);
+    const file = json || { about: "Captains' fixes saved on the season page. Written by refresh-service/Code.gs.", fixes: [] };
+    const fix = change(file.fixes);
+    writeRepoJson_(path, file, sha, message(fix));
+    return { fix };
+  } finally {
+    lock.releaseLock();
+  }
 }
 
 function saveFix_(req) {
   const text = (v, max) => String(v == null ? '' : v).slice(0, max);
-  if (!req.key || !req.captain || !String(req.captain).trim()) throw new Error('A fix needs the issue and your name.');
+  const captain = text(req.captain, 60).trim();
+  if (!req.key || !captain) throw new Error('A fix needs the issue and your name.');
   const props = PropertiesService.getScriptProperties();
   const day = today_();
   const count = props.getProperty('fixDay') === day ? Number(props.getProperty('fixCount') || 0) : 0;
   if (count >= FIX_DAILY_MAX) throw new Error('Too many fixes saved today. Try again tomorrow.');
   const edits = Array.isArray(req.edits) ? req.edits.slice(0, 20) : [];
   if (JSON.stringify(edits).length > 5000) throw new Error('This fix is too big to save.');
-  const lock = LockService.getScriptLock();
-  lock.waitLock(20000);
-  try {
-    const { sh, rows } = fixRows_();
-    const hit = rows.find(r => r.fix.key === req.key);
+  const res = updateFixes_(req.season, fixes => {
+    const i = fixes.findIndex(f => f.key === req.key);
     const now = new Date().toISOString();
     const fix = {
-      key: text(req.key, 600), season: text(req.season, 10), saved: hit ? hit.fix.saved : now, updated: now,
-      captain: text(req.captain, 60).trim(), matchId: text(req.matchId, 20), date: text(req.date, 10), team: text(req.team, 80),
-      opponent: text(req.opponent, 80), round: text(req.round, 10), grade: text(req.grade, 80), side: text(req.side, 80),
-      type: text(req.type, 80), issue: text(req.issue, 600), fix: text(req.fix, 600), steps: text(req.steps, 4000), edits,
-      status: req.status === 'done-rv' ? 'done-rv' : 'saved', note: '',
+      key: text(req.key, 600), saved: now, updated: now, captain, status: 'saved',
+      matchId: text(req.matchId, 20), date: text(req.date, 10), team: text(req.team, 80), opponent: text(req.opponent, 80),
+      round: text(req.round, 10), grade: text(req.grade, 80), side: text(req.side, 80), type: text(req.type, 80),
+      issue: text(req.issue, 600), fix: text(req.fix, 600), steps: text(req.steps, 4000), edits,
     };
-    if (hit) sh.getRange(hit.row, 1, 1, FIX_COLS.length).setValues([fixToRow_(fix)]);
-    else sh.appendRow(fixToRow_(fix));
-    props.setProperties({ fixDay: day, fixCount: String(count + 1) });
-    return { fix };
-  } finally {
-    lock.releaseLock();
-  }
+    if (i >= 0) fixes[i] = fix; else fixes.push(fix);
+    return fix;
+  }, fix => `Fix: ${fix.team} v ${fix.opponent}, ${fix.type} (${fix.captain})`);
+  props.setProperties({ fixDay: day, fixCount: String(count + 1) });
+  return res;
 }
 
 function setStatus_(req) {
-  if (!isAdmin_(req.adminKey)) throw new Error('Only admins can change the status of a fix.');
+  const by = String(req.by || '').trim();
+  if (!by || !admins_().some(a => a.trim().toLowerCase() === by.toLowerCase())) throw new Error(`${by || 'Nobody'} is not in the admins list (data/admins.json).`);
   if (!FIX_STATUSES.includes(req.status)) throw new Error('Unknown status.');
-  const lock = LockService.getScriptLock();
-  lock.waitLock(20000);
-  try {
-    const { sh, rows } = fixRows_();
-    const hit = rows.find(r => r.fix.key === req.key);
-    if (!hit) throw new Error('That fix is not in the Sheet any more.');
-    const fix = { ...hit.fix, status: req.status, note: String(req.note || '').slice(0, 600), updated: new Date().toISOString() };
-    sh.getRange(hit.row, 1, 1, FIX_COLS.length).setValues([fixToRow_(fix)]);
-    return { fix };
-  } finally {
-    lock.releaseLock();
-  }
+  return updateFixes_(req.season, fixes => {
+    const f = fixes.find(x => x.key === req.key);
+    if (!f) throw new Error('That fix is not saved any more.');
+    Object.assign(f, { status: req.status, by: req.status === 'saved' ? '' : by, note: String(req.note || '').slice(0, 600), updated: new Date().toISOString() });
+    return f;
+  }, fix => `Fix ${fix.status === 'saved' ? 'reopened' : fix.status}: ${fix.team} v ${fix.opponent}, ${fix.type} (${by})`);
 }
 
 function today_() {

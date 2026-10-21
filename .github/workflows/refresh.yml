@@ -62,7 +62,8 @@ jobs:
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add data cache
-          git diff --cached --quiet || { git commit -m "Data refresh $(date -u +%Y-%m-%d)" && git push; }
+          # Captains' fixes are committed to data/ by the refresh service while a run may be busy: catch up first.
+          git diff --cached --quiet || { git commit -m "Data refresh $(date -u +%Y-%m-%d)" && git pull --rebase origin main && git push; }
 
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3

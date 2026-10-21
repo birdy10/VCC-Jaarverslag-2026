@@ -26,21 +26,25 @@ makes a card add up for sums) and spell out the exact steps in ResultsVault admi
 
 ## Captains' fixes
 
-A captain saves a fix with "Fix it" (name required). `refresh-service/Code.gs` keeps one row per issue in a Google
-Sheet it creates on the first save ("VCC season facts: captains' fixes", in the Drive of whoever deployed the web app).
-Every fix holds the steps for ResultsVault and machine-readable edits with absolute values (`edits`).
+A captain opens "Fix it" on an issue, picks the answer (the scorecard on the left shows the change live) and saves.
+Their name is asked once and remembered on that device. Saved fixes live in the repository:
+`data/fixes-<year>.json`, one entry per issue, written by `refresh-service/Code.gs` as a commit, which also rebuilds
+the page. Every fix holds the steps for ResultsVault and machine-readable edits with absolute values (`edits`).
 
-- **Admins** see all fixes under "Captains' fixes" on the page, grouped as to change in ResultsVault / changed in
-  ResultsVault / in the Matchcentre (the issue is gone from the fetched data) / rejected. "Admin" asks for the
-  `ADMIN_KEY` script property; admins can then mark fixes and open the Sheet. The Sheet can be edited directly too.
+- **Statuses**: *Potentially solved* (saved by a captain), *Confirmed by admin*, *Rejected*, and *In the Matchcentre*
+  once the issue is gone from the fetched data. Issue rows show it; "Not solved yet" hides the solved ones.
+- **Admins** are the names in `data/admins.json`. Typing one of those names on the page gives the Confirm / Reject
+  buttons, under "Captains' fixes" and in the fix itself. (Names, not passwords: anyone typing an admin's name could
+  confirm. The commit history shows every change.)
 - **Numbers**: until the Matchcentre has a fix, the page counts it (`applyFixes` in `src/stats.js`). Fixes whose issue
   is gone or that were rejected are skipped, so the fetched data always wins. Each viewer can switch this off.
-- **Jaarverslag**: `node scripts/export-tables.mjs 2026 --fixes <web app URL>` (or `REFRESH_URL` set) applies the same
-  fixes before building the tables; `--no-fixes` leaves them out.
+- **Jaarverslag**: `node scripts/export-tables.mjs 2026` applies the same fixes from `data/fixes-2026.json` (pull
+  first); `--no-fixes` leaves them out.
 
-Setting it up in the Apps Script project of the refresh service: paste the new `Code.gs`, add the script properties
-`GITHUB_TOKEN` (if the token is still hard-coded in `gh_()`, move it there first) and `ADMIN_KEY`, then Deploy →
-Manage deployments → edit → New version, which keeps the URL. The first save asks for permission to create the Sheet.
+Setting it up: the fine-grained GitHub token of the refresh service needs **Contents: Read and write** on this
+repository, next to Actions. In the Apps Script project, put the token in the script property `GITHUB_TOKEN` (if it's
+still hard-coded in `gh_()`, move it there first), paste the new `Code.gs`, then Deploy → Manage deployments → edit →
+New version, which keeps the URL.
 
 Guest players (no Matchcentre profile) have match-local ids like -101 that the API reuses for other people in
 other matches. The fetch gives each guest a stable id from club + name, or the registered player's id when the

@@ -400,90 +400,109 @@ details.dcat > summary small { display: block; color: var(--muted); font-size: 1
 .btn.sm { padding: 2px 10px; font-size: 12.5px; }
 .iss-m .fixbtn { margin-left: auto; }
 .fx-badge { font-weight: 700; }
-.fx-badge.todo { color: var(--s4); } .fx-badge.rv { color: var(--win); } .fx-badge.rej { color: var(--red-ink); }
-.fx-savedby { margin: 0; padding: 8px 12px; border-radius: var(--radius); background: var(--barfill); font-size: 13.5px; }
-.fx-savedby.rej { background: transparent; border: 1px solid var(--red); }
-.fx-name { display: grid; gap: 4px; max-width: 320px; }
-.fx-name span { font-weight: 600; font-size: 13.5px; }
-.fx-name input { font: inherit; font-size: 14px; padding: 6px 10px; border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface); color: var(--fg); }
-.btn.primary { background: var(--brand); border-color: var(--brand); color: var(--on-brand); }
-.btn.primary:disabled { opacity: .45; }
+.fx-badge.todo { color: var(--s4); } .fx-badge.ok { color: var(--win); } .fx-badge.rej { color: var(--red-ink); }
 .sf-use { display: flex; align-items: baseline; gap: 8px; font-size: 14px; margin: 0 0 10px; cursor: pointer; }
 .sf-use input { accent-color: var(--brand); }
 .sf-use small { color: var(--muted); }
 .sf-stale { margin: 0 0 10px; padding: 8px 12px; border-radius: var(--radius); background: var(--barfill); font-weight: 600; display: flex; flex-wrap: wrap; align-items: center; gap: 6px 12px; }
-.sf-adm { display: inline-flex; flex-wrap: wrap; gap: 6px; }
 #saved-fixes .iss-m { gap: 4px 12px; }
 .iss.done .iss-t { color: var(--muted); }
 
-/* ---- fix dialog: three numbered steps, scorecard in between ---- */
-.fixdlg { width: min(760px, calc(100% - 24px)); max-height: calc(100dvh - 24px); padding: 0; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); color: var(--fg); box-shadow: 0 20px 60px rgba(10, 12, 40, .35); }
-.fixdlg::backdrop { background: rgba(14, 16, 40, .5); }
-#fix-body { padding: 18px 20px 20px; display: grid; grid-template-columns: minmax(0, 1fr); gap: 14px; }
-.fixdlg { overflow-x: hidden; }
-.fx-head { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 12px; align-items: start; }
-.fx-head .mini { display: flex; align-items: center; gap: 6px; margin: 0 0 4px; }
-.fx-head h2 { margin: 0; font: 600 17px/1.35 var(--font-body); text-transform: none; letter-spacing: 0; color: var(--fg); overflow-wrap: anywhere; }
-.fx-x { border: 0; background: none; font-size: 26px; line-height: 1; color: var(--muted); cursor: pointer; padding: 0 4px; }
-.fx-x:hover { color: var(--fg); }
-.fx-m { margin: -6px 0 0; font-size: 13px; color: var(--muted); }
+/* ---- fix dialog: wide, two columns. Left: what is wrong, the scorecard changing live. Right: what to do. ---- */
+.fixdlg { width: min(1400px, 88vw); height: min(880px, 90dvh); max-width: none; max-height: none; padding: 0; border: 1px solid var(--line); border-radius: 12px; background: var(--surface); color: var(--fg); box-shadow: 0 24px 70px rgba(10, 12, 40, .4); overflow: hidden; }
+.fixdlg::backdrop { background: rgba(14, 16, 40, .55); }
+#fix-body { height: 100%; display: grid; grid-template-rows: auto minmax(0, 1fr); }
+.fx-top { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 12px; align-items: start; padding: 16px 24px 14px; border-bottom: 1px solid var(--line); }
+.fx-kind { margin: 0 0 2px; display: flex; align-items: center; gap: 7px; font: 700 11px/1.3 var(--font-display); letter-spacing: .09em; text-transform: uppercase; color: var(--muted); }
+.fx-top h2 { margin: 0; font: 800 21px/1.25 var(--font-display); color: var(--brand-ink); text-transform: none; letter-spacing: 0; }
+.fx-m { margin: 4px 0 0; font-size: 13.5px; color: var(--muted); display: flex; flex-wrap: wrap; align-items: center; gap: 4px 6px; }
 .fx-m a { color: inherit; }
-.fixdlg .fixbar { margin: -8px 0 0; }
-.fx-s { display: grid; gap: 8px; }
-.fx-s h3 { margin: 0; display: flex; align-items: center; gap: 8px; font: 700 13px/1.2 var(--font-display); letter-spacing: .06em; text-transform: uppercase; color: var(--brand-ink); }
-.fx-s h3 span { display: inline-grid; place-items: center; width: 22px; height: 22px; border-radius: 50%; background: var(--brand); color: var(--on-brand); font-size: 12px; letter-spacing: 0; }
-.fx-intro { margin: 0; font-size: 14.5px; }
-.fx-opts { display: grid; gap: 6px; }
-.fx-opt { border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface-2); }
-.fx-opt.on { border-color: var(--brand); box-shadow: inset 3px 0 0 var(--brand); }
-.fx-ol { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 10px; padding: 9px 12px; cursor: pointer; font-size: 14.5px; }
-.fx-ol input { margin: 3px 0 0; accent-color: var(--brand); }
-.fx-ol small { display: block; color: var(--muted); font-size: 12.5px; margin-top: 2px; }
-.fx-rec { font: 700 10px/1.6 var(--font-display); font-style: normal; letter-spacing: .06em; text-transform: uppercase; color: #fff; background: var(--win); padding: 1px 6px; border-radius: 3px; margin-left: 6px; vertical-align: 2px; white-space: nowrap; }
-.fx-in { padding: 0 12px 12px calc(12px + 13px + 10px); display: grid; gap: 10px; }
-.fx-pickw { display: grid; gap: 6px; }
-.fx-pl, .fx-num span { font-weight: 600; font-size: 13.5px; }
-.fx-q, .fx-num input { font: inherit; font-size: 14px; padding: 6px 10px; border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface); color: var(--fg); max-width: 320px; }
-.fx-num { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; }
-.fx-num input { width: 110px; }
-.fx-num input[aria-invalid="true"] { border-color: var(--red); }
-.fx-num small { color: var(--muted); font-size: 12.5px; }
-.fx-pick { max-height: 240px; overflow: auto; border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface); padding: 4px 0; }
-.fx-pick label { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 8px; align-items: baseline; padding: 5px 10px; font-size: 14px; cursor: pointer; }
-.fx-pick label[hidden] { display: none; }
-.fx-pick label:hover { background: var(--surface-2); }
-.fx-pick label:has(input:checked) { background: var(--barfill); font-weight: 600; }
-.fx-pick input { accent-color: var(--brand); margin: 0; position: relative; top: 2px; }
-.fx-pick small { color: var(--muted); font-size: 12px; font-weight: 400; }
-.fx-pg { margin: 6px 10px 2px; font: 700 10.5px/1.3 var(--font-display); letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
-.fx-sc { border: 1px solid var(--line); border-radius: var(--radius); padding: 8px 12px; background: var(--surface-2); }
-.fx-sc > summary { cursor: pointer; font: 700 13px/1.2 var(--font-display); letter-spacing: .06em; text-transform: uppercase; color: var(--brand-ink); }
-.fx-card { margin-top: 10px; overflow-x: auto; }
-.fx-card + .fx-card { border-top: 1px solid var(--line); padding-top: 10px; }
-.fx-ch { margin: 0 0 6px; font-size: 13.5px; }
-.fx-t { border-collapse: collapse; width: 100%; font-size: 13px; margin-bottom: 6px; }
-.fx-t th { text-align: left; font-weight: 600; color: var(--muted); font-size: 11.5px; padding: 2px 6px; border-bottom: 1px solid var(--line); }
-.fx-t td, .fx-t tbody tr:first-child td { padding: 2px 6px; border-bottom: 1px solid var(--grid); font-weight: 400; }
-.fx-t .n { text-align: right; font-variant-numeric: tabular-nums; }
+.fx-x { border: 0; background: none; font-size: 30px; line-height: 1; color: var(--muted); cursor: pointer; padding: 0 4px; }
+.fx-x:hover { color: var(--fg); }
+.fx-cols { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); min-height: 0; }
+.fx-left, .fx-right { overflow: auto; min-height: 0; padding: 18px 24px 24px; display: grid; gap: 14px; align-content: start; }
+.fx-left { background: var(--surface-2); border-right: 1px solid var(--line); }
+.fx-issue { margin: 0; font-size: 15px; line-height: 1.45; padding: 10px 14px; border-left: 3px solid var(--red); background: var(--surface); border-radius: var(--radius); }
+.fx-card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 12px 14px; overflow-x: auto; }
+.fx-card + .fx-card { margin-top: 10px; }
+.fx-ch { margin: 0 0 8px; font-size: 14px; }
+.fx-t { border-collapse: collapse; width: 100%; font-size: 13.5px; margin-bottom: 8px; }
+.fx-t th { text-align: left; font-weight: 600; color: var(--muted); font-size: 11.5px; padding: 3px 6px; border-bottom: 1px solid var(--line); }
+.fx-t td, .fx-t tbody tr:first-child td { padding: 4px 6px; border-bottom: 1px solid var(--grid); font-weight: 400; }
+.fx-t .n { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
 .fx-t .how { color: var(--muted); }
-.fx-t td small { color: var(--muted); }
-.fx-t tr.hl td { background: var(--barfill); font-weight: 700; }
-.fx-card .fx-ex { margin: 0 0 8px; font-size: 13px; color: var(--muted); }
-.fx-chk { list-style: none; margin: 0; padding: 0; display: grid; gap: 2px; font-size: 13px; }
-.fx-chk .ok { color: var(--win); }
+.fx-t tr.fx-row td { background: var(--barfill); }
+.fx-t tr.fx-row td:first-child { font-weight: 700; box-shadow: inset 3px 0 0 var(--brand); }
+.fixdlg s { color: var(--muted); }
+.fixdlg ins { text-decoration: none; background: #d6f0e1; color: #0f5132; font-weight: 700; padding: 0 3px; border-radius: 3px; }
+:root[data-theme="dark"] .fixdlg ins { background: #1d4a33; color: #b7f0cf; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .fixdlg ins { background: #1d4a33; color: #b7f0cf; } }
+.fx-ex { margin: 0 0 8px; font-size: 12.5px; color: var(--muted); }
+.fx-chk { list-style: none; margin: 0 0 10px; padding: 0; display: grid; gap: 3px; font-size: 13.5px; }
+.fx-chk .ok { color: var(--win); font-weight: 600; }
 .fx-chk .bad { color: var(--red-ink); font-weight: 600; }
-.fx-sc .link { margin-top: 8px; font-size: 13px; }
-.fx-steps { margin: 0; padding-left: 22px; display: grid; gap: 6px; font-size: 14.5px; }
+.fx-whole { justify-self: start; font-size: 13px; }
+.fx-rv { border-top: 1px solid var(--line); padding-top: 10px; }
+.fx-rv > summary { cursor: pointer; font-weight: 600; font-size: 13.5px; color: var(--brand-ink); }
+.fx-rv[open] > summary { margin-bottom: 8px; }
+.fx-steps { margin: 0 0 8px; padding-left: 22px; display: grid; gap: 5px; font-size: 13.5px; }
 .fx-steps a { color: var(--brand-ink); font-weight: 600; }
 .fx-wait { margin: 0; color: var(--muted); font-style: italic; }
 .fx-btns { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 12px; margin: 0; }
 .fx-btns small, .fx-note { color: var(--muted); font-size: 12.5px; }
+.fx-q-title { margin: 0; font: 600 18px/1.4 var(--font-body); color: var(--fg); text-transform: none; letter-spacing: 0; }
+.fx-q-title .fx-sub { display: block; margin-top: 4px; font-size: 13.5px; font-weight: 400; color: var(--muted); }
+.fx-opts { display: grid; gap: 8px; }
+.fx-opt { border: 1px solid var(--line); border-radius: 8px; background: var(--surface); }
+.fx-opt.on { border-color: var(--brand); box-shadow: inset 4px 0 0 var(--brand); }
+.fx-ol { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 12px; padding: 12px 14px; cursor: pointer; font-size: 15px; line-height: 1.4; }
+.fx-ol input { margin: 3px 0 0; width: 18px; height: 18px; accent-color: var(--brand); }
+.fx-ol small { display: block; color: var(--muted); font-size: 13px; margin-top: 3px; }
+.fx-rec { font: 700 10px/1.6 var(--font-display); font-style: normal; letter-spacing: .06em; text-transform: uppercase; color: #fff; background: var(--win); padding: 1px 7px; border-radius: 3px; margin-left: 6px; vertical-align: 2px; white-space: nowrap; }
+.fx-in { padding: 0 14px 14px calc(14px + 18px + 12px); display: grid; gap: 10px; }
+.fx-pickw { display: grid; gap: 6px; }
+.fx-q, .fx-num input, .fx-name input { font: inherit; font-size: 15px; padding: 8px 12px; border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface); color: var(--fg); }
+.fx-num { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; }
+.fx-num span { font-weight: 600; }
+.fx-num input { width: 120px; }
+.fx-num input[aria-invalid="true"] { border-color: var(--red); }
+.fx-num small { color: var(--muted); font-size: 13px; }
+.fx-pick { max-height: 300px; overflow: auto; border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface); padding: 4px 0; }
+.fx-pick label { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 10px; align-items: baseline; padding: 7px 12px; font-size: 15px; cursor: pointer; }
+.fx-pick label[hidden] { display: none; }
+.fx-pick label:hover { background: var(--surface-2); }
+.fx-pick label:has(input:checked) { background: var(--barfill); font-weight: 700; }
+.fx-pick input { accent-color: var(--brand); margin: 0; position: relative; top: 2px; }
+.fx-pick small { color: var(--muted); font-size: 12.5px; font-weight: 400; }
+.fx-pg { margin: 8px 12px 2px; font: 700 10.5px/1.3 var(--font-display); letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+.fx-save { display: grid; gap: 10px; padding-top: 14px; border-top: 1px solid var(--line); }
+.fx-who { margin: 0; font-size: 14px; color: var(--muted); }
+.fx-who b { color: var(--fg); }
+.fx-name { display: grid; gap: 4px; max-width: 360px; }
+.fx-name span { font-weight: 600; }
+.fx-name small { color: var(--muted); font-size: 12.5px; }
+.btn.primary { background: var(--brand); border-color: var(--brand); color: var(--on-brand); }
+.btn.primary:disabled { opacity: .45; cursor: default; }
+.btn.big { justify-self: start; padding: 11px 28px; font-size: 16px; }
+.fx-hint { margin: 0; min-height: 1.2em; font-weight: 600; color: var(--brand-ink); }
 .fx-note { margin: 0; }
-.fx-done { display: flex; align-items: center; gap: 8px; font-weight: 600; cursor: pointer; }
-.fx-done input { width: 18px; height: 18px; accent-color: var(--win); margin: 0; }
+.fx-savedby { margin: 0; padding: 10px 14px; border-radius: var(--radius); font-size: 14px; background: var(--barfill); }
+.fx-savedby.ok, .fx-savedby.in { background: #d6f0e1; color: #0f5132; }
+.fx-savedby.rej { background: transparent; border: 1px solid var(--red); }
+.fx-adm { margin: 0; display: flex; flex-wrap: wrap; align-items: center; gap: 6px; font-size: 13px; color: var(--muted); }
 .fixdlg #toast:not(.on) { display: none; }
-.fixdlg #toast { position: sticky; display: block; width: fit-content; margin: 0 auto 12px; bottom: 12px; left: auto; transform: none; }
-@media (max-width: 560px) { #fix-body { padding: 14px; } .fx-in { padding-left: 12px; } }
+.fixdlg #toast { position: fixed; }
+@media (max-width: 900px) {
+  .fixdlg { width: calc(100% - 16px); height: calc(100dvh - 16px); }
+  #fix-body { overflow: auto; display: block; }
+  .fx-top { padding: 14px 16px 12px; }
+  .fx-cols { display: flex; flex-direction: column; }
+  .fx-left, .fx-right { overflow: visible; padding: 14px 16px 18px; }
+  /* on a phone the thing to do comes first, the scorecard underneath */
+  .fx-right { order: -1; border-bottom: 1px solid var(--line); }
+  .fx-left { border-right: 0; }
+  .fx-in { padding-left: 14px; }
+}
 .fetch-status { margin: -4px 0 14px; font-weight: 600; color: var(--brand-ink); white-space: pre-line; }
 .fetch-status.err { color: var(--red-ink); }
 .btn:disabled { opacity: .5; cursor: progress; }
@@ -587,17 +606,20 @@ footer p { margin: 0; max-width: 90ch; }
 
 <script>/*__STATS__*/</script>
 <script>window.SEASON_DATA = /*__DATA__*/null;</script>
+<script>window.VCC_FIXES = /*__FIXES__*/null;</script>
 <script>
 (function () {
   'use strict';
   const V = window.VCCStats;
-  // Captains' saved fixes count in the numbers until the Matchcentre has them. The list as this browser last
-  // fetched it is applied before anything is counted; a newer list is fetched after the page is up.
-  const FIX_CACHE = 'vcc-fixes-' + window.SEASON_DATA.season, FIX_USE = 'vcc-use-fixes';
+  // Captains' saved fixes count in the numbers until the Matchcentre has them. The build embeds them from the
+  // repository (data/fixes-<season>.json, admins in data/admins.json); they're applied before anything is counted.
+  const FIX_USE = 'vcc-use-fixes';
   const FIX_URL = window.VCC_SITE && window.VCC_SITE.refresh; // the same web app as "Reload all data"
-  let savedFixes = [], useFixes = true, captainName = '';
+  const FIXDATA = window.VCC_FIXES || {};
+  let savedFixes = FIXDATA.fixes || [], useFixes = true, captainName = '';
+  let ADMINS = (FIXDATA.admins || []).map(a => a.trim().toLowerCase());
+  const isAdmin = () => !!captainName && ADMINS.includes(captainName.trim().toLowerCase());
   try {
-    savedFixes = JSON.parse(localStorage.getItem(FIX_CACHE) || '[]');
     useFixes = localStorage.getItem(FIX_USE) !== 'no';
     captainName = localStorage.getItem('vcc-captain') || '';
   } catch (e) {}
@@ -1939,7 +1961,7 @@ footer p { margin: 0; max-width: 90ch; }
       body: copyRows.map(x => [teamName(teamOf(x.m)), typeInfo[x.type].label, matchText(x.m), x.m.opp, x.m.round || '', x.m.id, teamOf(x.m).grade, x.side === 'v' ? 'VCC' : x.m.opp, x.text, scorecard(x.m)]) }] };
     const tools = list.length ? `<div class="head-tools">${seg('issueGroup', [['type', 'By issue'], ['team', 'By team']], byTeam ? 'team' : 'type', 'Group issues', 'sm')}<button class="btn" data-issue-expand="${matchOn.size ? '0' : '1'}" aria-pressed="${matchOn.size ? 'true' : 'false'}">${matchOn.size ? 'Collapse all' : 'Expand all'}</button>${copyBtn('issues', 'Copy list')}</div>` : '';
     const hiddenSaved = inTeams.filter(x => sideOk(x) && typeOn(x.type) && !savedOk(x)).length;
-    const hidden = [hiddenSide && `${hiddenSide} on the opponents' side`, hiddenType && `${hiddenType} in switched-off types`, hiddenSaved && `${hiddenSaved} with a saved fix`].filter(Boolean);
+    const hidden = [hiddenSide && `${hiddenSide} on the opponents' side`, hiddenType && `${hiddenType} in switched-off types`, hiddenSaved && `${hiddenSaved} potentially solved`].filter(Boolean);
     const allTypes = typeOrder.map(t => t[0]);
     const typesOn = allTypes.filter(typeOn).length;
     // Filters sit in a folded panel: four short checkbox columns, one per kind of mistake.
@@ -1947,7 +1969,7 @@ footer p { margin: 0; max-width: 90ch; }
         <summary><span class="btn">Filter issues</span><span class="ifsum">${typesOn === allTypes.length ? 'All' : `${typesOn} of ${allTypes.length}`} issue types · ${state.issueOpp ? 'VCC and opponents' : 'VCC only'}</span></summary>
         <div class="ifbody">
           <div class="ifside"><span class="mini">Whose figures</span>${seg('issueOpp', [['v', 'VCC only'], ['both', 'VCC and opponents']], state.issueOpp ? 'both' : 'v', 'Whose figures', 'sm')}
-            ${seg('issueSaved', [['all', 'All issues'], ['open', 'Without a saved fix']], state.issueSaved, 'Saved fixes', 'sm')}
+            ${seg('issueSaved', [['all', 'All issues'], ['open', 'Not solved yet']], state.issueSaved, 'Solved issues', 'sm')}
             <span class="ilinks iall"><span class="mini">All issue types</span><button class="link" data-issue-all="all" data-on="1">All</button><button class="link" data-issue-all="all" data-on="0">None</button></span></div>
           <div class="igrid">${ISSUE_GROUPS.map(([title, types], gi) => `<fieldset class="icol"><legend><i class="dot g${gi}"></i>${esc(title)}</legend>
             <div class="ilinks"><button class="link" data-issue-all="${gi}" data-on="1">All</button><button class="link" data-issue-all="${gi}" data-on="0">None</button></div>
@@ -1972,11 +1994,11 @@ footer p { margin: 0; max-width: 90ch; }
   // to refresh-service/Code.gs, which keeps every captain's fixes in a Google Sheet for the admins.
   const issueKey = x => `${x.m.id}|${x.type}|${x.text}`;
   let fixByKey = new Map(savedFixes.map(f => [f.key, f]));
-  const FIX_STATUS = { saved: ['To change in ResultsVault', 'todo'], 'done-rv': ['Changed in ResultsVault', 'rv'], rejected: ['Rejected', 'rej'] };
+  const FIX_STATUS = { saved: ['Potentially solved', 'todo'], confirmed: ['Confirmed by admin', 'ok'], rejected: ['Fix rejected', 'rej'] };
   const fixBadge = f => {
     if (!f) return '';
     const [label, cls] = FIX_STATUS[f.status] || FIX_STATUS.saved;
-    return `<span class="fx-badge ${cls}" title="Saved by ${esc(f.captain)}, ${esc(fmtTime(Date.parse(f.updated || f.saved)))}">${f.status === 'rejected' ? '✗' : '✓'} Fix saved · ${label}</span>`;
+    return `<span class="fx-badge ${cls}" title="Saved by ${esc(f.captain)}, ${esc(fmtTime(Date.parse(f.updated || f.saved)))}">${f.status === 'rejected' ? '✗' : '✓'} ${label}</span>`;
   };
   const NOT_OUT = new Set([0, 1, 13, 14, 15]);
   const BY_BOWLER = new Set([2, 3, 4, 5, 7]); // bowled, caught, lbw, stumped, hit wicket
@@ -2041,28 +2063,45 @@ footer p { margin: 0; max-width: 90ch; }
     return out;
   }
 
-  // Compact scorecard of one innings, the rows the issue is about highlighted, sums checked underneath.
-  function cardHtml(m, inn, hl = {}) {
+  // Compact scorecard of one innings. With `before` (the card as the Matchcentre has it) every cell the fix
+  // changes shows the old value struck through and the new one marked, and the sums that were off are checked
+  // again, so the captain sees the card come right while choosing.
+  function cardHtml(m, inn, hl = {}, before = inn) {
     const who = inn.side === 'v' ? teamOf(m).label : m.opp, them = inn.side === 'v' ? m.opp : teamOf(m).label;
-    const [E, b, lb, w, nb, p] = inn.x.map(v => v || 0);
-    const sb = inn.bat.reduce((a, r) => a + (r[2] || 0), 0), sw = inn.bowl.reduce((a, r) => a + (r[4] || 0), 0);
-    const balls = inn.bowl.reduce((a, r) => a + toB(r[2]), 0), wk = inn.bowl.reduce((a, r) => a + (r[5] || 0), 0);
-    const outs = inn.bat.filter(r => !NOT_OUT.has(r[6])).length;
-    const chk = (ok, text) => `<li class="${ok ? 'ok' : 'bad'}">${ok ? '✓' : '✗'} ${text}</li>`;
-    const bat = inn.bat.map((r, i) => `<tr${hl.bat === i || (hl.bats || []).includes(i) ? ' class="hl"' : ''}><td>${esc(S.fullName(r[0]))}</td><td class="how">${esc((r[7] || '').trim() || (NOT_OUT.has(r[6]) ? 'not out' : ''))}</td><td class="n">${r[2] ?? '–'}</td><td class="n">${r[3] ?? '–'}</td><td class="n">${r[8] != null ? `${r[8]}${r[9] ? `<small>/${r[9]}</small>` : ''}` : '–'}</td></tr>`).join('');
-    const bowl = inn.bowl.map(r => `<tr${(hl.bowlers || []).includes(r[0]) ? ' class="hl"' : ''}><td>${esc(S.fullName(r[0]))}</td><td class="n">${r[2] ?? '–'}</td><td class="n">${r[3] ?? 0}</td><td class="n">${r[4] ?? 0}</td><td class="n">${r[5] ?? 0}</td><td class="n">${r[6] ?? 0}</td><td class="n">${r[7] ?? 0}</td></tr>`).join('');
-    return `<div class="fx-card"><p class="fx-ch"><b>${esc(who)}</b> batting · <b>${inn.runs ?? '–'}/${inn.wkts ?? '–'}</b> in ${inn.overs ?? '–'} overs</p>
+    const cell = (now, then) => (String(now) === String(then) ? esc(now) : `<s>${esc(then)}</s> <ins>${esc(now)}</ins>`);
+    const how = r => (r[7] || '').trim() || (NOT_OUT.has(r[6]) ? 'not out' : '');
+    const fow = r => (r[8] != null ? `${r[8]}${r[9] ? `/${r[9]}` : ''}` : '–');
+    const sums = i => {
+      const [E, b, lb, w, nb, p] = i.x.map(v => v || 0);
+      const sb = i.bat.reduce((a, r) => a + (r[2] || 0), 0), sw = i.bowl.reduce((a, r) => a + (r[4] || 0), 0);
+      const balls = i.bowl.reduce((a, r) => a + toB(r[2]), 0), wk = i.bowl.reduce((a, r) => a + (r[5] || 0), 0);
+      const outs = i.bat.filter(r => !NOT_OUT.has(r[6])).length, byB = i.bat.filter(r => BY_BOWLER.has(r[6])).length;
+      return [
+        ['bat', i.bat.length, sb + E === i.runs, `Batters ${sb} + extras ${E} = ${sb + E}${sb + E === i.runs ? '' : `, the total says ${i.runs}`}`],
+        ['ext', true, E === b + lb + w + nb + p, `Extras ${E}${E === b + lb + w + nb + p ? '' : `, but the parts add up to ${b + lb + w + nb + p}`}`],
+        ['bowl', i.bowl.length, sw + b + lb + p === i.runs, `Bowlers ${sw} + byes ${b + lb + p} = ${sw + b + lb + p}${sw + b + lb + p === i.runs ? '' : `, the total says ${i.runs}`}`],
+        ['ov', i.bowl.length && i.overs != null, balls === toB(i.overs), `Bowlers' overs ${ovs(balls)}${balls === toB(i.overs) ? '' : `, the innings lasted ${i.overs}`}`],
+        ['out', i.bat.length && i.wkts != null, outs === i.wkts, `${outs} batters out${outs === i.wkts ? '' : `, the total says ${i.wkts} wickets`}`],
+        ['wk', i.bowl.length, wk === byB, `Bowlers' wickets ${wk}${wk === byB ? '' : `, ${byB} batters were out to a bowler`}`],
+      ].filter(c => c[1]);
+    };
+    // Only the sums that were off before: they're what this fix is about.
+    const was = new Map(sums(before).map(c => [c[0], c[2]]));
+    const checks = sums(inn).filter(c => was.get(c[0]) === false).map(c => `<li class="${c[2] ? 'ok' : 'bad'}">${c[2] ? '✓' : '✗'} ${c[3]}</li>`).join('');
+    const bat = inn.bat.map((r, i) => {
+      const o = before.bat[i] || r;
+      return `<tr${hl.bat === i || (hl.bats || []).includes(i) ? ' class="fx-row"' : ''}><td>${cell(S.fullName(r[0]), S.fullName(o[0]))}</td><td class="how">${cell(how(r), how(o))}</td><td class="n">${cell(r[2] ?? '–', o[2] ?? '–')}</td><td class="n">${cell(r[3] ?? '–', o[3] ?? '–')}</td><td class="n">${cell(fow(r), fow(o))}</td></tr>`;
+    }).join('');
+    const bowl = inn.bowl.map((r, i) => {
+      const o = before.bowl[i] || r;
+      return `<tr${(hl.bowlers || []).includes(r[0]) ? ' class="fx-row"' : ''}><td>${cell(S.fullName(r[0]), S.fullName(o[0]))}</td><td class="n">${cell(r[2] ?? '–', o[2] ?? '–')}</td><td class="n">${r[3] ?? 0}</td><td class="n">${cell(r[4] ?? 0, o[4] ?? 0)}</td><td class="n">${cell(r[5] ?? 0, o[5] ?? 0)}</td></tr>`;
+    }).join('');
+    const [E, b, lb, w, nb, p] = inn.x.map(v => v || 0), ox = before.x.map(v => v || 0);
+    return `<div class="fx-card"><p class="fx-ch"><b>${esc(who)}</b> batting · <b>${cell(`${inn.runs ?? '–'}/${inn.wkts ?? '–'}`, `${before.runs ?? '–'}/${before.wkts ?? '–'}`)}</b> in ${cell(inn.overs ?? '–', before.overs ?? '–')} overs</p>
+      ${checks ? `<ul class="fx-chk">${checks}</ul>` : ''}
       ${inn.bat.length ? `<table class="fx-t"><thead><tr><th>Batter</th><th>How out</th><th class="n">R</th><th class="n">B</th><th class="n" title="Fall of wicket / wicket number">FoW</th></tr></thead><tbody>${bat}</tbody></table>` : '<p class="empty">No batting card.</p>'}
-      <p class="fx-ex">Extras ${E} (b ${b}, lb ${lb}, w ${w}, nb ${nb}${p ? `, pen ${p}` : ''})</p>
-      ${inn.bowl.length ? `<table class="fx-t"><thead><tr><th>${esc(them)} bowling</th><th class="n">O</th><th class="n">M</th><th class="n">R</th><th class="n">W</th><th class="n">Wd</th><th class="n">Nb</th></tr></thead><tbody>${bowl}</tbody></table>` : '<p class="empty">No bowling card.</p>'}
-      <ul class="fx-chk">${[
-        inn.bat.length && chk(sb + E === inn.runs, `Batters ${sb} + extras ${E} = ${sb + E}${sb + E === inn.runs ? '' : `, total says ${inn.runs}`}`),
-        E !== b + lb + w + nb + p && chk(false, `Extras ${E}, but b + lb + w + nb${p ? ' + pen' : ''} = ${b + lb + w + nb + p}`),
-        inn.bowl.length && chk(sw + b + lb + p === inn.runs, `Bowlers ${sw} + byes, leg byes${p ? ', penalties' : ''} ${b + lb + p} = ${sw + b + lb + p}${sw + b + lb + p === inn.runs ? '' : `, total says ${inn.runs}`}`),
-        inn.bowl.length && inn.overs != null && chk(balls === toB(inn.overs), `Bowlers' overs ${ovs(balls)}${balls === toB(inn.overs) ? '' : `, innings ${inn.overs}`}`),
-        inn.bat.length && inn.wkts != null && chk(outs === inn.wkts, `${outs} batters out${outs === inn.wkts ? '' : `, total says ${inn.wkts} wickets`}`),
-        inn.bowl.length && chk(wk === inn.bat.filter(r => BY_BOWLER.has(r[6])).length, `Bowlers' wickets ${wk}`),
-      ].filter(Boolean).join('')}</ul></div>`;
+      <p class="fx-ex">Extras ${cell(E, ox[0])} · byes ${cell(b, ox[1])}, leg byes ${lb}, wides ${cell(w, ox[3])}, no-balls ${nb}${p ? `, penalties ${p}` : ''}</p>
+      ${inn.bowl.length ? `<table class="fx-t"><thead><tr><th>${esc(them)} bowling</th><th class="n">O</th><th class="n">M</th><th class="n">R</th><th class="n">W</th></tr></thead><tbody>${bowl}</tbody></table>` : '<p class="empty">No bowling card.</p>'}</div>`;
   }
 
   // ---- what the right answer probably is, per kind of issue ----
@@ -2077,13 +2116,13 @@ footer p { margin: 0; max-width: 90ch; }
     if (['guest', 'guest-noname', 'guest-registered'].includes(t) && ref.pid != null) return profileSpec(x, m, ref, t);
     if (t === 'no-fow' && inn) return fowSpec(m, inn, ref);
     if (t === 'no-balls' && inn) return ballsSpec(m, inn, ref);
-    if ((t === 'bat-sum' || t === 'bowl-sum') && inn) return { inn, card: {}, intro: 'The runs on the scorecard don\'t add up. First check the scorebook: if it shows which figure is wrong, enter that one. If not, these are the smallest changes that make the card add up again, best first.', options: balanceOptions(m, inn) };
+    if ((t === 'bat-sum' || t === 'bowl-sum') && inn) return { inn, card: {}, intro: 'Which change makes the card add up? <small class="fx-sub">Got the scorebook? Go by that. If not, the best guess changes the fewest numbers.</small>', options: balanceOptions(m, inn) };
     if (t === 'wkts' && inn) return wktsSpec(m, inn);
     if (t === 'bowl-wkts' && inn) return bowlWktsSpec(m, inn);
     if (t === 'bowl-overs' && inn) return oversSpec(m, inn);
     if (t === 'no-card' && inn) {
       const bs = inn.side, fs = otherSide(bs);
-      return { inn, card: {}, intro: 'Part of this scorecard was never entered. Only the scorebook can fill it in.', options: [{ label: 'Enter the missing card from the scorebook', rec: true,
+      return { inn, card: {}, intro: 'This one needs the scorebook. <small class="fx-sub">Save it, so the admins know the card is still missing.</small>', options: [{ label: 'Enter the missing card from the scorebook', rec: true,
         edits: () => [{ page: 'card', team: rvTeam(m, inn.bat.length ? fs : bs), text: `Fill in every player's ${inn.bat.length ? 'bowling figures (O, M, R, W, Wd, Nb)' : 'batting (How out, Fielder, Bowler, Runs, BF, FOW)'} from the scorebook.` }] }] };
     }
     return null;
@@ -2290,9 +2329,9 @@ footer p { margin: 0; max-width: 90ch; }
       : { label: `A batter shown as out was not out`, note: 'Changes that batter\'s average.', inputs: [pickIn('bat', 'Which batter was not out?', [{ title: `${team} batting`, items: outRows.map(([r]) => [r[0], (r[7] || '').trim()]) }])],
         edits: v => v.bat != null && [{ page: 'card', team, text: `In the row of <b>${esc(rvName(+v.bat))}</b>, set <b>How out</b> to <b>no</b> (not out) and clear Fielder, Bowler and FOW.` }] };
     // The fall-of-wicket scores are a second witness: whichever count they agree with is probably right.
-    if (fows === W && fows !== outs) { rowOpt.rec = true; rowOpt.note += ` The card has ${W} fall-of-wicket scores, like the total.`; return { inn, card: {}, intro: 'The number of batters out doesn\'t match the wickets in the total.', options: [rowOpt, totalOpt] }; }
+    if (fows === W && fows !== outs) { rowOpt.rec = true; rowOpt.note += ` The card has ${W} fall-of-wicket scores, like the total.`; return { inn, card: {}, intro: 'What is wrong: the wickets in the total, or a batter\'s dismissal?', options: [rowOpt, totalOpt] }; }
     totalOpt.rec = true;
-    return { inn, card: {}, intro: 'The number of batters out doesn\'t match the wickets in the total.', options: [totalOpt, rowOpt] };
+    return { inn, card: {}, intro: 'What is wrong: the wickets in the total, or a batter\'s dismissal?', options: [totalOpt, rowOpt] };
   }
 
   function bowlWktsSpec(m, inn) {
@@ -2305,7 +2344,7 @@ footer p { margin: 0; max-width: 90ch; }
       edits: () => rows.map(([r, n]) => ({ page: 'card', team, text: `In the row of <b>${esc(rvName(r[0]))}</b>, set bowling <b>W</b> to <b>${n}</b>.`, data: { op: 'bowl', inn: [inn.side, inn.no], pid: r[0], field: 'wkts', v: n } })) });
     options.push({ rec: !rows.length, label: 'The bowling figures are right, the dismissals are wrong', note: 'Check who bowled each batter out in the scorebook.',
       edits: () => [{ page: 'card', team: rvTeam(m, inn.side), text: 'Check the <b>Bowler</b> of every batter who was bowled, caught, lbw, stumped or hit wicket against the scorebook.' }] });
-    return { inn, card: { bowlers: rows.map(([r]) => r[0]) }, intro: 'The bowlers\' wickets don\'t match the batters out bowled, caught, lbw, stumped or hit wicket.', options };
+    return { inn, card: { bowlers: rows.map(([r]) => r[0]) }, intro: 'Which wickets are right?', options };
   }
 
   function oversSpec(m, inn) {
@@ -2328,10 +2367,12 @@ footer p { margin: 0; max-width: 90ch; }
       edits: () => [{ page: 'card', team: fteam, text: `Fill in the missing bowler's figures (about <b>${ovsW(d)}</b>, plus M, R, W, Wd, Nb from the scorebook).` }] });
     options.sort((a, b) => a.cost - b.cost);
     if (options[0]) options[0].rec = true;
-    return { inn, card: {}, intro: `The bowlers' overs add up to ${ovs(B)}, but the innings lasted ${inn.overs} overs.`, options };
+    return { inn, card: {}, intro: 'Where did the overs go wrong?', options };
   }
 
   // ---- the fix dialog ----
+  // Two columns: on the left what the captain needs to see (the issue, the scorecard with their change shown live,
+  // and the ResultsVault steps folded away), on the right the one thing to do: pick, check, save.
   let fixCur = null;
   function openFix(x) {
     // Work out fixes on the scorecard as the Matchcentre has it, not with saved fixes already applied.
@@ -2344,51 +2385,82 @@ footer p { margin: 0; max-width: 90ch; }
       if (!usable.some(o => o.rec)) usable[0].rec = true;
       spec.options = usable;
     }
-    fixCur = { x, spec, choice: Math.max(0, spec.options.findIndex(o => o.rec)), vals: {}, whole: false };
+    fixCur = { x, spec, choice: Math.max(0, spec.options.findIndex(o => o.rec)), vals: {}, whole: false, msg: '' };
     renderFix();
     const dlg = $('#fix');
     if (!dlg.open) dlg.showModal();
-    dlg.scrollTop = 0;
   }
+  const curEdits = () => (fixCur ? fixCur.spec.options[fixCur.choice].edits(fixCur.vals) || null : null);
   function fixSteps() {
-    const { x, spec, choice, vals } = fixCur;
-    const edits = spec.options[choice].edits(vals);
+    const edits = curEdits();
     if (!edits) return null;
     const none = edits.filter(e => e.page === 'none').map(e => e.text);
-    return [...stepsFor(x.m, edits.filter(e => e.page !== 'none')), ...none];
+    return [...stepsFor(fixCur.x.m, edits.filter(e => e.page !== 'none')), ...none];
   }
-  function renderFixSteps() {
+  // The innings as they'd be with the chosen fix, worked out by the same code that counts saved fixes.
+  function previewInnings(edits) {
+    const { x } = fixCur, m = x.m;
+    const innings = JSON.parse(JSON.stringify(m.innings));
+    const data = { issues: [[m.id, x.side, x.type, x.text]], players: D.players, matches: [{ id: m.id, innings }] };
+    if (edits) V.applyFixes(data, [{ key: issueKey(x), matchId: m.id, edits: edits.filter(e => e.data).map(e => e.data) }]);
+    return innings;
+  }
+  // Left column, redrawn on every change: scorecard(s) with the changed cells marked, and the ResultsVault steps.
+  function renderLive() {
+    const { x, spec } = fixCur, m = x.m;
+    const edits = curEdits(), after = previewInnings(edits);
+    const shown = m.innings.map((inn, i) => [inn, after[i]]).filter(([inn]) => fixCur.whole ? inn.bat.length || inn.bowl.length : inn === spec.inn);
+    $('#fx-preview').innerHTML = shown.length
+      ? shown.map(([inn, now]) => cardHtml(m, now, inn === spec.inn ? spec.card : {}, inn)).join('')
+      : '<p class="fx-wait">No scorecard needed for this one.</p>';
     const steps = fixSteps();
-    $('#fx-steps').innerHTML = steps ? `<ol class="fx-steps">${steps.map(s => `<li>${s}</li>`).join('')}</ol>` : '<p class="fx-wait">Make a choice above first.</p>';
+    $('#fx-steps').innerHTML = steps ? `<ol class="fx-steps">${steps.map(s => `<li>${s}</li>`).join('')}</ol>` : '<p class="fx-wait">Make a choice first.</p>';
     $('#fx-copy').disabled = !steps;
-    $('#fx-save').disabled = !steps || !FIX_URL;
+    const ready = !!edits;
+    $('#fx-save').disabled = !ready || !FIX_URL;
+    $('#fx-hint').textContent = !FIX_URL ? 'Saving works on the published page only.' : ready ? '' : 'Make a choice first.';
   }
   function renderFix() {
     const { x, spec, choice, vals } = fixCur, m = x.m, info = typeInfoOf(x.type);
     const inputHtml = i => i.kind === 'num'
       ? `<label class="fx-num"><span>${esc(i.label)}</span><input type="number" inputmode="numeric" data-fx-num="${i.key}" min="${i.min}" max="${i.max}" value="${esc(vals[i.key] ?? '')}"><small>${i.max < 999 ? `${i.min} to ${i.max}` : `at least ${i.min}`}</small></label>`
-      : `<div class="fx-pickw"><span class="fx-pl">${esc(i.label)}</span>${i.groups.reduce((n, g) => n + g.items.length, 0) > 8 ? `<input type="search" class="fx-q" data-fx-q="${i.key}" placeholder="Type to search" aria-label="Search names">` : ''}
+      : `<div class="fx-pickw">${i.groups.reduce((n, g) => n + g.items.length, 0) > 8 ? `<input type="search" class="fx-q" data-fx-q="${i.key}" placeholder="Type a name" aria-label="Search names">` : ''}
           <div class="fx-pick" role="radiogroup" aria-label="${esc(i.label)}">${i.groups.map(g => `<p class="fx-pg">${esc(g.title)}</p>${g.items.map(([pid, hint]) => `<label data-name="${esc(S.fullName(pid).toLowerCase())}"><input type="radio" name="fxp-${i.key}" value="${pid}"${String(vals[i.key]) === String(pid) ? ' checked' : ''}><span>${esc(S.fullName(pid))}</span>${hint ? `<small>${esc(hint)}</small>` : ''}</label>`).join('') || '<p class="empty">Nobody to pick.</p>'}`).join('')}</div></div>`;
-    const opts = spec.options.map((o, i) => `<div class="fx-opt${i === choice ? ' on' : ''}"><label class="fx-ol"><input type="radio" name="fx-opt" value="${i}"${i === choice ? ' checked' : ''}><span>${o.label}${o.rec ? ' <em class="fx-rec">Recommended</em>' : ''}${o.note ? `<small>${o.note}</small>` : ''}</span></label>
+    const opts = spec.options.map((o, i) => `<div class="fx-opt${i === choice ? ' on' : ''}"><label class="fx-ol"><input type="radio" name="fx-opt" value="${i}"${i === choice ? ' checked' : ''}><span>${o.label}${o.rec ? ' <em class="fx-rec">Best guess</em>' : ''}${o.note && i === choice ? `<small>${o.note}</small>` : ''}</span></label>
         ${i === choice && o.inputs && o.inputs.length ? `<div class="fx-in">${o.inputs.map(inputHtml).join('')}</div>` : ''}</div>`).join('');
-    const inns = fixCur.whole ? m.innings.filter(i => i.bat.length || i.bowl.length) : spec.inn ? [spec.inn] : [];
-    const card = spec.inn ? `<details class="fx-sc" open><summary>Scorecard</summary>${inns.map(i => cardHtml(m, i, i === spec.inn ? spec.card : {})).join('')}
-        ${m.innings.length > 1 ? `<button class="link" data-fx-whole>${fixCur.whole ? 'Show only this innings' : 'Show the whole match'}</button>` : ''}</details>` : '';
     const f = fixByKey.get(issueKey(x));
-    const savedNote = f ? `<p class="fx-savedby ${(FIX_STATUS[f.status] || FIX_STATUS.saved)[1]}">✓ <b>${esc(f.captain)}</b> saved a fix on ${esc(fmtTime(Date.parse(f.updated || f.saved)))}: <b>${esc(f.fix)}</b>. ${esc((FIX_STATUS[f.status] || FIX_STATUS.saved)[0])}.${f.note ? ` Note: ${esc(f.note)}` : ''} Saving again replaces it.</p>` : '';
-    $('#fix-body').innerHTML = `<div class="fx-head"><div><p class="mini"><i class="dot g${info.gi}"></i> ${esc(info.label)} · ${x.side === 'v' ? 'VCC' : esc(m.opp)}</p><h2 id="fx-title">${esc(x.text)}</h2></div><button class="fx-x" data-fx-close aria-label="Close">×</button></div>
-      <p class="fx-m">${esc(fmtDate(m.date))} · ${esc(teamOf(m).label)} v ${esc(m.opp)} · <a href="${scorecard(m)}" target="_blank" rel="noopener">Matchcentre ↗</a></p>${fixBar(m, [x.type])}${savedNote}
-      <section class="fx-s"><h3><span>1</span> What is right?</h3><p class="fx-intro">${spec.intro}</p><div class="fx-opts" role="radiogroup">${opts}</div></section>
-      ${card}
-      <section class="fx-s"><h3><span>2</span> Change it in ResultsVault</h3><div id="fx-steps"></div>
-        <p class="fx-btns"><button class="btn" id="fx-copy" data-fx-copy>Copy these steps</button><small>To send to someone with a ResultsVault login.</small></p></section>
-      <section class="fx-s"><h3><span>3</span> Save the fix</h3>
-        <p class="fx-note">The admins see every saved fix and make the change in ResultsVault where you can't. Until the Matchcentre has it, a saved fix already counts in the numbers on this page and in the jaarverslag.</p>
-        <label class="fx-name"><span>Your name</span><input type="text" data-fx-name maxlength="60" autocomplete="name" value="${esc(captainName)}" placeholder="First and last name"></label>
-        <label class="fx-done"><input type="checkbox" data-fx-rv${f && f.status === 'done-rv' ? ' checked' : ''}><span>I already changed it in ResultsVault myself</span></label>
-        <p class="fx-btns"><button class="btn primary" id="fx-save" data-fx-save>${f ? 'Save again' : 'Save fix'}</button><small id="fx-save-msg" role="status">${FIX_URL ? '' : 'Saving works on the published page only.'}</small></p>
-        <p class="fx-note">After a change in ResultsVault, press <b>Reload all data</b> at the top of this page: the issue leaves the list once the Matchcentre has the fix.</p></section>`;
-    renderFixSteps();
+    const st = f && fixState(f);
+    const savedNote = f ? `<p class="fx-savedby ${st[1]}"><b>${esc(st[0])}</b> · ${esc(f.captain)} saved “${esc(f.fix)}” on ${esc(fmtTime(Date.parse(f.updated || f.saved)))}.${f.by ? ` ${f.status === 'rejected' ? 'Rejected' : 'Confirmed'} by ${esc(f.by)}.` : ''}${f.note ? ` ${esc(f.note)}` : ''}</p>` : '';
+    const adminBtns = f && isAdmin() ? `<p class="fx-adm"><span>Admin:</span>${f.status !== 'confirmed' ? `<button class="btn sm" data-fix-status="confirmed" data-key="${esc(f.key)}">Confirm solved</button>` : ''}${f.status !== 'rejected' ? `<button class="btn sm" data-fix-status="rejected" data-key="${esc(f.key)}">Reject</button>` : ''}${f.status !== 'saved' ? `<button class="btn sm" data-fix-status="saved" data-key="${esc(f.key)}">Undo</button>` : ''}</p>` : '';
+    const who = captainName
+      ? `<p class="fx-who">Saving as <b>${esc(captainName)}</b>${isAdmin() ? ' (admin)' : ''} · <button class="link" data-fx-rename>not you?</button></p>`
+      : `<label class="fx-name"><span>Your name</span><input type="text" data-fx-name maxlength="60" autocomplete="name" placeholder="First and last name"><small>Asked once, remembered on this device.</small></label>`;
+    $('#fix-body').innerHTML = `<header class="fx-top">
+        <div><p class="fx-kind"><i class="dot g${info.gi}"></i>${esc(info.label)}</p>
+          <h2 id="fx-title">${esc(teamOf(m).label)} v ${esc(m.opp)}</h2>
+          <p class="fx-m">${esc(fmtDate(m.date))} · round ${esc(m.round || '?')} · ${copyChip('Match ID', m.id)} · <a href="${scorecard(m)}" target="_blank" rel="noopener">Matchcentre ↗</a></p></div>
+        <button class="fx-x" data-fx-close aria-label="Close">×</button></header>
+      <div class="fx-cols">
+        <section class="fx-left" aria-label="What's wrong">
+          <p class="fx-issue">${esc(x.text)}</p>
+          <div id="fx-preview" aria-live="polite"></div>
+          ${m.innings.length > 1 && spec.inn ? `<button class="link fx-whole" data-fx-whole>${fixCur.whole ? 'Show only this innings' : 'Show the whole match'}</button>` : ''}
+          <details class="fx-rv"><summary>Change it in ResultsVault yourself</summary><div id="fx-steps"></div>
+            <p class="fx-btns"><button class="btn sm" id="fx-copy" data-fx-copy>Copy the steps</button><small>Or save the fix: the admins take care of it.</small></p></details>
+        </section>
+        <section class="fx-right" aria-label="Your fix">
+          ${savedNote}${adminBtns}
+          <h3 class="fx-q-title">${spec.intro}</h3>
+          <div class="fx-opts" role="radiogroup">${opts}</div>
+          <div class="fx-save">${who}
+            <button class="btn primary big" id="fx-save" data-fx-save>${f ? 'Save again' : 'Save fix'}</button>
+            <p class="fx-hint" id="fx-hint" role="status">${esc(fixCur.msg)}</p>
+            <p class="fx-note">A saved fix counts in the season numbers straight away and goes to the admins, who check it and change it in ResultsVault.</p>
+          </div>
+        </section>
+      </div>`;
+    renderLive();
+    if (fixCur.msg) $('#fx-hint').textContent = fixCur.msg;
   }
   function fixText() {
     const { x } = fixCur, m = x.m, tmp = document.createElement('div');
@@ -2411,8 +2483,8 @@ footer p { margin: 0; max-width: 90ch; }
   const fixDlg = $('#fix');
   fixDlg.addEventListener('change', e => {
     const t = e.target;
-    if (t.name === 'fx-opt') { fixCur.choice = +t.value; renderFix(); return; }
-    if (t.name && t.name.startsWith('fxp-')) { fixCur.vals[t.name.slice(4)] = t.value; renderFixSteps(); return; }
+    if (t.name === 'fx-opt') { fixCur.choice = +t.value; fixCur.msg = ''; renderFix(); return; }
+    if (t.name && t.name.startsWith('fxp-')) { fixCur.vals[t.name.slice(4)] = t.value; renderLive(); }
   });
   fixDlg.addEventListener('input', e => {
     const t = e.target;
@@ -2420,7 +2492,7 @@ footer p { margin: 0; max-width: 90ch; }
       const v = t.value === '' ? '' : +t.value;
       fixCur.vals[t.dataset.fxNum] = v === '' || v < +t.min || v > +t.max ? null : v;
       t.setAttribute('aria-invalid', String(v !== '' && fixCur.vals[t.dataset.fxNum] == null));
-      renderFixSteps();
+      renderLive();
     }
     if (t.dataset.fxQ) {
       const q = t.value.trim().toLowerCase();
@@ -2434,13 +2506,21 @@ footer p { margin: 0; max-width: 90ch; }
     if (t.hasAttribute('data-fx-whole')) { fixCur.whole = !fixCur.whole; renderFix(); }
     if (t.hasAttribute('data-fx-copy')) copyText(fixText(), 'Copied the steps. Paste them in a message or email.');
     if (t.hasAttribute('data-fx-save')) saveFix();
+    if (t.hasAttribute('data-fx-rename')) { setName(''); renderFix(); $('[data-fx-name]').focus(); }
   });
 
-  // ---- saved fixes: one list for all captains and admins ----
+  // ---- saved fixes: kept in the GitHub repository (data/fixes-<season>.json) ----
+  // The page is built with the fixes as they were then; the refresh service hands out the latest list and
+  // commits new fixes. Captains and admins are known by the name they type once; admins are listed in
+  // data/admins.json.
   const openKeys = new Set(issueAll.map(issueKey));
-  let fixAdmin = null, fixesStale = false, fixLoadErr = '';
-  let adminKey = '';
-  try { adminKey = localStorage.getItem('vcc-admin-key') || ''; } catch (e) {}
+  let fixesStale = false, fixLoadErr = '';
+  // Where a fix is: in the Matchcentre already (its issue is gone), confirmed by an admin, rejected, or saved.
+  const fixState = f => (!openKeys.has(f.key) && f.status !== 'rejected' ? ['In the Matchcentre', 'in'] : FIX_STATUS[f.status] || FIX_STATUS.saved);
+  function setName(name) {
+    captainName = name;
+    try { if (name) localStorage.setItem('vcc-captain', name); else localStorage.removeItem('vcc-captain'); } catch (e) {}
+  }
   async function fixCall(body, query = '') {
     const r = await fetch(FIX_URL + query, body ? { method: 'POST', body: JSON.stringify(body) } : {});
     if (!r.ok) throw new Error(`The fix service answered ${r.status}.`);
@@ -2449,32 +2529,32 @@ footer p { margin: 0; max-width: 90ch; }
     return res;
   }
   function useFixList(list) {
-    // Fixes that would change the numbers differently from what this page counted: offer to count them again.
+    // Fixes that would change the numbers differently from what this page counted: say so.
     const sig = l => JSON.stringify(l.filter(f => f.status !== 'rejected' && openKeys.has(f.key)).map(f => [f.key, f.edits]).sort());
     if (useFixes && sig(list) !== sig(savedFixes)) fixesStale = true;
     savedFixes = list;
     fixByKey = new Map(list.map(f => [f.key, f]));
-    try { localStorage.setItem(FIX_CACHE, JSON.stringify(list)); } catch (e) {}
     issuesFor = null; render();
     renderSavedFixes();
   }
   async function loadFixes() {
     if (!FIX_URL) return;
     try {
-      const res = await fixCall(null, `?action=fixes&season=${encodeURIComponent(D.season)}${adminKey ? '&key=' + encodeURIComponent(adminKey) : ''}`);
-      fixAdmin = res.admin ? { sheet: res.sheet } : null;
+      const res = await fixCall(null, `?action=fixes&season=${encodeURIComponent(D.season)}`);
       fixLoadErr = '';
+      if (res.admins) ADMINS = res.admins.map(a => a.trim().toLowerCase());
       useFixList(res.fixes || []);
     } catch (e) { fixLoadErr = e.message; renderSavedFixes(); }
   }
   async function saveFix() {
     const { x, spec, choice, vals } = fixCur, m = x.m, o = spec.options[choice];
-    const edits = o.edits(vals), msg = $('#fx-save-msg'), nameIn = $('[data-fx-name]');
-    const name = nameIn.value.trim();
-    if (!edits) { msg.textContent = 'Make a choice above first.'; return; }
-    if (!name) { msg.textContent = 'Fill in your name first.'; nameIn.focus(); return; }
-    captainName = name;
-    try { localStorage.setItem('vcc-captain', name); } catch (e) {}
+    const edits = curEdits();
+    if (!edits) return;
+    const nameIn = $('[data-fx-name]');
+    if (nameIn) {
+      if (!nameIn.value.trim()) { $('#fx-hint').textContent = 'Fill in your name first.'; nameIn.focus(); return; }
+      setName(nameIn.value.trim());
+    }
     const tmp = document.createElement('div');
     tmp.innerHTML = o.label;
     const picked = (o.inputs || []).map(i => (i.kind === 'pick' ? S.fullName(+vals[i.key]) : vals[i.key])).filter(v => v != null && v !== '');
@@ -2482,80 +2562,64 @@ footer p { margin: 0; max-width: 90ch; }
       action: 'saveFix', season: D.season, key: issueKey(x), matchId: m.id, date: new Date(m.date).toISOString().slice(0, 10),
       team: teamOf(m).label, opponent: m.opp, round: m.round || '', grade: teamOf(m).grade, side: x.side === 'v' ? 'VCC' : m.opp,
       type: typeInfoOf(x.type).label, issue: x.text, fix: [tmp.textContent.trim(), ...picked].join(': '), steps: fixText(),
-      edits: edits.filter(e => e.data).map(e => e.data), captain: name, status: $('[data-fx-rv]').checked ? 'done-rv' : 'saved',
+      edits: edits.filter(e => e.data).map(e => e.data), captain: captainName,
     };
-    const btn = $('#fx-save');
-    btn.disabled = true; msg.textContent = 'Saving…';
+    $('#fx-save').disabled = true;
+    $('#fx-hint').textContent = 'Saving…';
     try {
       const res = await fixCall(body);
       useFixList([...savedFixes.filter(f => f.key !== res.fix.key), res.fix]);
+      fixCur.msg = 'Saved. Thank you!';
       renderFix();
-      $('#fx-save-msg').textContent = 'Saved. Thank you!';
-      toast('Fix saved. The admins can see it now.');
+      toast('Fix saved. Thank you!');
     } catch (e) {
-      btn.disabled = false;
-      msg.textContent = `Not saved: ${e.message}`;
+      $('#fx-save').disabled = false;
+      $('#fx-hint').textContent = `Not saved: ${e.message}`;
     }
   }
   async function setFixStatus(key, status) {
-    const note = status === 'rejected' ? (prompt('Why is this fix rejected? (optional, the captain sees it)') ?? null) : '';
+    const note = status === 'rejected' ? prompt('Why is it rejected? The captain sees this. (optional)') : '';
     if (note === null) return;
     try {
-      const res = await fixCall({ action: 'setStatus', season: D.season, key, status, note, adminKey });
+      const res = await fixCall({ action: 'setStatus', season: D.season, key, status, note, by: captainName });
       useFixList([...savedFixes.filter(f => f.key !== key), res.fix]);
-      toast('Status changed.');
+      if (fixDlg.open && fixCur && issueKey(fixCur.x) === key) renderFix();
+      toast(status === 'confirmed' ? 'Confirmed as solved.' : status === 'rejected' ? 'Rejected.' : 'Back to potentially solved.');
     } catch (e) { toast(`Not changed: ${e.message}`); }
-  }
-  function adminLogin() {
-    if (fixAdmin) {
-      adminKey = ''; fixAdmin = null;
-      try { localStorage.removeItem('vcc-admin-key'); } catch (e) {}
-      return renderSavedFixes();
-    }
-    const k = prompt('Admin key (from the refresh service\'s script properties):');
-    if (!k) return;
-    adminKey = k.trim();
-    try { localStorage.setItem('vcc-admin-key', adminKey); } catch (e) {}
-    loadFixes().then(() => toast(fixAdmin ? 'Admin mode on.' : 'That key is not right.'));
   }
 
   function renderSavedFixes() {
     const el = $('#saved-fixes');
     const list = [...savedFixes].sort((a, b) => Date.parse(b.updated || b.saved) - Date.parse(a.updated || a.saved));
-    // Where each fix is: still to do, done in ResultsVault but not fetched yet, in the Matchcentre, or rejected.
-    const where = f => (f.status === 'rejected' ? 'rej' : !openKeys.has(f.key) ? 'in' : f.status === 'done-rv' ? 'rv' : 'todo');
     const GROUPS = [
-      ['todo', 'To change in ResultsVault', 'Saved by a captain, not yet changed in ResultsVault.'],
-      ['rv', 'Changed in ResultsVault', 'Waiting for the next "Reload all data" to come through.'],
+      ['todo', 'Potentially solved', 'Saved by a captain, waiting for an admin to check it and change it in ResultsVault.'],
+      ['ok', 'Confirmed by admin', 'Checked by an admin. Leaves this list once the Matchcentre has it.'],
       ['in', 'In the Matchcentre', 'The issue is gone from the fetched data: done.'],
       ['rej', 'Rejected', 'Not counted in the numbers.'],
     ];
-    const adminBtns = f => (fixAdmin ? `<span class="sf-adm">${[
-      f.status !== 'done-rv' && `<button class="btn sm" data-fix-status="done-rv" data-key="${esc(f.key)}">Changed in ResultsVault</button>`,
-      f.status !== 'rejected' && `<button class="btn sm" data-fix-status="rejected" data-key="${esc(f.key)}">Reject</button>`,
-      f.status !== 'saved' && `<button class="btn sm" data-fix-status="saved" data-key="${esc(f.key)}">Back to to-do</button>`,
-    ].filter(Boolean).join('')}</span>` : '');
+    const admin = isAdmin();
     const row = f => {
       const x = issueAll.find(i => issueKey(i) === f.key);
+      const st = fixState(f)[1];
       return `<li class="iss"><p class="iss-t"><b>${esc(f.fix)}</b></p>
         <p class="iss-m"><span>${esc(f.issue)}</span></p>
-        <p class="iss-m"><span>${esc(f.date)} · ${esc(f.team)} v ${esc(f.opponent)} · round ${esc(f.round || '?')} · match ID ${esc(f.matchId)}</span><span>by <b>${esc(f.captain)}</b>, ${esc(fmtTime(Date.parse(f.updated || f.saved)))}</span>${f.note ? `<span>Note: ${esc(f.note)}</span>` : ''}
-          ${x ? `<button class="btn sm" data-fix="${x.k}">Open</button>` : ''}<button class="btn sm" data-copysteps="${esc(f.key)}">Copy steps</button>${adminBtns(f)}</p></li>`;
+        <p class="iss-m"><span>${esc(f.date)} · ${esc(f.team)} v ${esc(f.opponent)} · round ${esc(f.round || '?')}</span><span>by <b>${esc(f.captain)}</b>, ${esc(fmtTime(Date.parse(f.saved)))}</span>${f.by ? `<span>${f.status === 'rejected' ? 'rejected' : 'confirmed'} by <b>${esc(f.by)}</b></span>` : ''}${f.note ? `<span>“${esc(f.note)}”</span>` : ''}
+          ${x ? `<button class="btn sm" data-fix="${x.k}">Open</button>` : ''}<button class="btn sm" data-copysteps="${esc(f.key)}">Copy steps</button>
+          ${admin && st !== 'in' ? `${f.status !== 'confirmed' ? `<button class="btn sm" data-fix-status="confirmed" data-key="${esc(f.key)}">Confirm solved</button>` : ''}${f.status !== 'rejected' ? `<button class="btn sm" data-fix-status="rejected" data-key="${esc(f.key)}">Reject</button>` : ''}${f.status !== 'saved' ? `<button class="btn sm" data-fix-status="saved" data-key="${esc(f.key)}">Undo</button>` : ''}` : ''}</p></li>`;
     };
     const groups = GROUPS.map(([k, title, note]) => {
-      const rows = list.filter(f => where(f) === k);
+      const rows = list.filter(f => fixState(f)[1] === k);
       return rows.length ? dcat(title, note, rows.length, `<ul class="ilist">${rows.map(row).join('')}</ul>`, k === 'todo') : '';
     }).join('');
-    copyReg.fixes = { what: 'the saved fixes', tables: [{ title: 'Captains\' fixes', head: ['Saved', 'Captain', 'Team', 'Opponent', 'Date', 'Round', 'Match ID', 'Grade', 'Issue', 'Fix', 'Status', 'Note'],
-      body: list.map(f => [fmtTime(Date.parse(f.updated || f.saved)), f.captain, f.team, f.opponent, f.date, f.round, f.matchId, f.grade, f.issue, f.fix, GROUPS.find(g => g[0] === where(f))[1], f.note || '']) }] };
-    const tools = `<div class="head-tools">${fixAdmin && fixAdmin.sheet ? `<a class="btn" href="${esc(fixAdmin.sheet)}" target="_blank" rel="noopener">Open the Sheet ↗</a>` : ''}${list.length ? copyBtn('fixes', 'Copy list') : ''}${FIX_URL ? `<button class="btn" data-fix-admin aria-pressed="${!!fixAdmin}">${fixAdmin ? 'Admin: on' : 'Admin'}</button>` : ''}</div>`;
+    copyReg.fixes = { what: 'the saved fixes', tables: [{ title: 'Captains\' fixes', head: ['Saved', 'Captain', 'Team', 'Opponent', 'Date', 'Round', 'Match ID', 'Grade', 'Issue', 'Fix', 'Status', 'By', 'Note'],
+      body: list.map(f => [fmtTime(Date.parse(f.saved)), f.captain, f.team, f.opponent, f.date, f.round, f.matchId, f.grade, f.issue, f.fix, fixState(f)[0], f.by || '', f.note || '']) }] };
     const counted = list.filter(f => f.status !== 'rejected' && openKeys.has(f.key)).length;
-    el.innerHTML = `<div class="card-head"><h2 id="h-fixes">Captains' fixes</h2>${tools}</div>
-      <p class="sub">Fixes captains saved with <b>Fix it</b>. Admins change them in ResultsVault where a captain couldn't, and mark them here. ${FIX_URL ? '' : 'Saved fixes are kept by the published page; this copy can\'t reach them.'}</p>
-      ${fixLoadErr ? `<p class="fetch-status err">Couldn't load the saved fixes: ${esc(fixLoadErr)}</p>` : ''}
-      ${fixesStale ? '<p class="sf-stale">Captains saved new fixes since this page opened. <button class="btn sm" data-reload-page>Count them in the numbers</button></p>' : ''}
-      ${list.length ? `<label class="sf-use"><input type="checkbox" data-use-fixes${useFixes ? ' checked' : ''}> Count saved fixes in the numbers on this page <small>(${plural(counted, 'fix', 'fixes')} not in the Matchcentre yet${useFixes && fixesApplied ? `, ${plural(fixesApplied, 'change', 'changes')} counted now` : ''})</small></label>` : ''}
-      ${groups ? `<div class="dcats">${groups}</div>` : `<p class="empty">${FIX_URL ? 'No fixes saved yet.' : 'No saved fixes here.'}</p>`}`;
+    el.innerHTML = `<div class="card-head"><h2 id="h-fixes">Captains' fixes</h2><div class="head-tools">${list.length ? copyBtn('fixes', 'Copy list') : ''}</div></div>
+      <p class="sub">Fixes saved with <b>Fix it</b>, kept with the season data. ${admin ? `You're an admin (${esc(captainName)}): confirm or reject them here or in a fix.` : `Admins confirm them${ADMINS.length ? '' : ' (add their names to data/admins.json)'}.`}</p>
+      ${fixLoadErr ? `<p class="fetch-status err">Couldn't load the latest fixes: ${esc(fixLoadErr)}</p>` : ''}
+      ${fixesStale ? '<p class="sf-stale">New fixes were saved since this page opened. The numbers include them after the page updates itself, in a few minutes. <button class="btn sm" data-reload-page>Reload</button></p>' : ''}
+      ${list.length ? `<label class="sf-use"><input type="checkbox" data-use-fixes${useFixes ? ' checked' : ''}> Count saved fixes in the numbers <small>(${plural(counted, 'fix', 'fixes')} not in the Matchcentre yet)</small></label>` : ''}
+      ${groups ? `<div class="dcats">${groups}</div>` : '<p class="empty">No fixes saved yet.</p>'}`;
   }
   document.addEventListener('change', e => {
     if (!e.target.hasAttribute('data-use-fixes')) return;
@@ -2868,7 +2932,6 @@ footer p { margin: 0; max-width: 90ch; }
     if (t.dataset.fix) return openFix(issueAll.find(x => x.k === +t.dataset.fix));
     if (t.dataset.copysteps) { const f = fixByKey.get(t.dataset.copysteps); return f && copyText(f.steps, 'Copied the steps. Paste them in a message or email.'); }
     if (t.dataset.fixStatus) return setFixStatus(t.dataset.key, t.dataset.fixStatus);
-    if (t.hasAttribute('data-fix-admin')) return adminLogin();
     if (t.dataset.issueExpand) {
       const open = t.dataset.issueExpand === '1';
       document.querySelectorAll('#data-issues details.dcat').forEach(d => { d.open = open; });

@@ -23,11 +23,19 @@ const [tpl, stats, data] = await Promise.all([
   fs.readFile(path.join(ROOT, 'data', `season-${year}.json`), 'utf8'),
 ]);
 
+// Captains' fixes and the admins' names, both kept in the repository (written by refresh-service/Code.gs).
+const readJson = async (file, empty) => { try { return JSON.parse(await fs.readFile(path.join(ROOT, 'data', file), 'utf8')); } catch { return empty; } };
+const fixes = {
+  fixes: (await readJson(`fixes-${year}.json`, { fixes: [] })).fixes || [],
+  admins: (await readJson('admins.json', { admins: [] })).admins || [],
+};
+
 // Keep "</script>" inside the JSON from closing the script tag.
-const safeData = data.replace(/<\/(script)/gi, '<\\/$1');
+const safe = s => s.replace(/<\/(script)/gi, '<\\/$1');
 const page = tpl
   .replace('/*__STATS__*/', () => stats)
-  .replace('/*__DATA__*/null', () => safeData)
+  .replace('/*__DATA__*/null', () => safe(data))
+  .replace('/*__FIXES__*/null', () => safe(JSON.stringify(fixes)))
   .replace(/VCC Season Facts 2026/g, `VCC Season Facts ${year}`);
 
 await fs.mkdir(path.join(ROOT, 'dist'), { recursive: true });

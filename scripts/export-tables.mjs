@@ -5,11 +5,10 @@
 // Each table carries named fields per row, so the Google Docs script can fill
 // whatever columns a table in the document happens to have.
 //
-// Captains' fixes saved on the page count too, as long as the Matchcentre doesn't have them yet
-// (same rule as the page). They come from the refresh service web app: pass its URL with --fixes
-// or set REFRESH_URL; --no-fixes leaves them out.
+// Captains' fixes saved on the page (data/fixes-<year>.json, pull first) count too, as long as the
+// Matchcentre doesn't have them yet: the same rule as the page. --no-fixes leaves them out.
 //
-// Usage: node scripts/export-tables.mjs [seasonYear] [--fixes <web app url> | --no-fixes]   (run fetch-data.mjs first)
+// Usage: node scripts/export-tables.mjs [seasonYear] [--no-fixes]   (run fetch-data.mjs first)
 
 import fs from 'node:fs/promises';
 import path from 'node:path';
@@ -20,17 +19,14 @@ const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const require = createRequire(import.meta.url);
 const V = require(path.join(ROOT, 'src', 'stats.js'));
 const ARGS = process.argv.slice(2);
-const YEAR = ARGS.find((a, i) => !a.startsWith('--') && ARGS[i - 1] !== '--fixes') || '2026';
+const YEAR = ARGS.find(a => !a.startsWith('--')) || '2026';
 const data = JSON.parse(await fs.readFile(path.join(ROOT, 'data', `season-${YEAR}.json`), 'utf8'));
-const fixesArg = ARGS.indexOf('--fixes');
-const FIXES_URL = ARGS.includes('--no-fixes') ? null : fixesArg >= 0 ? ARGS[fixesArg + 1] : process.env.REFRESH_URL;
-if (FIXES_URL) {
-  const res = await fetch(`${FIXES_URL}?action=fixes&season=${YEAR}`);
-  if (!res.ok) throw new Error(`The refresh service answered ${res.status}; use --no-fixes to export without captains' fixes.`);
-  const { fixes = [] } = await res.json();
-  console.log(`Captains' fixes: ${fixes.length} saved, ${V.applyFixes(data, fixes)} changes applied`);
+if (ARGS.includes('--no-fixes')) {
+  console.log("Captains' fixes: left out");
 } else {
-  console.log("Captains' fixes: left out (no --fixes URL or REFRESH_URL)");
+  let fixes = [];
+  try { fixes = JSON.parse(await fs.readFile(path.join(ROOT, 'data', `fixes-${YEAR}.json`), 'utf8')).fixes || []; } catch {}
+  console.log(`Captains' fixes: ${fixes.length} saved, ${V.applyFixes(data, fixes)} changes applied`);
 }
 const S = V.prepare(data);
 
