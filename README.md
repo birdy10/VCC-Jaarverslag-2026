@@ -63,9 +63,9 @@ to download every scorecard again). Changes to `src/`, `data/`, `scripts/build.m
 Visitors without a GitHub account use the "Reload all data" button at the top of the page. It calls
 `refresh-service/Code.gs`, a Google Apps Script web app that holds a GitHub token and starts the workflow with every
 scorecard downloaded again: one reload at a time (a second press joins the running one), at most one every 10 minutes
-and 30 a day. The web app's address goes
-in the repository variable `REFRESH_URL` (Settings → Secrets and variables → Actions → Variables); without it the page
-links to the workflow on GitHub instead.
+and 30 a day. The web app's address is `REFRESH_URL` in `.github/workflows/refresh.yml`; without it the page links to
+the workflow on GitHub instead. A new deployment in Apps Script gets a new address: put it there (or, to keep the
+address, edit the existing deployment and pick a new version).
 
 ## Jaarverslag tables in Google Sheets / Docs
 
