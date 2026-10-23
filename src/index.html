@@ -483,6 +483,21 @@ details.dcat > summary small { display: block; color: var(--muted); font-size: 1
 .fx-num input { width: 120px; }
 .fx-num input[aria-invalid="true"] { border-color: var(--red); }
 .fx-num small { color: var(--muted); font-size: 13px; }
+/* fall-of-wicket form: a row per wicket, the ones already on the card greyed */
+.fx-fow { display: grid; gap: 6px; }
+.fx-fw { display: grid; grid-template-columns: 4.2em minmax(0, 1fr) 90px 8.5em; gap: 10px; align-items: center; }
+.fx-fh { font-size: 12px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: .04em; }
+.fx-fk { font-weight: 700; color: var(--brand-ink); }
+.fx-fn { min-width: 0; overflow-wrap: anywhere; }
+select.fx-fn { font: inherit; font-size: 15px; padding: 7px 8px; border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface); color: var(--fg); }
+.fx-fw input { font: inherit; font-size: 15px; padding: 7px 10px; width: 100%; border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface); color: var(--fg); }
+.fx-fw input[aria-invalid="true"] { border-color: var(--red); }
+.fx-fw small { color: var(--muted); font-size: 13px; font-variant-numeric: tabular-nums; }
+.fx-fw small.bad { color: var(--red-ink); font-weight: 600; }
+.fx-fw.known { color: var(--muted); }
+.fx-fw.known .fx-fk { color: var(--muted); }
+.fx-fv { padding-left: 11px; font-variant-numeric: tabular-nums; }
+@media (max-width: 560px) { .fx-fw { grid-template-columns: 3.4em minmax(0, 1fr) 72px; } .fx-fw small, .fx-fh span:last-child { grid-column: 2 / -1; } .fx-fh span:last-child { display: none; } }
 .fx-pick { max-height: 300px; overflow: auto; border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface); padding: 4px 0; }
 .fx-pick label { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 10px; align-items: baseline; padding: 7px 12px; font-size: 15px; cursor: pointer; }
 .fx-pick label[hidden] { display: none; }
@@ -2389,7 +2404,8 @@ footer p { margin: 0; max-width: 90ch; }
     const cell = (now, then) => (String(now) === String(then) ? esc(now) : `<s>${esc(then)}</s> <ins>${esc(now)}</ins>`);
     const how = r => (r[7] || '').trim() || (NOT_OUT.has(r[6]) ? 'not out' : '');
     const fow = r => (r[8] != null ? `${r[8]}${r[9] ? `/${r[9]}` : ''}` : '–');
-    const bat = inn.bat.map((r, i) => {
+    // In batting order, like the scorebook (the card itself is stored by player id).
+    const bat = inn.bat.map((r, i) => [r, i]).sort((a, b) => (a[0][1] || 99) - (b[0][1] || 99)).map(([r, i]) => {
       const o = before.bat[i] || r;
       return `<tr${hl.bat === i || (hl.bats || []).includes(i) ? ' class="fx-row"' : ''}><td>${cell(S.fullName(r[0]), S.fullName(o[0]))}</td><td class="how">${cell(how(r), how(o))}</td><td class="n">${cell(r[2] ?? '–', o[2] ?? '–')}</td><td class="n">${cell(r[3] ?? '–', o[3] ?? '–')}</td><td class="n">${cell(fow(r), fow(o))}</td></tr>`;
     }).join('');
@@ -2484,22 +2500,79 @@ footer p { margin: 0; max-width: 90ch; }
     return { intro: t === 'guest' ? `<b>${esc(guest)}</b> is entered as a guest, without a Matchcentre profile. If the player is in the club's list under a slightly different name, pick them.` : `${esc(team)} has a player entered as "<b>${esc(guest)}</b>". Who was it?`, options };
   }
 
+  // Every batter of the innings without a fall-of-wicket score in one form, a row per wicket. Each open wicket
+  // gets the range the rest of the card allows: by then the batters already out had scored all their runs, and
+  // the batters who only came in after it hadn't scored yet.
+  const LEFT = new Set([13, 14]); // retired: the next batter comes in without a wicket falling
   function fowSpec(m, inn, ref) {
-    const r = inn.bat[ref.bat], team = rvTeam(m, inn.side);
-    const outs = inn.bat.filter(o => !NOT_OUT.has(o[6]));
-    const known = inn.bat.filter((o, i) => i !== ref.bat && o[8] != null && o[9]);
-    // Wicket number: the one on the card, else the one missing from the others.
-    let no = r[9];
-    if (!no) { const used = new Set(known.map(o => o[9])); const free = outs.map((_, i) => i + 1).filter(n => !used.has(n)); if (free.length === 1) no = free[0]; }
-    const prev = no ? Math.max(0, ...known.filter(o => o[9] < no).map(o => o[8])) : 0;
-    const nextOnes = no ? known.filter(o => o[9] > no).map(o => o[8]) : [];
-    const max = nextOnes.length ? Math.min(...nextOnes) : inn.runs;
-    const set = v => [{ page: 'card', team, text: `In the row of <b>${esc(rvName(r[0]))}</b>, enter <b>${v}</b> under <b>FOW</b>${!r[9] && no ? ` and <b>${no}</b> in the <b>Num</b> box just before it` : ''}.`, data: { op: 'fow', inn: ref.inn, bat: ref.bat, v, no: !r[9] && no ? no : null } }];
-    const options = [];
+    const team = rvTeam(m, inn.side), total = inn.runs ?? 0, bat = inn.bat;
+    const runs = i => bat[i][2] || 0, pos = i => bat[i][1] || 99;
+    const outs = bat.map((_, i) => i).filter(i => !NOT_OUT.has(bat[i][6])).sort((a, b) => pos(a) - pos(b));
+    const K = outs.length;
+    // Wicket numbers on the card keep their place; the other batters out fill the free numbers in batting order.
+    const slot = {};
+    outs.forEach(i => { const n = bat[i][9]; if (n >= 1 && n <= K && slot[n] == null) slot[n] = i; });
+    const placed = new Set(Object.values(slot)), ks = Array.from({ length: K }, (_, j) => j + 1);
+    const free = ks.filter(k => slot[k] == null);
+    outs.filter(i => !placed.has(i)).forEach((i, j) => { slot[free[j]] = i; });
+    const open = new Set(ks.filter(k => bat[slot[k]][8] == null)), choices = ks.filter(k => open.has(k)).map(k => slot[k]);
+    // The batter at number p came in when the (p-2)th batter left. Some of those may have retired instead of
+    // getting out, so at least p-2 minus the retirements above them wickets had fallen by then.
+    const inAt = i => pos(i) - 2 - bat.filter(o => LEFT.has(o[6]) && (o[1] || 99) < pos(i)).length;
+    const late = k => bat.reduce((a, _, i) => a + (pos(i) >= 3 && pos(i) < 99 && inAt(i) >= k + 1 ? runs(i) : 0), 0);
+    const who = (k, v) => (open.has(k) ? +v['b' + k] : slot[k]);
+    const val = (k, v) => (open.has(k) ? (v['w' + k] ?? null) : bat[slot[k]][8]);
+    const bounds = v => {
+      let cum = 0;
+      return Object.fromEntries(ks.map(k => {
+        cum += runs(who(k, v));
+        const before = ks.filter(j => j < k).map(j => val(j, v)).filter(x => x != null);
+        const after = ks.filter(j => j > k).map(j => val(j, v)).filter(x => x != null);
+        const lo = Math.max(cum, ...before), hi = Math.min(total - late(k), ...after);
+        return [k, { lo, hi, bad: lo > hi }];
+      }));
+    };
+    const init = {};
+    ks.filter(k => open.has(k)).forEach(k => { init['b' + k] = slot[k]; });
     // The last wicket of an all-out innings falls at the final total.
-    if (no && no === inn.wkts && inn.wkts >= 10 && !nextOnes.length) options.push({ label: `<b>${inn.runs}</b>, the final total`, note: 'This was the last wicket of an all-out innings, so it fell at the final score.', rec: true, edits: () => set(inn.runs) });
-    options.push({ label: 'From the scorebook', rec: !options.length, note: no ? `Wicket ${no}: between ${prev} and ${max}, from the wickets before and after.` : '', inputs: [numIn('n', 'Score when the wicket fell', prev, max)], edits: v => v.n !== '' && v.n != null && set(+v.n) });
-    return { inn, card: { bat: ref.bat }, intro: `<b>${esc(S.fullName(r[0]))}</b> is out "${esc((r[7] || '').trim())}". At what team score did the wicket fall?`, options };
+    if (open.has(K) && K === inn.wkts && K >= 10) init['w' + K] = total;
+    const edits = v => {
+      const rows = ks.filter(k => open.has(k));
+      if (rows.some(k => v['w' + k] == null)) return null;
+      return rows.map(k => { const i = +v['b' + k]; return { page: 'card', team, text: `In the row of <b>${esc(rvName(bat[i][0]))}</b>, enter <b>${v['w' + k]}</b> under <b>FOW</b> and <b>${k}</b> in the <b>Num</b> box just before it.`, data: { op: 'fow', inn: ref.inn, bat: i, v: v['w' + k], no: k } }; });
+    };
+    const input = { key: 'fow', kind: 'fow', ks, open, choices, total, bounds,
+      name: i => S.fullName(bat[i][0]), knownAt: k => [S.fullName(bat[slot[k]][0]), bat[slot[k]][8]],
+      summary: v => ks.filter(k => open.has(k)).map(k => `${ord(k)} ${v['w' + k] ?? '?'}`).join(', ') };
+    const n = open.size, first = bat[ref.bat];
+    return { inn, card: { bats: choices }, vals: init,
+      intro: `${n === 1 ? `<b>${esc(S.fullName(first[0]))}</b> has` : `${n} batters have`} no fall-of-wicket score. At what team score did ${n === 1 ? 'the wicket' : 'each wicket'} fall? <small class="fx-sub">Go by the scorebook. The range next to each wicket follows from the runs on the card: when a wicket falls, the batters out so far have scored all their runs, and the batters who came in later have not scored yet.</small>`,
+      options: [{ label: 'From the scorebook', rec: true, need: `Fill in the score for ${n === 1 ? 'the wicket' : 'every wicket'}.`, inputs: [input], edits }] };
+  }
+  // The rows of the fall-of-wicket form; the ranges are refreshed in place while typing (fowRefresh).
+  function fowHtml(i, vals) {
+    const b = i.bounds(vals);
+    const range = k => (b[k].bad ? 'doesn\'t fit the card' : `${b[k].lo} to ${b[k].hi}`);
+    const bad = k => vals['w' + k] != null && (vals['w' + k] < b[k].lo || vals['w' + k] > b[k].hi);
+    const rows = i.ks.map(k => {
+      if (!i.open.has(k)) { const [nm, v] = i.knownAt(k); return `<div class="fx-fw known"><span class="fx-fk">${ord(k)}</span><span class="fx-fn">${esc(nm)}</span><span class="fx-fv">${v}</span><small>on the card</small></div>`; }
+      const nm = i.choices.length > 1
+        ? `<select class="fx-fn" data-fx-bat="${k}" aria-label="Batter out at the ${ord(k)} wicket">${i.choices.map(ix => `<option value="${ix}"${+vals['b' + k] === ix ? ' selected' : ''}>${esc(i.name(ix))}</option>`).join('')}</select>`
+        : `<span class="fx-fn">${esc(i.name(+vals['b' + k]))}</span>`;
+      return `<div class="fx-fw"><span class="fx-fk">${ord(k)}</span>${nm}<input type="number" inputmode="numeric" min="0" max="${i.total}" data-fx-fow="${k}" value="${esc(vals['w' + k] ?? '')}" aria-label="Score at the ${ord(k)} wicket" aria-invalid="${bad(k)}"><small data-fow-range="${k}"${b[k].bad || bad(k) ? ' class="bad"' : ''}>${range(k)}</small></div>`;
+    }).join('');
+    return `<div class="fx-fow"><div class="fx-fw fx-fh"><span>Wicket</span><span>Batter out</span><span>Score</span><span>Possible</span></div>${rows}</div>`;
+  }
+  function fowRefresh() {
+    const i = (fixCur.spec.options[fixCur.choice].inputs || []).find(n => n.kind === 'fow');
+    if (!i) return;
+    const vals = fixCur.vals, b = i.bounds(vals);
+    i.ks.filter(k => i.open.has(k)).forEach(k => {
+      const v = vals['w' + k], off = v != null && (v < b[k].lo || v > b[k].hi);
+      const el = $(`[data-fow-range="${k}"]`), inp = $(`[data-fx-fow="${k}"]`);
+      if (el) { el.textContent = b[k].bad ? 'doesn\'t fit the card' : `${b[k].lo} to ${b[k].hi}`; el.classList.toggle('bad', b[k].bad || off); }
+      if (inp) inp.setAttribute('aria-invalid', String(off));
+    });
   }
 
   function ballsSpec(m, inn, ref) {
@@ -2707,9 +2780,11 @@ footer p { margin: 0; max-width: 90ch; }
     }
     // The other runs issues of this innings get the same fix: it makes all of their checks hold at once.
     const same = i => i.m.id === x.m.id && i.ref && x.ref && i.ref.inn && x.ref.inn && i.ref.inn.join() === x.ref.inn.join();
-    const keys = INN_TYPES.has(x.type) ? issueAll.filter(i => same(i) && INN_TYPES.has(i.type)).map(issueKey) : [issueKey(x)];
+    // Likewise every missing fall of wicket of the innings: they're filled in together, in one form.
+    const keys = INN_TYPES.has(x.type) ? issueAll.filter(i => same(i) && INN_TYPES.has(i.type)).map(issueKey)
+      : x.type === 'no-fow' ? issueAll.filter(i => same(i) && i.type === 'no-fow').map(issueKey) : [issueKey(x)];
     const f = fixByKey.get(issueKey(x));
-    fixCur = { x, spec, keys, choice: Math.max(0, spec.options.findIndex(o => o.rec)), vals: {}, whole: false, msg: '', rv: !!f && f.status === 'rv', comment: (f && f.comment) || '' };
+    fixCur = { x, spec, keys, choice: Math.max(0, spec.options.findIndex(o => o.rec)), vals: { ...(spec.vals || {}) }, whole: false, msg: '', rv: !!f && f.status === 'rv', comment: (f && f.comment) || '' };
     renderFix();
     const dlg = $('#fix');
     if (!dlg.open) dlg.showModal();
@@ -2768,11 +2843,11 @@ footer p { margin: 0; max-width: 90ch; }
     $('#fx-save-tip').innerHTML = infoTip(fixCur.rv
       ? 'Saved as solved. It leaves the list after the next "Reload all data", once the Matchcentre has it.'
       : 'Not changed in ResultsVault: the fix is kept here and counts for the jaarverslag. The admins see it and can change it in ResultsVault.');
-    $('#fx-hint').textContent = !FIX_URL ? 'Saving works on the published page only.' : !fixReady ? `Saving isn't possible right now${fixLoadErr ? `: ${fixLoadErr}` : ' (checking the fix service…)'}` : ready ? fixCur.msg : 'Make a choice first.';
+    $('#fx-hint').textContent = !FIX_URL ? 'Saving works on the published page only.' : !fixReady ? `Saving isn't possible right now${fixLoadErr ? `: ${fixLoadErr}` : ' (checking the fix service…)'}` : ready ? fixCur.msg : spec.options[fixCur.choice].need || 'Make a choice first.';
   }
   function renderFix() {
     const { x, spec, choice, vals } = fixCur, m = x.m, info = typeInfoOf(x.type);
-    const inputHtml = i => i.kind === 'num'
+    const inputHtml = i => i.kind === 'fow' ? fowHtml(i, vals) : i.kind === 'num'
       ? `<label class="fx-num"><span>${esc(i.label)}</span><input type="number" inputmode="numeric" data-fx-num="${i.key}" min="${i.min}" max="${i.max}" value="${esc(vals[i.key] ?? '')}"><small>${i.max < 999 ? `${i.min} to ${i.max}` : `at least ${i.min}`}</small></label>`
       : `<div class="fx-pickw">${i.groups.reduce((n, g) => n + g.items.length, 0) > 8 ? `<input type="search" class="fx-q" data-fx-q="${i.key}" placeholder="Type a name" aria-label="Search names">` : ''}
           <div class="fx-pick" role="radiogroup" aria-label="${esc(i.label)}">${i.groups.map(g => `<p class="fx-pg">${esc(g.title)}</p>${g.items.map(([pid, hint]) => `<label data-name="${esc(S.fullName(pid).toLowerCase())}"><input type="radio" name="fxp-${i.key}" value="${pid}"${String(vals[i.key]) === String(pid) ? ' checked' : ''}><span>${esc(S.fullName(pid))}</span>${hint ? `<small>${esc(hint)}</small>` : ''}</label>`).join('') || '<p class="empty">Nobody to pick.</p>'}`).join('')}</div></div>`;
@@ -2843,6 +2918,14 @@ footer p { margin: 0; max-width: 90ch; }
     if (t.name === 'fx-opt') { fixCur.choice = +t.value; fixCur.msg = ''; renderFix(); return; }
     if (t.name && t.name.startsWith('fxp-')) { fixCur.vals[t.name.slice(4)] = t.value; renderLive(); }
     if (t.hasAttribute('data-fx-rv')) { fixCur.rv = t.checked; t.closest('label').classList.toggle('on', t.checked); renderLive(); }
+    // Picking a batter for a wicket swaps them with the wicket they were at, so every batter stays in once.
+    if (t.dataset.fxBat) {
+      const k = t.dataset.fxBat, v = fixCur.vals, was = v['b' + k], to = +t.value;
+      const other = Object.keys(v).find(n => n.startsWith('b') && n !== 'b' + k && +v[n] === to);
+      if (other) v[other] = was;
+      v['b' + k] = to;
+      renderFix();
+    }
   });
   fixDlg.addEventListener('input', e => {
     const t = e.target;
@@ -2850,6 +2933,11 @@ footer p { margin: 0; max-width: 90ch; }
       const v = t.value === '' ? '' : +t.value;
       fixCur.vals[t.dataset.fxNum] = v === '' || v < +t.min || v > +t.max ? null : v;
       t.setAttribute('aria-invalid', String(v !== '' && fixCur.vals[t.dataset.fxNum] == null));
+      renderLive();
+    }
+    if (t.dataset.fxFow) {
+      fixCur.vals['w' + t.dataset.fxFow] = t.value === '' ? null : Math.max(0, Math.round(+t.value));
+      fowRefresh();
       renderLive();
     }
     if (t.hasAttribute('data-fx-comment')) fixCur.comment = t.value;
@@ -2919,6 +3007,7 @@ footer p { margin: 0; max-width: 90ch; }
       if (k === issueKey(x)) return true;
       const i = issueAll.find(j => issueKey(j) === k);
       const n = x.m.innings.findIndex(inn => inn.side === i.ref.inn[0] && inn.no === i.ref.inn[1]);
+      if (i.type === 'no-fow') return after[n].bat[i.ref.bat][8] != null;
       return rvChecks(after[n]).filter(c => CHECK_TYPE[c.id] === i.type).every(c => c.ok);
     });
   }
@@ -2954,7 +3043,7 @@ footer p { margin: 0; max-width: 90ch; }
     }
     const tmp = document.createElement('div');
     tmp.innerHTML = o.label;
-    const picked = (o.inputs || []).map(i => (i.kind === 'pick' ? S.fullName(+vals[i.key]) : vals[i.key])).filter(v => v != null && v !== '');
+    const picked = (o.inputs || []).map(i => (i.kind === 'pick' ? S.fullName(+vals[i.key]) : i.kind === 'fow' ? i.summary(vals) : vals[i.key])).filter(v => v != null && v !== '');
     const body = {
       action: 'saveFix', season: D.season, key: issueKey(x), matchId: m.id, date: new Date(m.date).toISOString().slice(0, 10),
       team: teamOf(m).label, opponent: m.opp, round: m.round || '', grade: teamOf(m).grade, side: x.side === 'v' ? 'VCC' : m.opp,
