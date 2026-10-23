@@ -170,6 +170,32 @@
    "comment": "",
    "steps": "Fix for Sat 5 Sept, VCC 2 v ACC (round 15, Hoofdklasse T20 Men, match ID 7616176)\nGeorgia Atkinson (VCC 2) is entered as a guest player, but has a Matchcentre profile. Counted as that player here.\n\n1. Open Select Teams in ResultsVault and log in if asked.\n2. Pick Season 2026, Round 15 and Grade KNCB:Hoofdklasse T20 Men, then press GO. It's ACC v VCC 2, match ID 7616176.\n3. Make sure the team is VCC 2.\n4. Under Selected Players, find the guest entry Georgia Atkinson (it may show as \"Last, First\").\n5. Find Atkinson, Georgia under Available Players (type the first name in the search box) and drag it onto that guest's slot.\n6. A Confirm score replacement box opens. On the row Georgia Atkinson → Atkinson, Georgia, choose Move scores, so the runs and wickets go along. Press Confirm.\n7. Press Save.\n\nhttps://admin-cricket.resultsvault.co.uk/common/pages/admin/rv/selectteam.aspx",
    "edits": []
+  },
+  {
+   "key": "7659578|guest|Snehal Padke (VCC) has no Matchcentre profile.",
+   "saved": "2026-10-23T17:29:56.612Z",
+   "updated": "2026-10-23T17:29:56.612Z",
+   "captain": "Harold",
+   "status": "rv",
+   "matchId": "7659578",
+   "date": "2026-05-09",
+   "team": "VCC Women",
+   "opponent": "Kampong",
+   "round": "3",
+   "grade": "Inspire Women's T20 Topklasse",
+   "side": "VCC",
+   "type": "Players without a Matchcentre profile",
+   "issue": "Snehal Padke (VCC) has no Matchcentre profile.",
+   "fix": "Pick the right player: Snehal Phadke",
+   "comment": "",
+   "steps": "Fix for Sat 9 May, VCC Women v Kampong (round 3, Inspire Women's T20 Topklasse, match ID 7659578)\nSnehal Padke (VCC) has no Matchcentre profile.\n\n1. Open Select Teams in ResultsVault and log in if asked.\n2. Pick Season 2026, Round 3 and Grade KNCB:Inspire Women's T20 Topklasse, then press GO. It's VCC v Kampong, match ID 7659578.\n3. Make sure the team is VCC.\n4. Under Selected Players, find the guest entry Snehal Padke (it may show as \"Last, First\").\n5. Find Phadke, Snehal under Available Players (type the first name in the search box) and drag it onto that guest's slot.\n6. A Confirm score replacement box opens. On the row Snehal Padke → Phadke, Snehal, choose Move scores, so the runs and wickets go along. Press Confirm.\n7. Press Save.\n\nhttps://admin-cricket.resultsvault.co.uk/common/pages/admin/rv/selectteam.aspx",
+   "edits": [
+    {
+     "op": "swap",
+     "from": -542523992,
+     "to": 11193535
+    }
+   ]
   }
  ]
 }
