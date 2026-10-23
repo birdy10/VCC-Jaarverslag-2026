@@ -150,6 +150,26 @@
    "comment": "",
    "steps": "Fix for Sat 8 Aug, VCC 2 v Rood en Wit (round 7, Hoofdklasse T20 Men, match ID 7616153)\nSameer Gaur (VCC 2) is entered as a guest player, but has a Matchcentre profile. Counted as that player here.\n\n1. Open Select Teams in ResultsVault and log in if asked.\n2. Pick Season 2026, Round 7 and Grade KNCB:Hoofdklasse T20 Men, then press GO. It's VCC 2 v Rood en Wit, match ID 7616153.\n3. Make sure the team is VCC 2.\n4. Under Selected Players, find the guest entry Sameer Gaur (it may show as \"Last, First\").\n5. Find Gaur, Sameer under Available Players (type the first name in the search box) and drag it onto that guest's slot.\n6. A Confirm score replacement box opens. On the row Sameer Gaur → Gaur, Sameer, choose Move scores, so the runs and wickets go along. Press Confirm.\n7. Press Save.\n\nhttps://admin-cricket.resultsvault.co.uk/common/pages/admin/rv/selectteam.aspx",
    "edits": []
+  },
+  {
+   "key": "7616176|guest-registered|Georgia Atkinson (VCC 2) is entered as a guest player, but has a Matchcentre profile. Counted as that player here.",
+   "saved": "2026-10-23T17:20:11.042Z",
+   "updated": "2026-10-23T17:20:11.042Z",
+   "captain": "Harold",
+   "status": "saved",
+   "matchId": "7616176",
+   "date": "2026-09-05",
+   "team": "VCC 2",
+   "opponent": "ACC",
+   "round": "15",
+   "grade": "Hoofdklasse T20 Men",
+   "side": "VCC",
+   "type": "Entered as guest, but has a profile",
+   "issue": "Georgia Atkinson (VCC 2) is entered as a guest player, but has a Matchcentre profile. Counted as that player here.",
+   "fix": "Swap to the profile of Georgia Atkinson",
+   "comment": "",
+   "steps": "Fix for Sat 5 Sept, VCC 2 v ACC (round 15, Hoofdklasse T20 Men, match ID 7616176)\nGeorgia Atkinson (VCC 2) is entered as a guest player, but has a Matchcentre profile. Counted as that player here.\n\n1. Open Select Teams in ResultsVault and log in if asked.\n2. Pick Season 2026, Round 15 and Grade KNCB:Hoofdklasse T20 Men, then press GO. It's ACC v VCC 2, match ID 7616176.\n3. Make sure the team is VCC 2.\n4. Under Selected Players, find the guest entry Georgia Atkinson (it may show as \"Last, First\").\n5. Find Atkinson, Georgia under Available Players (type the first name in the search box) and drag it onto that guest's slot.\n6. A Confirm score replacement box opens. On the row Georgia Atkinson → Atkinson, Georgia, choose Move scores, so the runs and wickets go along. Press Confirm.\n7. Press Save.\n\nhttps://admin-cricket.resultsvault.co.uk/common/pages/admin/rv/selectteam.aspx",
+   "edits": []
   }
  ]
 }
