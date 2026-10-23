@@ -63,8 +63,11 @@ export function describeChanges(old, cur, refresh) {
     }
     const was = issOld[m.id] || new Set(), now = issCur[m.id] || new Set();
     const first = t => t.replace(/\. .*$/, '.'); // the issue itself, not the "counted as" aside
-    const fixed = [...was].filter(t => !now.has(t)).map(t => `Fixed: ${first(t)}`);
-    const added = [...now].filter(t => !was.has(t)).map(t => `New issue: ${first(t)}`);
+    // Compared up to the quoted dismissal ('... "c ? b X"'): rewording the explanation after it is no fix.
+    const ident = t => t.replace(/": .*$/, '"');
+    const wasId = new Set([...was].map(ident)), nowId = new Set([...now].map(ident));
+    const fixed = [...was].filter(t => !nowId.has(ident(t))).map(t => `Fixed: ${first(t)}`);
+    const added = [...now].filter(t => !wasId.has(ident(t))).map(t => `New issue: ${first(t)}`);
     // Only fixes (a guest linked to a profile changes no figures): its own kind, so it stands out in the log.
     const kind = fixed.length && !added.length && lines.every(l => / replaced by | linked to their /.test(l)) ? 'fixed' : 'changed';
     lines.push(...fixed, ...added);
