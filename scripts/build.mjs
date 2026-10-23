@@ -50,5 +50,7 @@ if (site) {
   await fs.mkdir(path.join(ROOT, 'dist', 'site'), { recursive: true });
   await fs.writeFile(path.join(ROOT, 'dist', 'site', 'index.html'),
     shell(`<script>window.VCC_SITE = ${JSON.stringify({ actions: site, refresh: refreshUrl || null }).replace(/</g, '\\u003c')};</script>`));
+  // The help video and its poster sit next to the page.
+  await fs.cp(path.join(ROOT, 'media'), path.join(ROOT, 'dist', 'site', 'media'), { recursive: true });
   console.log('Built dist/site/index.html');
 }

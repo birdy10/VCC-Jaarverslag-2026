@@ -17,7 +17,7 @@ on:
   push:
     branches: [main]
     # data/ too, for data fetched locally; the workflow's own data commits don't start a run (GITHUB_TOKEN)
-    paths: ['src/**', 'scripts/build.mjs', 'scripts/fetch-data.mjs', 'data/**', '.github/workflows/refresh.yml']
+    paths: ['src/**', 'media/**', 'scripts/build.mjs', 'scripts/fetch-data.mjs', 'data/**', '.github/workflows/refresh.yml']
 
 permissions:
   contents: write
