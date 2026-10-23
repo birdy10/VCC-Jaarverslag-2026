@@ -304,8 +304,8 @@ wanted.forEach(({ listing, teamId }, i) => {
         if (b.dismissal_id === 2 || b.dismissal_id === 5) {
           const role = b.dismissal_id === 2 ? 'catcher' : 'wicketkeeper';
           fielder = fielderOf(b, fielder, role, ref);
-          // "c ? b X": the scorer left the catcher open; in practice that mostly means caught and bowled.
-          if (b.dismissal_id === 2 && /^c\s*\?\s*b\b/.test(text)) issue(fs, 'cqb', `${b.player_name} (${who}) "${text}": catcher not recorded, probably caught and bowled.`, ref);
+          // "c ? b X": the scorer left the catcher open. Often caught and bowled, but not necessarily.
+          if (b.dismissal_id === 2 && /^c\s*\?\s*b\b/.test(text)) issue(fs, 'cqb', `${b.player_name} (${who}) "${text}": catcher not recorded. It says "c ? b", but that doesn't necessarily mean caught and bowled.`, ref);
           else if (!fielder) issue(fs, b.dismissal_id === 2 ? 'no-catcher' : 'no-keeper', `${b.player_name} (${who}) ${HOW_NAME[b.dismissal_id]} "${text}", ${fielder === undefined ? `${role} is a player id without a name` : `${role} not recorded`}.`, ref);
           else if (/\?|^(c|st)\s*(b\b|$)/.test(text) && !/^c\s*&\s*b/.test(text)) issue(fs, b.dismissal_id === 2 ? 'no-catcher' : 'no-keeper', `${b.player_name} (${who}) "${text}": the scorecard text has no ${role}.`, ref);
           fielder = fielder || null;

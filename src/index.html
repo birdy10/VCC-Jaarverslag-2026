@@ -804,7 +804,8 @@ footer p { margin: 0; max-width: 90ch; }
       <ol class="hp-steps">
         <li><p>Pick your team in the <b>Filters</b>, then open the <button class="link" data-tab="data">Data issues</button> tab. Each issue says what's wrong and in which match.</p>
           <div class="hp-mock" aria-hidden="true"><ul class="ilist"><li class="iss g0"><div class="iss-body"><p class="iss-t">J. Jansen c ? b P. de Vries: the catcher isn't recorded.</p><p class="iss-m">Sat 14 Jun · VCC 1 v Example CC</p></div><div class="iss-act"><span class="btn sm fixbtn primary">Fix it</span></div></li></ul></div></li>
-        <li><p>Press <b>Fix it</b>. The helper looks at the rest of the scorecard, suggests the most likely answer and lets you pick another. Check it against your scorebook. Was the match streamed? The <b>Livestream</b> button at the top opens the video, so you can watch back what happened.</p></li>
+        <li><p>Press <b>Fix it</b>. The helper looks at the rest of the scorecard, suggests the most likely answer and lets you pick another. Check it against your scorebook. Was the match streamed? The <b>Livestream</b> button at the top opens the video, so you can watch back what happened. For a wicket that's on video, the <b>Highlight</b> button plays just that wicket.</p>
+          <div class="hp-mock" aria-hidden="true"><div class="fx-meta"><a class="fx-mc" href="https://matchcentre.kncb.nl/" tabindex="-1">Matchcentre</a><a class="fx-mc fx-clip" href="https://matchcentre.kncb.nl/" tabindex="-1"><span>Highlight<small>the wicket on video</small></span></a><a class="fx-mc fx-live" href="https://www.youtube.com/" tabindex="-1"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="4"/><path d="m10 9 5 3-5 3z"/></svg><span>Livestream<small>to check it</small></span></a></div></div></li>
         <li><p>Press the blue <b>ResultsVault</b> button at the top of the helper (log in with your club account). It opens the right screen on this match straight away. <b>How to change it in ResultsVault</b> lists what to change there.</p>
           <div class="hp-mock" aria-hidden="true"><div class="hp-rv"><span>Season <b>2026</b></span><span>Round <b>7</b></span><span>Grade <b>KNCB:…</b></span><span class="go">GO</span></div></div></li>
         <li><p>Change the value the helper tells you to, then press <b>SAVE</b> in ResultsVault. The helper's checks show beforehand whether ResultsVault will accept the match.</p></li>
@@ -899,7 +900,13 @@ footer p { margin: 0; max-width: 90ch; }
   const plural = (n, one, many) => `${n} ${n === 1 ? one : (many || one + 's')}`;
   const times = n => (n === 1 ? 'once' : n === 2 ? 'twice' : `${n} times`);
   const fmtDate = ms => new Date(ms).toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short' });
-  const scorecard = m => `https://matchcentre.kncb.nl/match/134453-${m.id}/scorecard/`;
+  // With an innings, the Matchcentre opens on that innings' card (period = its innings id).
+  const scorecard = (m, inn) => `https://matchcentre.kncb.nl/match/134453-${m.id}/scorecard/${inn && inn.iid ? `?period=${inn.iid}` : ''}`;
+  // The innings an issue is about: the one in its reference, else the batting innings of the side it names.
+  const issueInn = x => {
+    const r = x.ref, inns = x.m.innings || [];
+    return (r && r.inn && inns.find(i => i.side === r.inn[0] && i.no === r.inn[1])) || inns.find(i => i.side === x.side) || null;
+  };
 
   // ---- state ---------------------------------------------------------------
   const DEFAULT = {
@@ -2104,7 +2111,7 @@ footer p { margin: 0; max-width: 90ch; }
   const fmtStamp = s => new Date(s).toLocaleString('en-GB', { day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' });
   const ISSUE_GROUPS = [
     ['Who took the wicket', [
-      ['cqb', 'Caught "c ? b"', 'Caught, but the scorecard says "c ? b": the catcher was left open. Usually caught and bowled. The catch counts for nobody.'],
+      ['cqb', 'Caught "c ? b"', 'Caught, but the scorecard says "c ? b": the catcher was left open. It says "c ? b", but that doesn\'t necessarily mean caught and bowled. The catch counts for nobody.'],
       ['no-catcher', 'Catcher missing', 'Caught, but the catcher isn\'t recorded. The catch counts for nobody.'],
       ['no-keeper', 'Wicketkeeper missing', 'Stumped, but the wicketkeeper isn\'t recorded. The stumping counts for nobody.'],
       ['no-runout-fielder', 'Run-out fielder missing', 'Run out without a fielder.'],
@@ -2240,7 +2247,7 @@ footer p { margin: 0; max-width: 90ch; }
     // Only worth saying whose figures it is when opponents are shown too.
     const sideTag = x => (state.issueOpp ? `<span class="lbl side-${x.side}">${x.side === 'v' ? 'VCC' : 'Opponent'}</span>` : '');
     const typeTag = x => `<span class="lbl g${typeInfo[x.type].gi}">${ico(GROUP_ICON[typeInfo[x.type].gi])}${esc(typeInfo[x.type].label)}</span>`;
-    const ext = (m, text) => `<a href="${scorecard(m)}" target="_blank" rel="noopener" title="Open the scorecard on the Matchcentre">${esc(text)}</a>`;
+    const ext = (m, text, inn) => `<a href="${scorecard(m, inn)}" target="_blank" rel="noopener" title="Open the scorecard on the Matchcentre">${esc(text)}</a>`;
     // Ticked as fixed by this browser's user: faded, still listed until the reload confirms it.
     // One row per issue: a stripe in the colour of its kind, the sentence, where it is, and on the right
     // whether it's been solved and the button to fix it.
@@ -2275,7 +2282,7 @@ footer p { margin: 0; max-width: 90ch; }
         const cats = types.map(([k, label, note]) => {
           const rows = list.filter(x => x.type === k);
           if (!rows.length) return '';
-          return dcat(label, note, rows.length, `<ul class="ilist">${rows.map(x => issueRow(x, ext(x.m, `${fmtDate(x.m.date)} · ${teamOf(x.m).label} v ${x.m.opp}`) + sideTag(x) + ids(x.m) + lockTag(x.m))).join('')}</ul>`, matchOn.size);
+          return dcat(label, note, rows.length, `<ul class="ilist">${rows.map(x => issueRow(x, ext(x.m, `${fmtDate(x.m.date)} · ${teamOf(x.m).label} v ${x.m.opp}`, issueInn(x)) + sideTag(x) + ids(x.m) + lockTag(x.m))).join('')}</ul>`, matchOn.size);
         }).join('');
         return cats ? `<div class="dgroup"><h3 class="gh g${ISSUE_GROUPS.findIndex(g => g[0] === title)}">${ico(GROUP_ICON[ISSUE_GROUPS.findIndex(g => g[0] === title)])}<span class="u">${esc(title)}</span></h3><div class="dcats">${cats}</div></div>` : '';
       }).join('');
@@ -2284,7 +2291,7 @@ footer p { margin: 0; max-width: 90ch; }
       ? (a, b) => playedTeams.indexOf(teamOf(a.m)) - playedTeams.indexOf(teamOf(b.m)) || a.m.date - b.m.date
       : (a, b) => typeInfo[a.type].i - typeInfo[b.type].i || a.m.date - b.m.date);
     copyReg.issues = { what: 'the data issues', tables: [{ title: 'Matchcentre data issues', head: ['Team', 'Issue', 'Match', 'Opponent', 'Round', 'Match ID', 'Grade', 'Side', 'Detail', 'Scorecard'],
-      body: copyRows.map(x => [teamName(teamOf(x.m)), typeInfo[x.type].label, matchText(x.m), x.m.opp, x.m.round || '', x.m.id, teamOf(x.m).grade, x.side === 'v' ? 'VCC' : x.m.opp, x.text, scorecard(x.m)]) }] };
+      body: copyRows.map(x => [teamName(teamOf(x.m)), typeInfo[x.type].label, matchText(x.m), x.m.opp, x.m.round || '', x.m.id, teamOf(x.m).grade, x.side === 'v' ? 'VCC' : x.m.opp, x.text, scorecard(x.m, issueInn(x))]) }] };
     const tools = list.length ? `<div class="head-tools">${seg('issueGroup', [['type', 'By issue'], ['team', 'By team']], byTeam ? 'team' : 'type', 'Group issues', 'sm')}<button class="btn" data-issue-expand="${matchOn.size ? '0' : '1'}" aria-pressed="${matchOn.size ? 'true' : 'false'}">${matchOn.size ? 'Collapse all' : 'Expand all'}</button>${copyBtn('issues', 'Copy list')}</div>` : '';
     const hiddenSaved = inTeams.filter(x => sideOk(x) && typeOn(x.type) && !savedOk(x)).length;
     const hidden = [hiddenSide && `${hiddenSide} on the opponents' side`, hiddenType && `${hiddenType} in switched-off types`, hiddenSaved && `${hiddenSaved} potentially solved`].filter(Boolean);
@@ -2492,7 +2499,7 @@ footer p { margin: 0; max-width: 90ch; }
     const set = pid => [{ page: 'card', team: rvTeam(m, bs), text: `In the row of <b>${esc(rvName(r[0]))}</b>, set <b>${col}</b> to <b>${esc(rvName(pid))}</b>.`, data: { op: role === 'bowler' ? 'bowler' : 'fielder', inn: ref.inn, bat: ref.bat, pid: +pid } }];
     // A best guess where the rest of the card gives one away.
     let guess = null, why = '';
-    if (t === 'cqb' && r[11]) { guess = r[11]; why = 'Caught and bowled: the bowler took the catch. That\'s what "c ? b" usually means.'; }
+    if (t === 'cqb' && r[11]) { guess = r[11]; why = 'Caught and bowled: the bowler took the catch. It says "c ? b", but that doesn\'t necessarily mean caught and bowled: check the scorebook or the video.'; }
     if (t === 'no-keeper') {
       const k = inn.bat.find((o, i) => i !== ref.bat && o[6] === 5 && o[10]) || null;
       const f = (inn.field || []).find(f => f[2] > 0 || f[3] > 0);
@@ -2901,7 +2908,7 @@ footer p { margin: 0; max-width: 90ch; }
       : `<label class="fx-name"><span>${ico('user')}Your name ${infoTip('Asked once, remembered on this device.')}</span><input type="text" data-fx-name maxlength="60" autocomplete="name" placeholder="First and last name"></label>`;
     const t = teamOf(m), clip = clipOf(m, x);
     // What a captain has to find and type in ResultsVault: big, and one click to copy.
-    const meta = `<div class="fx-meta"><span class="cv fx-mi">${ico('cal')}<small>Date</small><span>${esc(fmtDate(m.date))}</span></span>${copyChip('Round', m.round || '?', 'round')}${copyChip('League', t.grade, 'trophy')}${copyChip('Match ID', m.id, 'hash')}<a class="fx-mc" href="${scorecard(m)}" target="_blank" rel="noopener">Matchcentre</a>${clip ? `<a class="fx-mc fx-clip" href="${esc(clip.url)}" target="_blank" rel="noopener" title="${esc(clip.title)}"><span>Highlight<small>the wicket on video</small></span></a>` : ''}<span id="fx-rvlinks" class="fx-rvls"></span>${(m.streams || []).map((v, n, all) => `<a class="fx-mc fx-live" href="https://www.youtube.com/watch?v=${encodeURIComponent(v)}" target="_blank" rel="noopener" title="The match was streamed: watch back what happened">${ico('play')}<span>Livestream${all.length > 1 ? ` ${n + 1}` : ''}<small>to check it</small></span></a>`).join('')}</div>`;
+    const meta = `<div class="fx-meta"><span class="cv fx-mi">${ico('cal')}<small>Date</small><span>${esc(fmtDate(m.date))}</span></span>${copyChip('Round', m.round || '?', 'round')}${copyChip('League', t.grade, 'trophy')}${copyChip('Match ID', m.id, 'hash')}<a class="fx-mc" href="${scorecard(m, issueInn(x))}" target="_blank" rel="noopener">Matchcentre</a>${clip ? `<a class="fx-mc fx-clip" href="${esc(clip.url)}" target="_blank" rel="noopener" title="${esc(clip.title)}"><span>Highlight<small>the wicket on video</small></span></a>` : ''}<span id="fx-rvlinks" class="fx-rvls"></span>${(m.streams || []).map((v, n, all) => `<a class="fx-mc fx-live" href="https://www.youtube.com/watch?v=${encodeURIComponent(v)}" target="_blank" rel="noopener" title="The match was streamed: watch back what happened">${ico('play')}<span>Livestream${all.length > 1 ? ` ${n + 1}` : ''}<small>to check it</small></span></a>`).join('')}</div>`;
     const canned = CANNED.map((c, i) => `<button class="fx-cn" data-fx-canned="${i}">${esc(c)}</button>`).join('');
     const intro = spec.intro.replace(/<small class="fx-sub">([\s\S]*?)<\/small>/, (_, t) => infoTip(t.replace(/<[^>]+>/g, '')));
     $('#fix-body').innerHTML = `<header class="fx-top">
