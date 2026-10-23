@@ -196,6 +196,36 @@
      "to": 11193535
     }
    ]
+  },
+  {
+   "key": "7615974|no-runout-fielder|J Jacob (Sparta) run out, fielder not recorded.",
+   "saved": "2026-10-23T18:40:07.200Z",
+   "updated": "2026-10-23T18:40:07.200Z",
+   "captain": "Harold",
+   "status": "rv",
+   "matchId": "7615974",
+   "date": "2026-07-18",
+   "team": "VCC 1",
+   "opponent": "Sparta",
+   "round": "3",
+   "grade": "Topklasse T20 Men",
+   "side": "VCC",
+   "type": "Run-out fielder missing",
+   "issue": "J Jacob (Sparta) run out, fielder not recorded.",
+   "fix": "Pick the run-out fielder from the team list: Aarush Janardhanan",
+   "comment": "Speler met rugnummer 11:",
+   "steps": "Fix for Sat 18 Jul, VCC 1 v Sparta (round 3, Topklasse T20 Men, match ID 7615974)\nJ Jacob (Sparta) run out, fielder not recorded.\n\n1. Open Enter Player Scores in ResultsVault and log in if asked. It opens on Sparta v VCC, match ID 7615974.\n2. At Enter player scores for, pick Sparta.\n3. In the row of Jacob, Johne, set Fielder to Janardhanan, Aarush.\n4. Press SAVE.\n\nhttps://admin-cricket.resultsvault.co.uk/common/pages/admin/framehost.aspx?fhid=%2Fcommon%2Fpages%2Fadmin%2Frv%2Fcricket%2FEnterPlayerScores.aspx%3Fmatchid%3D7615974",
+   "edits": [
+    {
+     "op": "fielder",
+     "inn": [
+      "o",
+      1
+     ],
+     "bat": 6,
+     "pid": 11193555
+    }
+   ]
   }
  ]
 }
