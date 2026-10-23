@@ -255,6 +255,35 @@
      "v": 10.5
     }
    ]
+  },
+  {
+   "key": "7659570|bowl-overs|The Hague All Stars 121/10: bowlers' overs add up to 19.5, the innings lasted 19.4 overs.",
+   "saved": "2026-10-23T21:12:54.595Z",
+   "updated": "2026-10-23T21:12:54.595Z",
+   "captain": "Harold",
+   "status": "saved",
+   "matchId": "7659570",
+   "date": "2026-04-25",
+   "team": "VCC Women",
+   "opponent": "The Hague All Stars",
+   "round": "1",
+   "grade": "Inspire Women's T20 Topklasse",
+   "side": "VCC",
+   "type": "Bowling overs",
+   "issue": "The Hague All Stars 121/10: bowlers' overs add up to 19.5, the innings lasted 19.4 overs.",
+   "fix": "Innings overs 19.4 → 19.5",
+   "comment": "",
+   "steps": "Fix for Sat 25 Apr, VCC Women v The Hague All Stars (round 1, Inspire Women's T20 Topklasse, match ID 7659570)\nThe Hague All Stars 121/10: bowlers' overs add up to 19.5, the innings lasted 19.4 overs.\n\n1. Open Enter Match Results in ResultsVault and log in if asked. It opens on VCC v The Hague All Stars, match ID 7659570.\n2. Go to the innings of The Hague All Stars.\n3. Set the overs of the innings to 19.5.\n4. Press SAVE.\n\nhttps://admin-cricket.resultsvault.co.uk/common/pages/admin/framehost.aspx?fhid=%2Fcommon%2Fpages%2Fadmin%2Frv%2Fcricket%2Fmatchscores.aspx%3Fmatchid%3D7659570%26saveok%3D0%26redirect%3D0",
+   "edits": [
+    {
+     "op": "overs",
+     "inn": [
+      "o",
+      1
+     ],
+     "v": 19.5
+    }
+   ]
   }
  ]
 }
