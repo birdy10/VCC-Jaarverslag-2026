@@ -335,6 +335,37 @@
    "comment": "",
    "steps": "Fix for Sat 15 Aug, VCC 2 v VOC 2 (round 9, Hoofdklasse T20 Men, match ID 7616154)\nSameer Gaur (VCC 2) is entered as a guest player, but has a Matchcentre profile. Counted as that player here.\n\n1. Open Select Teams in ResultsVault and log in if asked. It opens on VCC 2 v VOC 2, match ID 7616154.\n2. Make sure the team is VCC 2.\n3. Under Selected Players, find the guest entry Sameer Gaur (it may show as \"Last, First\").\n4. Find Gaur, Sameer under Available Players (type the first name in the search box) and drag it onto that guest's slot.\n5. A Confirm score replacement box opens. On the row Sameer Gaur → Gaur, Sameer, choose Move scores, so the runs and wickets go along. Press Confirm.\n6. Press Save.\n\nhttps://admin-cricket.resultsvault.co.uk/common/pages/admin/rv/selectteam.aspx?matchid=7616154&teamnum=1",
    "edits": []
+  },
+  {
+   "key": "7659597|no-fow|K Waqas (VCC Women) is out \"ro (F van Vuuren)\", but has no fall-of-wicket score.",
+   "saved": "2026-10-23T22:05:49.743Z",
+   "updated": "2026-10-23T22:05:49.743Z",
+   "captain": "Harold",
+   "status": "rv",
+   "matchId": "7659597",
+   "date": "2026-07-04",
+   "team": "VCC Women",
+   "opponent": "Quick",
+   "round": "10",
+   "grade": "Inspire Women's T20 Topklasse",
+   "side": "VCC",
+   "type": "Fall of wicket",
+   "issue": "K Waqas (VCC Women) is out \"ro (F van Vuuren)\", but has no fall-of-wicket score.",
+   "fix": "From the scorebook: 4th 270",
+   "comment": "",
+   "steps": "Fix for Sat 4 Jul, VCC Women v Quick (round 10, Inspire Women's T20 Topklasse, match ID 7659597)\nK Waqas (VCC Women) is out \"ro (F van Vuuren)\", but has no fall-of-wicket score.\n\n1. Open Enter Player Scores in ResultsVault and log in if asked. It opens on VCC v Quick, match ID 7659597.\n2. At Enter player scores for, pick VCC.\n3. In the row of Waqas, Komal, enter 270 under FOW and 4 in the Num box just before it.\n4. Press SAVE.\n\nhttps://admin-cricket.resultsvault.co.uk/common/pages/admin/framehost.aspx?fhid=%2Fcommon%2Fpages%2Fadmin%2Frv%2Fcricket%2FEnterPlayerScores.aspx%3Fmatchid%3D7659597",
+   "edits": [
+    {
+     "op": "fow",
+     "inn": [
+      "v",
+      1
+     ],
+     "bat": 6,
+     "v": 270,
+     "no": 4
+    }
+   ]
   }
  ]
 }
