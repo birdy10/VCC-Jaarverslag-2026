@@ -315,6 +315,26 @@
      "v": 30
     }
    ]
+  },
+  {
+   "key": "7616154|guest-registered|Sameer Gaur (VCC 2) is entered as a guest player, but has a Matchcentre profile. Counted as that player here.",
+   "saved": "2026-10-23T21:25:12.161Z",
+   "updated": "2026-10-23T21:25:12.161Z",
+   "captain": "Harold",
+   "status": "rv",
+   "matchId": "7616154",
+   "date": "2026-08-15",
+   "team": "VCC 2",
+   "opponent": "VOC 2",
+   "round": "9",
+   "grade": "Hoofdklasse T20 Men",
+   "side": "VCC",
+   "type": "Entered as guest, but has a profile",
+   "issue": "Sameer Gaur (VCC 2) is entered as a guest player, but has a Matchcentre profile. Counted as that player here.",
+   "fix": "Swap to the profile of Sameer Gaur",
+   "comment": "",
+   "steps": "Fix for Sat 15 Aug, VCC 2 v VOC 2 (round 9, Hoofdklasse T20 Men, match ID 7616154)\nSameer Gaur (VCC 2) is entered as a guest player, but has a Matchcentre profile. Counted as that player here.\n\n1. Open Select Teams in ResultsVault and log in if asked. It opens on VCC 2 v VOC 2, match ID 7616154.\n2. Make sure the team is VCC 2.\n3. Under Selected Players, find the guest entry Sameer Gaur (it may show as \"Last, First\").\n4. Find Gaur, Sameer under Available Players (type the first name in the search box) and drag it onto that guest's slot.\n5. A Confirm score replacement box opens. On the row Sameer Gaur → Gaur, Sameer, choose Move scores, so the runs and wickets go along. Press Confirm.\n6. Press Save.\n\nhttps://admin-cricket.resultsvault.co.uk/common/pages/admin/rv/selectteam.aspx?matchid=7616154&teamnum=1",
+   "edits": []
   }
  ]
 }
