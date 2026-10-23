@@ -872,7 +872,7 @@ footer p { margin: 0; max-width: 90ch; }
   // ---- state ---------------------------------------------------------------
   const DEFAULT = {
     tab: 'highlights', teams: [], result: 'all', venue: 'all', toss: 'all', months: [], opps: [], player: null,
-    side: 'v', names: 'short', top: 5, ms: { runs: 50, pship: 75, catches: 3, wkts: 5, total: 200, econ: 3, sruns: 250, swkts: 15 }, squadCounts: 'no', issueGroup: 'type', issueOpp: false, issueOff: ['no-runout-fielder'], issueFilterOpen: false, issueMatches: [], issueSaved: 'all',
+    side: 'v', names: 'short', top: 5, ms: { runs: 50, pship: 75, catches: 3, wkts: 5, total: 200, econ: 3, sruns: 250, swkts: 15 }, squadCounts: 'no', issueGroup: 'type', issueOpp: false, issueOff: ['no-runout-fielder'], issueFilterOpen: true, issueMatches: [], issueSaved: 'all',
     finder: { ds: 'innings', cond: {}, chips: {} }, sorts: {}, limits: {},
   };
   let state = JSON.parse(JSON.stringify(DEFAULT));
@@ -880,6 +880,8 @@ footer p { margin: 0; max-width: 90ch; }
     const saved = JSON.parse(localStorage.getItem('vcc-facts-' + D.season) || 'null');
     if (saved) state = Object.assign(state, saved, { ms: Object.assign({}, DEFAULT.ms, saved.ms), finder: Object.assign({}, DEFAULT.finder, saved.finder) });
   } catch (e) {}
+  // The issue filter starts open on every visit, also for captains who closed it last time.
+  state.issueFilterOpen = true;
   const save = () => { try { localStorage.setItem('vcc-facts-' + D.season, JSON.stringify(state)); } catch (e) {} };
   const hashTab = location.hash.replace('#', '');
   if (['highlights', 'finder', 'matches', 'standings', 'data', 'help'].includes(hashTab)) state.tab = hashTab;
