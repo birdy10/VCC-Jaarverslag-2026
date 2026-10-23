@@ -124,6 +124,18 @@ const details = await pool(wanted, 6, async ({ listing }) => {
     () => get(`${API}/matches/${listing.match_id}/?apiid=${APIID}&strmflg=1`),
     hit => isFinal(hit));
 });
+// Video highlights of streamed matches (strmflg=3 adds them to the scorecard). Only the wickets are kept:
+// a captain checks a dismissal against its clip in the Matchcentre.
+const WICKET_EVENTS = new Set([1001, 1006]);
+const highlights = await pool(wanted, 6, async ({ listing }, i) => {
+  const d = details[i];
+  if (!d || !(d.matchStreams || []).some(s => s.stream_provider_id === 3)) return null;
+  return cached(path.join(ROOT, 'cache', SEASON_YEAR, `hl-${listing.match_id}.json`),
+    async () => (await get(`${API}/matches/${listing.match_id}/?apiid=${APIID}&strmflg=3`)).matchStreams
+      .flatMap(s => s.MatchStreamHighlights || []).filter(h => WICKET_EVENTS.has(h.match_event_type_id))
+      .map(h => ({ id: h.id, inn: h.innings_id, batter: h.dismissed_batter_id || h.batter_id, over: h.over_no, ball: h.ball_no, title: h.title })),
+    () => isFinal(d)).catch(() => null); // no clips is no reason to stop the run
+});
 
 // ---- name clean-up ------------------------------------------------------------
 // ResultVault stores Dutch particles after the surname ("Floris Lange de") and abbreviates
@@ -340,8 +352,10 @@ wanted.forEach(({ listing, teamId }, i) => {
         }
       }
 
+      // Wicket clips of this innings: [highlight id, dismissed batter, over, ball, title]
+      const hl = (highlights[i] || []).filter(h => h.inn === inn.innings_id).map(h => [h.id, pidOf(side, h.batter), h.over, h.ball, h.title]);
       innings.push({
-        side: s, no: inn.innings_number, order: inn.innings_order,
+        side: s, no: inn.innings_number, order: inn.innings_order, iid: inn.innings_id, ...(hl.length ? { hl } : {}),
         runs: inn.runs, wkts: inn.wickets, overs: inn.overs_bowled, closed: inn.close_type_id,
         x: [inn.extras, inn.byes, inn.leg_byes, inn.wides, inn.no_balls, inn.penalty_runs],
         bat,
