@@ -598,6 +598,53 @@ footer p { margin: 0; max-width: 90ch; }
 #toast { position: fixed; left: 50%; bottom: calc(18px + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%) translateY(20px); opacity: 0; pointer-events: none; background: var(--fg); color: var(--bg); padding: 9px 16px; border-radius: 999px; font-weight: 600; font-size: 14px; transition: opacity .18s, transform .18s; max-width: calc(100% - 32px); }
 #toast.on { opacity: 1; transform: translateX(-50%) translateY(0); }
 @media (prefers-reduced-motion: reduce) { #toast { transition: none; } }
+/* Confetti and a cheer when a fix is saved */
+.cheer { position: fixed; inset: 0; pointer-events: none; overflow: hidden; z-index: 5; }
+.cheer i { position: absolute; width: 8px; height: 12px; margin: -6px 0 0 -4px; border-radius: 2px; animation: cheer-fly 1.4s cubic-bezier(.15, .8, .4, 1) forwards; }
+.cheer b { position: absolute; transform: translate(-50%, -110%); background: var(--brand); color: #fff; font-family: Montserrat, sans-serif; font-weight: 800; font-size: 20px; padding: 10px 20px; border-radius: 999px; white-space: nowrap; box-shadow: 0 10px 30px rgba(0, 0, 0, .25); animation: cheer-pop 2.8s ease forwards; }
+@keyframes cheer-fly { 0% { transform: none; opacity: 1; } 70% { opacity: 1; } 100% { transform: translate(var(--dx), calc(var(--dy) + 320px)) rotate(var(--r)); opacity: 0; } }
+@keyframes cheer-pop { 0% { opacity: 0; transform: translate(-50%, -70%) scale(.8); } 12%, 80% { opacity: 1; transform: translate(-50%, -110%) scale(1); } 100% { opacity: 0; transform: translate(-50%, -140%) scale(1); } }
+@media (prefers-reduced-motion: reduce) { .cheer i { display: none; } .cheer b { animation-name: cheer-fade; } @keyframes cheer-fade { 0%, 100% { opacity: 0; } 10%, 85% { opacity: 1; } } }
+
+/* ---- help: plain text with small mock-ups built from the page's own pieces ---- */
+#view-help { display: grid; gap: 18px; }
+.hp p, .hp li { max-width: 72ch; }
+.hp h3 { margin: 18px 0 8px; font: 800 14px/1.3 var(--font-display); color: var(--brand-ink); text-transform: uppercase; letter-spacing: .03em; }
+.hp-lead { font-size: 16.5px; margin: 0 0 6px; }
+.hp-flow { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin: 14px 0 4px; }
+@media (max-width: 719px) { .hp-flow { grid-template-columns: 1fr; } }
+.hp-path { border: 2px solid var(--line); border-radius: 8px; padding: 14px; display: grid; gap: 8px; align-content: start; }
+.hp-path.good { border-color: var(--win); background: color-mix(in srgb, var(--win) 7%, var(--surface)); }
+.hp-path > b { font: 800 13px/1.3 var(--font-display); text-transform: uppercase; letter-spacing: .04em; }
+.hp-path.good > b { color: var(--win); }
+.hp-path > b small { display: block; font: 600 12.5px/1.4 var(--font-body); text-transform: none; letter-spacing: 0; color: var(--muted); margin-top: 2px; }
+.hp-node { display: block; padding: 7px 12px; border-radius: 6px; background: var(--surface-2); border: 1px solid var(--line); font-weight: 600; font-size: 14px; }
+.hp-node.src { background: var(--brand); border-color: var(--brand); color: #fff; }
+.hp-arrow { justify-self: center; color: var(--muted); font-size: 16px; line-height: 1; }
+.hp-fan { display: flex; flex-wrap: wrap; gap: 6px; }
+.hp-fan .hp-node { flex: 1 1 9em; font-weight: 400; font-size: 13.5px; }
+.hp-fan .hp-node.off { opacity: .45; text-decoration: line-through; }
+.hp-steps { counter-reset: hp; list-style: none; padding: 0; margin: 10px 0; display: grid; gap: 10px; }
+.hp-steps > li { counter-increment: hp; display: grid; grid-template-columns: 30px 1fr; gap: 4px 12px; align-items: start; }
+.hp-steps > li::before { content: counter(hp); display: grid; place-items: center; width: 28px; height: 28px; border-radius: 50%; background: var(--brand); color: #fff; font: 800 13px/1 var(--font-display); }
+.hp-steps > li > * { grid-column: 2; margin: 0; }
+.hp-steps > li > :first-child { grid-row: 1; margin-top: 4px; }
+.hp-mock { border: 1px dashed var(--line); border-radius: 8px; padding: 10px 14px; background: var(--surface-2); margin-top: 6px; pointer-events: none; }
+.hp-mock .iss { border-top: 0; padding: 4px 0; }
+.hp-mock .fx-rvdone { background: var(--surface); }
+.hp-rv { display: flex; flex-wrap: wrap; gap: 6px 10px; align-items: center; font-size: 13px; }
+.hp-rv span { border: 1px solid var(--line); background: var(--surface); border-radius: 4px; padding: 3px 9px; }
+.hp-rv span b { color: var(--brand-ink); }
+.hp-rv .go { background: var(--mc); border-color: var(--mc); color: #fff; font-weight: 700; }
+.hp-tips { display: grid; gap: 10px; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); margin-top: 10px; }
+.hp-tip { border: 1px solid var(--line); border-radius: var(--radius); padding: 12px 14px; font-size: 14px; }
+.hp-tip > b { display: block; color: var(--brand-ink); margin-bottom: 3px; }
+.hp-tip p { margin: 0; }
+.hp-sec { display: grid; gap: 10px; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); margin: 12px 0; }
+.hp-sec .fact { display: grid; gap: 8px; align-content: start; }
+.hp-sec .fact .btn { justify-self: start; }
+.hp-copy { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.hp-copy h2 { font-size: 15px; }
 </style>
 
 <header class="mast">
@@ -618,6 +665,7 @@ footer p { margin: 0; max-width: 90ch; }
     <button class="tab" role="tab" id="tab-matches" aria-controls="view-matches" data-tab="matches">Matches &amp; Milestones</button>
     <button class="tab" role="tab" id="tab-standings" aria-controls="view-standings" data-tab="standings">Standings</button>
     <button class="tab" role="tab" id="tab-data" aria-controls="view-data" data-tab="data">Data issues</button>
+    <button class="tab" role="tab" id="tab-help" aria-controls="view-help" data-tab="help">Help</button>
   </nav>
 </header>
 <div class="stripe" aria-hidden="true"></div>
@@ -672,6 +720,75 @@ footer p { margin: 0; max-width: 90ch; }
     <section class="card" id="data-issues" aria-labelledby="h-issues"></section>
     <section class="card" id="saved-fixes" aria-labelledby="h-fixes"></section>
     <section class="card" id="data-updates" aria-labelledby="h-updates"></section>
+  </div>
+
+  <div id="view-help" role="tabpanel" aria-labelledby="tab-help" hidden>
+    <section class="card hp" data-toc="Why ResultsVault">
+      <div class="card-head"><h2>Fix it at the source: ResultsVault</h2></div>
+      <p class="hp-lead">Every number on this page comes from the KNCB Matchcentre, and the Matchcentre gets its scorecards from <b>ResultsVault</b>. A missing catcher or an unknown player there means a missing catch or a missing player here.</p>
+      <p>You can fix an issue in two ways. Both count for the jaarverslag, but only one fixes it for good.</p>
+      <div class="hp-flow">
+        <div class="hp-path good">
+          <b>Change it in ResultsVault <small>Preferred: fixed once, right everywhere</small></b>
+          <span class="hp-node src">ResultsVault</span>
+          <span class="hp-arrow" aria-hidden="true">▼</span>
+          <span class="hp-node">KNCB Matchcentre</span>
+          <span class="hp-arrow" aria-hidden="true">▼</span>
+          <div class="hp-fan"><span class="hp-node">This jaarverslag page</span><span class="hp-node">KNCB player &amp; club stats</span><span class="hp-node">Career records, next year too</span><span class="hp-node">The opponents' figures</span></div>
+        </div>
+        <div class="hp-path">
+          <b>Save for the jaarverslag only <small>Fallback: when ResultsVault won't let you</small></b>
+          <span class="hp-node">Fix saved on this page</span>
+          <span class="hp-arrow" aria-hidden="true">▼</span>
+          <div class="hp-fan"><span class="hp-node">This jaarverslag page</span><span class="hp-node off">KNCB player &amp; club stats</span><span class="hp-node off">Career records, next year too</span><span class="hp-node off">The opponents' figures</span></div>
+          <p class="sub" style="margin:4px 0 0">An admin still has to make the change in ResultsVault later, so it ends up as double work.</p>
+        </div>
+      </div>
+      <h3>Why we ask you to do it</h3>
+      <ul>
+        <li><b>It lasts.</b> A fix in ResultsVault stays in the club's history. A fix on this page only lives in this year's report.</li>
+        <li><b>Your players get the credit.</b> Catches, wickets and runs then show up on their KNCB profile, where players look for their own stats.</li>
+        <li><b>You know the match.</b> You were there and you have the scorebook. The admins would have to guess.</li>
+        <li><b>It's quick.</b> The <b>Fix it</b> helper works out the right value and tells you exactly what to type, where.</li>
+      </ul>
+    </section>
+
+    <section class="card hp" data-toc="Fix an issue">
+      <div class="card-head"><h2>Fix an issue in 5 steps</h2></div>
+      <ol class="hp-steps">
+        <li><p>Pick your team in the <b>Filters</b>, then open the <button class="link" data-tab="data">Data issues</button> tab. Each issue says what's wrong and in which match.</p>
+          <div class="hp-mock" aria-hidden="true"><ul class="ilist"><li class="iss g0"><div class="iss-body"><p class="iss-t">J. Jansen c ? b P. de Vries: the catcher isn't recorded.</p><p class="iss-m">Sat 14 Jun · VCC 1 v Example CC</p></div><div class="iss-act"><span class="btn sm fixbtn primary">Fix it</span></div></li></ul></div></li>
+        <li><p>Press <b>Fix it</b>. The helper looks at the rest of the scorecard, suggests the most likely answer and lets you pick another. Check it against your scorebook.</p></li>
+        <li><p>Open <b>How to change it in ResultsVault</b> in the helper and follow the link (log in with your club account). Pick the Season, Round and Grade the helper shows and press <b>GO</b>.</p>
+          <div class="hp-mock" aria-hidden="true"><div class="hp-rv"><span>Season <b>2026</b></span><span>Round <b>7</b></span><span>Grade <b>KNCB:…</b></span><span class="go">GO</span></div></div></li>
+        <li><p>Change the value the helper tells you to, then press <b>SAVE</b> in ResultsVault. The helper's checks show beforehand whether ResultsVault will accept the match.</p></li>
+        <li><p>Back in the helper, tick <b>I changed this in ResultsVault</b> and save. Done: the issue turns green and disappears after the next data reload.</p>
+          <div class="hp-mock" aria-hidden="true"><label class="fx-rvdone on"><span class="fx-tick">✓</span><b>I changed this in ResultsVault</b></label><p style="margin:8px 0 0"><span class="btn primary rv">Save: solved in ResultsVault</span></p></div></li>
+      </ol>
+      <h3>When ResultsVault says no</h3>
+      <div class="hp-tips">
+        <div class="hp-tip"><b>"Won't save the match"</b><p>ResultsVault only saves when runs, wickets, extras and overs add up in both innings. The helper lists the checks that fail; fix those first.</p></div>
+        <div class="hp-tip"><b>"Only HCC can edit"</b><p>Some leagues (the combined women's team) are entered by HCC. Save the fix for the jaarverslag; the admins pass it on.</p></div>
+        <div class="hp-tip"><b>Player has no profile</b><p>Ask the member administration to register the player with the KNCB, then pick them in the helper.</p></div>
+        <div class="hp-tip"><b>No login or no time</b><p>Untick the box and use <b>Save for the jaarverslag only</b>. It still counts in your report, and an admin picks it up.</p></div>
+      </div>
+    </section>
+
+    <section class="card hp" data-toc="Writing your report">
+      <div class="card-head"><h2>Writing your jaarverslag piece</h2></div>
+      <p class="hp-lead">Don't start from a blank page. Pick your team in the Filters and the <button class="link" data-tab="highlights">Highlights</button> tab has the facts ready to copy.</p>
+      <div class="hp-sec">
+        <div class="fact"><b>Milestones</b><p>Every fifty, five-for, big partnership and season total. Set the thresholds yourself.</p><span class="btn sm" aria-hidden="true">Copy section</span></div>
+        <div class="fact"><b>Remarkable facts</b><p>Things you only see by joining all scorecards: favourite victims, catcher and bowler double acts, the best batting pairs.</p><span class="btn sm" aria-hidden="true">Copy section</span></div>
+        <div class="fact"><b>Records and oddities</b><p>Biggest win, closest finish, nervous nineties, the duck club, carried the bat. Good for a smile in the report.</p><span class="btn sm" aria-hidden="true">Copy section</span></div>
+      </div>
+      <ol class="hp-steps">
+        <li><p>Pick your team in the Filters.</p></li>
+        <li><p>Press <b>Copy section</b> on Milestones, Remarkable facts or Records and oddities.</p></li>
+        <li><p>Paste into your document. Tables paste as tables in Word and Google Docs. Pick the best lines and add your own story.</p></li>
+      </ol>
+      <p>Per match highlights are on <button class="link" data-tab="matches">Matches &amp; Milestones</button>, final positions on <button class="link" data-tab="standings">Standings</button>. Fix your data issues first: every fix makes your facts more complete.</p>
+    </section>
   </div>
 
   <footer>
@@ -742,7 +859,7 @@ footer p { margin: 0; max-width: 90ch; }
   } catch (e) {}
   const save = () => { try { localStorage.setItem('vcc-facts-' + D.season, JSON.stringify(state)); } catch (e) {} };
   const hashTab = location.hash.replace('#', '');
-  if (['highlights', 'finder', 'matches', 'standings', 'data'].includes(hashTab)) state.tab = hashTab;
+  if (['highlights', 'finder', 'matches', 'standings', 'data', 'help'].includes(hashTab)) state.tab = hashTab;
 
   const playedTeams = D.teams.filter(t => S.matches.some(m => m.team === t.id && m.played));
   state.teams = state.teams.filter(id => playedTeams.some(t => t.id === id));
@@ -2780,6 +2897,27 @@ footer p { margin: 0; max-width: 90ch; }
       return rvChecks(after[n]).filter(c => CHECK_TYPE[c.id] === i.type).every(c => c.ok);
     });
   }
+  // A burst of confetti from the issue and a line that cheers the fix; the line rotates with every saved fix.
+  const CHEERS = ['Howzat? Fixed.', 'Bye, bye, missing data!', 'It\'s not out until it\'s over.', 'A team is as good as its stats.', 'If it\'s not in the Matchcentre, it didn\'t happen.', 'No stats left behind.'];
+  function cheer() {
+    const from = $('.fx-issue');
+    if (!from) return;
+    let n = 0;
+    try { n = +localStorage.getItem('vcc-cheer') || 0; localStorage.setItem('vcc-cheer', String(n + 1)); } catch (e) {}
+    const r = from.getBoundingClientRect(), x = r.left + r.width / 2, y = r.top + r.height / 2;
+    const colors = ['#2f337d', '#9c0f2f', '#f2c14e', '#2f9e66', '#7f8cff'];
+    const bits = Array.from({ length: 70 }, (_, i) => {
+      const a = Math.random() * Math.PI * 2, v = 120 + Math.random() * 260;
+      return `<i style="left:${x}px;top:${y}px;background:${colors[i % colors.length]};--dx:${Math.round(Math.cos(a) * v)}px;--dy:${Math.round(Math.sin(a) * v - 140)}px;--r:${Math.round(Math.random() * 720 - 360)}deg"></i>`;
+    }).join('');
+    const el = document.createElement('div');
+    el.className = 'cheer';
+    el.setAttribute('aria-hidden', 'true');
+    el.innerHTML = `${bits}<b style="left:${x}px;top:${r.top}px">${esc(CHEERS[n % CHEERS.length])}</b>`;
+    // The dialog sits on top of everything else, so the burst goes inside it.
+    $('#fix').appendChild(el);
+    setTimeout(() => el.remove(), 3000);
+  }
   async function saveFix() {
     const { x, spec, choice, vals } = fixCur, m = x.m, o = spec.options[choice];
     const edits = curEdits();
@@ -2811,6 +2949,7 @@ footer p { margin: 0; max-width: 90ch; }
       fixCur.msg = saved.length > 1 ? `Saved, for ${saved.length} issues of this innings. Thank you!` : 'Saved. Thank you!';
       renderFix();
       toast('Fix saved. Thank you!');
+      cheer();
     } catch (e) {
       $('#fx-save').disabled = false;
       $('#fx-hint').textContent = `Not saved: ${e.message}`;
@@ -3042,7 +3181,7 @@ footer p { margin: 0; max-width: 90ch; }
     if (opts.dynamic) renderMonthOppFilter();
     scopeLine(current);
     document.querySelectorAll('.tab').forEach(t => t.setAttribute('aria-selected', String(t.dataset.tab === state.tab)));
-    ['highlights', 'finder', 'matches', 'standings', 'data'].forEach(k => { $('#view-' + k).hidden = state.tab !== k; });
+    ['highlights', 'finder', 'matches', 'standings', 'data', 'help'].forEach(k => { $('#view-' + k).hidden = state.tab !== k; });
     if (state.tab === 'highlights') renderHighlights(current);
     if (state.tab === 'finder') { if (opts.finder !== false) renderFinderControls(); renderFinderResults(current); }
     if (state.tab === 'matches') renderMatches(current);

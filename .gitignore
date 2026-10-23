@@ -9,3 +9,6 @@ scripts/publish-to-drive.mjs
 scripts/compare_docx.py
 scripts/doc-mapping-*.json
 data/jaarverslag-*.json
+
+# Word copies of jaarverslagen stay local too
+*.docx
