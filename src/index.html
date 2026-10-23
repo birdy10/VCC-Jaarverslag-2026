@@ -64,7 +64,10 @@ button, input { font: inherit; color: inherit; }
 .eyebrow { margin: 0 0 2px; font: 700 11px/1.2 var(--font-display); letter-spacing: .14em; text-transform: uppercase; opacity: .8; }
 .mast h1 { margin: 0; font: 800 clamp(24px, 4.4vw, 36px)/1.05 var(--font-display); letter-spacing: -.01em; text-wrap: balance; }
 .mast h1 span { color: #c9cbf3; }
-.mast-data { margin-left: auto; display: flex; flex-direction: column; align-items: flex-end; gap: 6px; text-align: right; max-width: 340px; }
+.mast-side { margin-left: auto; display: flex; align-items: flex-start; gap: 10px; }
+.mast-btn.alt { background: transparent; color: #fff; box-shadow: inset 0 0 0 2px rgba(255,255,255,.85); }
+.mast-btn.alt:hover { background: rgba(255,255,255,.12); }
+.mast-data { display: flex; flex-direction: column; align-items: flex-end; gap: 6px; text-align: right; max-width: 340px; }
 .mast-btn { display: inline-flex; align-items: center; gap: 8px; border: 0; border-radius: 999px; padding: 9px 16px; background: #fff; color: #2f337d; font: 700 14px/1 var(--font-display); cursor: pointer; }
 .mast-btn:hover { background: #e6e7fb; }
 .mast-btn:focus-visible { outline: 3px solid #fff; outline-offset: 3px; }
@@ -75,7 +78,7 @@ button, input { font: inherit; color: inherit; }
 .mast-status { margin: 0; font-size: 13px; line-height: 1.35; opacity: .9; }
 .mast-status.err { opacity: 1; color: #ffd0da; font-weight: 600; }
 .mast-status button { border: 0; padding: 0; background: none; color: inherit; font: inherit; font-weight: 700; text-decoration: underline; cursor: pointer; }
-@media (max-width: 719px) { .mast-in { flex-wrap: wrap; } .mast-data { margin-left: 0; align-items: flex-start; text-align: left; flex-basis: 100%; max-width: none; } }
+@media (max-width: 719px) { .mast-in { flex-wrap: wrap; } .mast-side { margin-left: 0; flex-basis: 100%; flex-wrap: wrap; } .mast-data { align-items: flex-start; text-align: left; max-width: none; } }
 @media (prefers-reduced-motion: reduce) { .mast-btn:disabled svg { animation: none; } }
 .tabs { display: flex; gap: 26px; overflow-x: auto; scrollbar-width: none; }
 .tabs::-webkit-scrollbar { display: none; }
@@ -654,9 +657,12 @@ footer p { margin: 0; max-width: 90ch; }
       <p class="eyebrow">Voorburg Cricket Club · Jaarverslag</p>
       <h1>Season facts <span id="season-year">2026</span></h1>
     </div>
+    <div class="mast-side">
+    <button class="mast-btn alt" data-tab="help" data-goto="help-writing"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>Writing your jaarverslag</button>
     <div class="mast-data" id="mast-data" hidden>
       <button class="mast-btn" data-fetch="site"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a9 9 0 1 1-2.64-6.36"/><path d="M21 3v6h-6"/></svg>Reload all data</button>
       <p class="mast-status" id="mast-status" role="status" aria-live="polite"></p>
+    </div>
     </div>
   </div>
   <nav class="wrap tabs" role="tablist" aria-label="Views">
@@ -749,7 +755,8 @@ footer p { margin: 0; max-width: 90ch; }
         <li><b>It lasts.</b> A fix in ResultsVault stays in the club's history. A fix on this page only lives in this year's report.</li>
         <li><b>Your players get the credit.</b> Catches, wickets and runs then show up on their KNCB profile, where players look for their own stats.</li>
         <li><b>You know the match.</b> You were there and you have the scorebook. The admins would have to guess.</li>
-        <li><b>It's quick.</b> The <b>Fix it</b> helper works out the right value and tells you exactly what to type, where.</li>
+        <li><b>Stats don't umpire themselves.</b> We know ResultsVault is a bit of a challenge. The <b>Fix it</b> helper takes most of the puzzle away: it works out the right value and tells you exactly what to type, where.</li>
+        <li><b>You can see it worked.</b> Open the match in the Matchcentre (click the match under the issue) and your change is there.</li>
       </ul>
     </section>
 
@@ -762,7 +769,7 @@ footer p { margin: 0; max-width: 90ch; }
         <li><p>Open <b>How to change it in ResultsVault</b> in the helper and follow the link (log in with your club account). Pick the Season, Round and Grade the helper shows and press <b>GO</b>.</p>
           <div class="hp-mock" aria-hidden="true"><div class="hp-rv"><span>Season <b>2026</b></span><span>Round <b>7</b></span><span>Grade <b>KNCB:…</b></span><span class="go">GO</span></div></div></li>
         <li><p>Change the value the helper tells you to, then press <b>SAVE</b> in ResultsVault. The helper's checks show beforehand whether ResultsVault will accept the match.</p></li>
-        <li><p>Back in the helper, tick <b>I changed this in ResultsVault</b> and save. Done: the issue turns green and disappears after the next data reload.</p>
+        <li><p>Back in the helper, tick <b>I changed this in ResultsVault</b> and save. Check the match in the Matchcentre: your change shows on the scorecard. The issue turns green here and disappears after the next data reload.</p>
           <div class="hp-mock" aria-hidden="true"><label class="fx-rvdone on"><span class="fx-tick">✓</span><b>I changed this in ResultsVault</b></label><p style="margin:8px 0 0"><span class="btn primary rv">Save: solved in ResultsVault</span></p></div></li>
       </ol>
       <h3>When ResultsVault says no</h3>
@@ -774,18 +781,19 @@ footer p { margin: 0; max-width: 90ch; }
       </div>
     </section>
 
-    <section class="card hp" data-toc="Writing your report">
+    <section class="card hp" id="help-writing" data-toc="Writing your report">
       <div class="card-head"><h2>Writing your jaarverslag piece</h2></div>
-      <p class="hp-lead">Don't start from a blank page. Pick your team in the Filters and the <button class="link" data-tab="highlights">Highlights</button> tab has the facts ready to copy.</p>
+      <p class="hp-lead">Don't start from a blank page. Pick your team in the Filters and the <button class="link" data-tab="highlights">Highlights</button> tab is full of material for your story.</p>
+      <p>Use it as inspiration, not as text to paste in. A list of numbers isn't a report: the story of your season is, and the facts help you tell it.</p>
       <div class="hp-sec">
-        <div class="fact"><b>Milestones</b><p>Every fifty, five-for, big partnership and season total. Set the thresholds yourself.</p><span class="btn sm" aria-hidden="true">Copy section</span></div>
-        <div class="fact"><b>Remarkable facts</b><p>Things you only see by joining all scorecards: favourite victims, catcher and bowler double acts, the best batting pairs.</p><span class="btn sm" aria-hidden="true">Copy section</span></div>
-        <div class="fact"><b>Records and oddities</b><p>Biggest win, closest finish, nervous nineties, the duck club, carried the bat. Good for a smile in the report.</p><span class="btn sm" aria-hidden="true">Copy section</span></div>
+        <div class="fact"><b>Milestones</b><p>Every fifty, five-for, big partnership and season total. Who deserves a mention?</p></div>
+        <div class="fact"><b>Remarkable facts</b><p>Things you only see by joining all scorecards: favourite victims, catcher and bowler double acts, the best batting pairs.</p></div>
+        <div class="fact"><b>Records and oddities</b><p>Biggest win, closest finish, nervous nineties, the duck club, carried the bat. Good for a smile in the report.</p></div>
       </div>
       <ol class="hp-steps">
         <li><p>Pick your team in the Filters.</p></li>
-        <li><p>Press <b>Copy section</b> on Milestones, Remarkable facts or Records and oddities.</p></li>
-        <li><p>Paste into your document. Tables paste as tables in Word and Google Docs. Pick the best lines and add your own story.</p></li>
+        <li><p>Browse Milestones, Remarkable facts and Records and oddities. Note the facts that bring back a match or a moment.</p></li>
+        <li><p>Write your piece in your own words: the anecdote behind the number, who shone, what made you laugh.</p></li>
       </ol>
       <p>Per match highlights are on <button class="link" data-tab="matches">Matches &amp; Milestones</button>, final positions on <button class="link" data-tab="standings">Standings</button>. Fix your data issues first: every fix makes your facts more complete.</p>
     </section>
@@ -3289,7 +3297,13 @@ footer p { margin: 0; max-width: 90ch; }
     const mrow = !t && !e.target.closest('a') && e.target.closest('tr[data-row]');
     if (mrow) return toggleMatch(+mrow.dataset.row);
     if (!t) { const l = $('#player-suggest'); if (l) l.hidden = true; return; }
-    if (t.dataset.tab) { state.tab = t.dataset.tab; history.replaceState(null, '', '#' + state.tab); return render(); }
+    if (t.dataset.tab) {
+      state.tab = t.dataset.tab; history.replaceState(null, '', '#' + state.tab); render();
+      // A button can also point at a section of that tab (the masthead's writing button).
+      const sec = t.dataset.goto && document.getElementById(t.dataset.goto);
+      if (sec) sec.scrollIntoView({ block: 'start' });
+      return;
+    }
     if (t.dataset.pid) return pickPlayer(+t.dataset.pid);
     if (t.dataset.pick) return pickPlayer(+t.dataset.pick);
     if (t.dataset.team) { state.teams = [t.dataset.team]; resetPaging(); return render({ filters: true }); }
