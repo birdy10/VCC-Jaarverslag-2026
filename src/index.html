@@ -552,6 +552,10 @@ select.fx-fn { font: inherit; font-size: 15px; padding: 7px 8px; border: 1px sol
 .fx-meta .fx-mi { cursor: default; }
 .fx-mc { display: inline-flex; align-items: center; height: 54px; box-sizing: border-box; padding: 0 18px; border-radius: 10px; border: 1px solid color-mix(in srgb, var(--mc) 45%, transparent); background: color-mix(in srgb, var(--mc) 10%, transparent); font-weight: 700; font-size: 14px; text-decoration: none; }
 .fx-mc:hover { background: color-mix(in srgb, var(--mc) 18%, transparent); }
+.fx-rvls { display: contents; }
+.fx-rvl { --mc: #3979D5; gap: 8px; color: #3979D5; }
+.fx-rvl span { display: grid; line-height: 1.15; }
+.fx-rvl small { font-weight: 600; font-size: 11.5px; opacity: .8; }
 .fx-live { gap: 8px; color: var(--red-ink); border-color: color-mix(in srgb, var(--red) 45%, transparent); background: color-mix(in srgb, var(--red) 8%, transparent); }
 .fx-live:hover { background: color-mix(in srgb, var(--red) 15%, transparent); }
 .fx-live span { display: grid; line-height: 1.15; }
@@ -800,7 +804,7 @@ footer p { margin: 0; max-width: 90ch; }
         <li><p>Pick your team in the <b>Filters</b>, then open the <button class="link" data-tab="data">Data issues</button> tab. Each issue says what's wrong and in which match.</p>
           <div class="hp-mock" aria-hidden="true"><ul class="ilist"><li class="iss g0"><div class="iss-body"><p class="iss-t">J. Jansen c ? b P. de Vries: the catcher isn't recorded.</p><p class="iss-m">Sat 14 Jun · VCC 1 v Example CC</p></div><div class="iss-act"><span class="btn sm fixbtn primary">Fix it</span></div></li></ul></div></li>
         <li><p>Press <b>Fix it</b>. The helper looks at the rest of the scorecard, suggests the most likely answer and lets you pick another. Check it against your scorebook. Was the match streamed? The <b>Livestream</b> button at the top opens the video, so you can watch back what happened.</p></li>
-        <li><p>Open <b>How to change it in ResultsVault</b> in the helper and follow the link (log in with your club account). Pick the Season, Round and Grade the helper shows and press <b>GO</b>.</p>
+        <li><p>Press the blue <b>ResultsVault</b> button at the top of the helper (log in with your club account). It opens the right screen on this match straight away. <b>How to change it in ResultsVault</b> lists what to change there.</p>
           <div class="hp-mock" aria-hidden="true"><div class="hp-rv"><span>Season <b>2026</b></span><span>Round <b>7</b></span><span>Grade <b>KNCB:…</b></span><span class="go">GO</span></div></div></li>
         <li><p>Change the value the helper tells you to, then press <b>SAVE</b> in ResultsVault. The helper's checks show beforehand whether ResultsVault will accept the match.</p></li>
         <li><p>Back in the helper, tick <b>I changed this in ResultsVault</b> and save. Check the match in the Matchcentre: your change shows on the scorecard. The issue turns green here and disappears after the next data reload.</p>
@@ -2126,13 +2130,14 @@ footer p { margin: 0; max-width: 90ch; }
       ['no-card', 'Whole scorecard', 'Only the total is entered.'],
     ]],
   ];
-  // ResultsVault admin has no deep links per match: these open the right page, the captain then picks
-  // season, round and grade and presses GO.
+  // ResultsVault admin deep links: each opens the page straight on the match (after login). Framehost pages
+  // take the inner page plus its query, encoded, in fhid.
   const RV = 'https://admin-cricket.resultsvault.co.uk/common/pages/admin/';
+  const rvFrame = path => RV + 'framehost.aspx?fhid=' + encodeURIComponent('/common/pages/admin/rv/' + path);
   const RV_PAGES = {
-    players: ['Players', RV + 'rv/selectteam.aspx', 'Select Teams: swap guest or unnamed players for their profile', 'Select Teams'],
-    scores: ['Match scores', RV + 'framehost.aspx?fhid=%2fcommon%2fpages%2fadmin%2frv%2fcricket%2fmatchscores.aspx', 'Enter Match Results: totals, wickets and overs per innings', 'Enter Match Results'],
-    card: ['Scorecard', RV + 'framehost.aspx?fhid=%2fcommon%2fpages%2fadmin%2frv%2fcricket%2fEnterPlayerScores.aspx', 'Enter Player Scores: dismissals, fielders, bowlers, runs and balls per player', 'Enter Player Scores'],
+    players: ['Players', (id, n) => `${RV}rv/selectteam.aspx?matchid=${id}&teamnum=${n}`, 'Select Teams: swap guest or unnamed players for their profile', 'Select Teams'],
+    scores: ['Match scores', id => rvFrame(`cricket/matchscores.aspx?matchid=${id}&saveok=0&redirect=0`), 'Enter Match Results: totals, wickets and overs per innings', 'Enter Match Results'],
+    card: ['Scorecard', id => rvFrame(`cricket/EnterPlayerScores.aspx?matchid=${id}`), 'Enter Player Scores: dismissals, fielders, bowlers, runs and balls per player', 'Enter Player Scores'],
   };
   // Small line icons (Lucide shapes), drawn in the text colour.
   const ICONS = {
@@ -2365,14 +2370,24 @@ footer p { margin: 0; max-width: 90ch; }
   const nameToks = s => String(s || '').toLowerCase().replace(/[^a-z\s]/g, ' ').split(/\s+/).filter(t => t.length > 1);
 
   // Steps to reach the right screen in ResultsVault. The team decides whose rows the screen shows.
+  // The match's page in ResultsVault. Select Teams opens on one side: teamnum 1 is the home team.
+  const rvUrl = (m, page, team) => RV_PAGES[page][1](m.id, team === (m.home ? teamOf(m).teamName : m.opp) ? 1 : 2);
   function navSteps(m, page, team) {
     const p = RV_PAGES[page];
     const home = m.home ? teamOf(m).teamName : m.opp, away = m.home ? m.opp : teamOf(m).teamName;
     return [
-      `Open <a href="${p[1]}" target="_blank" rel="noopener"><b>${p[3]}</b> in ResultsVault ↗</a> and log in if asked.`,
-      `Pick Season <b>${esc(D.season)}</b>, Round <b>${esc(m.round || '?')}</b> and Grade <b>KNCB:${esc(teamOf(m).grade)}</b>, then press <b>GO</b>. It's ${esc(home)} v ${esc(away)}, match ID ${m.id}.`,
+      `Open <a href="${esc(rvUrl(m, page, team))}" target="_blank" rel="noopener"><b>${p[3]}</b> in ResultsVault ↗</a> and log in if asked. It opens on ${esc(home)} v ${esc(away)}, match ID ${m.id}.`,
       page === 'card' ? `At <b>Enter player scores for</b>, pick <b>${esc(team)}</b>.` : page === 'players' ? `Make sure the team is <b>${esc(team)}</b>.` : `Go to the innings of <b>${esc(team)}</b>.`,
     ];
+  }
+  // ResultsVault buttons for the dialog header: the screens the chosen fix needs, else the usual one for the issue.
+  const RV_DEFAULT = { guest: 'players', 'guest-registered': 'players', 'guest-noname': 'players', 'not-in-lineup': 'players', wkts: 'scores' };
+  function rvLinksHtml(m, type, edits) {
+    const seen = new Map();
+    for (const e of edits || []) if (e.page !== 'none' && !seen.has(e.page + '|' + e.team)) seen.set(e.page + '|' + e.team, e);
+    if (!edits) { const page = RV_DEFAULT[type] || 'card'; seen.set(page, { page, team: teamOf(m).teamName }); }
+    const twoTeams = new Set([...seen.values()].filter(e => e.page === 'players').map(e => e.team)).size > 1;
+    return [...seen.values()].map(e => `<a class="fx-mc fx-rvl" href="${esc(rvUrl(m, e.page, e.team))}" target="_blank" rel="noopener" title="${esc(RV_PAGES[e.page][2])}">${ico('wrench')}<span>ResultsVault<small>${esc(RV_PAGES[e.page][3])}${twoTeams && e.page === 'players' ? ` · ${esc(e.team)}` : ''}</small></span></a>`).join('');
   }
   // One fix can touch more than one screen: steps grouped per screen, in the order of the edits.
   function stepsFor(m, edits) {
@@ -2847,7 +2862,8 @@ footer p { margin: 0; max-width: 90ch; }
       : '<p class="fx-wait">No scorecard needed for this one.</p>';
     $('#fx-checks').innerHTML = checksHtml(after);
     const steps = fixSteps();
-    $('#fx-steps').innerHTML = steps ? `<ol class="fx-steps">${steps.map(s => `<li>${s}</li>`).join('')}</ol>` : '<p class="fx-wait">Make a choice first.</p>';
+    $('#fx-rvlinks').innerHTML = rvLinksHtml(m, x.type, edits);
+    $('#fx-steps').innerHTML = steps ?`<ol class="fx-steps">${steps.map(s => `<li>${s}</li>`).join('')}</ol>` : '<p class="fx-wait">Make a choice first.</p>';
     const ready = !!edits;
     const btn = $('#fx-save');
     btn.disabled = !ready || !fixReady;
@@ -2875,7 +2891,7 @@ footer p { margin: 0; max-width: 90ch; }
       : `<label class="fx-name"><span>${ico('user')}Your name ${infoTip('Asked once, remembered on this device.')}</span><input type="text" data-fx-name maxlength="60" autocomplete="name" placeholder="First and last name"></label>`;
     const t = teamOf(m);
     // What a captain has to find and type in ResultsVault: big, and one click to copy.
-    const meta = `<div class="fx-meta"><span class="cv fx-mi">${ico('cal')}<small>Date</small><span>${esc(fmtDate(m.date))}</span></span>${copyChip('Round', m.round || '?', 'round')}${copyChip('League', t.grade, 'trophy')}${copyChip('Match ID', m.id, 'hash')}<a class="fx-mc" href="${scorecard(m)}" target="_blank" rel="noopener">Matchcentre</a>${(m.streams || []).map((v, n, all) => `<a class="fx-mc fx-live" href="https://www.youtube.com/watch?v=${encodeURIComponent(v)}" target="_blank" rel="noopener" title="The match was streamed: watch back what happened">${ico('play')}<span>Livestream${all.length > 1 ? ` ${n + 1}` : ''}<small>to check it</small></span></a>`).join('')}</div>`;
+    const meta = `<div class="fx-meta"><span class="cv fx-mi">${ico('cal')}<small>Date</small><span>${esc(fmtDate(m.date))}</span></span>${copyChip('Round', m.round || '?', 'round')}${copyChip('League', t.grade, 'trophy')}${copyChip('Match ID', m.id, 'hash')}<a class="fx-mc" href="${scorecard(m)}" target="_blank" rel="noopener">Matchcentre</a><span id="fx-rvlinks" class="fx-rvls"></span>${(m.streams || []).map((v, n, all) => `<a class="fx-mc fx-live" href="https://www.youtube.com/watch?v=${encodeURIComponent(v)}" target="_blank" rel="noopener" title="The match was streamed: watch back what happened">${ico('play')}<span>Livestream${all.length > 1 ? ` ${n + 1}` : ''}<small>to check it</small></span></a>`).join('')}</div>`;
     const canned = CANNED.map((c, i) => `<button class="fx-cn" data-fx-canned="${i}">${esc(c)}</button>`).join('');
     const intro = spec.intro.replace(/<small class="fx-sub">([\s\S]*?)<\/small>/, (_, t) => infoTip(t.replace(/<[^>]+>/g, '')));
     $('#fix-body').innerHTML = `<header class="fx-top">
