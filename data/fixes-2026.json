@@ -226,6 +226,35 @@
      "pid": 11193555
     }
    ]
+  },
+  {
+   "key": "7659577|bowl-overs|Rood en Wit 90/5: bowlers' overs add up to 10.5, the innings lasted 10 overs.",
+   "saved": "2026-10-23T21:10:58.527Z",
+   "updated": "2026-10-23T21:10:58.527Z",
+   "captain": "Harold",
+   "status": "rv",
+   "matchId": "7659577",
+   "date": "2026-05-14",
+   "team": "VCC Women",
+   "opponent": "Rood en Wit",
+   "round": "4",
+   "grade": "Inspire Women's T20 Topklasse",
+   "side": "VCC",
+   "type": "Bowling overs",
+   "issue": "Rood en Wit 90/5: bowlers' overs add up to 10.5, the innings lasted 10 overs.",
+   "fix": "Innings overs 10 → 10.5",
+   "comment": "",
+   "steps": "Fix for Thu 14 May, VCC Women v Rood en Wit (round 4, Inspire Women's T20 Topklasse, match ID 7659577)\nRood en Wit 90/5: bowlers' overs add up to 10.5, the innings lasted 10 overs.\n\n1. Open Enter Match Results in ResultsVault and log in if asked. It opens on VCC v Rood en Wit, match ID 7659577.\n2. Go to the innings of Rood en Wit.\n3. Set the overs of the innings to 10.5.\n4. Press SAVE.\n\nhttps://admin-cricket.resultsvault.co.uk/common/pages/admin/framehost.aspx?fhid=%2Fcommon%2Fpages%2Fadmin%2Frv%2Fcricket%2Fmatchscores.aspx%3Fmatchid%3D7659577%26saveok%3D0%26redirect%3D0",
+   "edits": [
+    {
+     "op": "overs",
+     "inn": [
+      "o",
+      1
+     ],
+     "v": 10.5
+    }
+   ]
   }
  ]
 }
