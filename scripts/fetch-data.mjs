@@ -359,9 +359,25 @@ wanted.forEach(({ listing, teamId }, i) => {
     home: !!us.is_home, venue: m.venue_name || '', status: m.status_id, result: resultOf(m, us, them),
     leader, score: m.score_text || '', toss: m.toss_won_by === us.team_name ? 'v' : (m.toss_won_by ? 'o' : null),
     maxOvers: m.MatchConfig?.max_overs ?? null, innings, detail: !!details[i],
+    // YouTube livestreams of the match (provider 3), in recording order
+    streams: (m.matchStreams || []).filter(s => s.stream_provider_id === 3 && s.video_id)
+      .sort((a, b) => (a.instance_num || 0) - (b.instance_num || 0)).map(s => s.video_id),
   });
 });
 matches.sort((a, b) => a.date - b.date);
+
+// ---- livestreams ------------------------------------------------------------------
+// Some recordings were taken down later, whatever their publish status says: keep the videos YouTube still
+// has. Only a clear "not found" drops one; when YouTube can't be asked, the link stays.
+const videos = [...new Set(matches.flatMap(m => m.streams))];
+const gone = new Set((await pool(videos, 8, async v => {
+  try {
+    const r = await fetch(`https://www.youtube.com/oembed?format=json&url=${encodeURIComponent(`https://www.youtube.com/watch?v=${v}`)}`);
+    return [400, 401, 403, 404].includes(r.status) ? v : null;
+  } catch { return null; }
+})).filter(Boolean));
+for (const m of matches) { m.streams = m.streams.filter(v => !gone.has(v)); if (!m.streams.length) delete m.streams; }
+console.log(`Livestreams: ${videos.length - gone.size} of ${videos.length} still on YouTube`);
 
 // ---- standings ------------------------------------------------------------------
 // The Matchcentre ladders count the regular rounds only. Play-off matches have a round code

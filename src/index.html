@@ -552,6 +552,10 @@ select.fx-fn { font: inherit; font-size: 15px; padding: 7px 8px; border: 1px sol
 .fx-meta .fx-mi { cursor: default; }
 .fx-mc { display: inline-flex; align-items: center; height: 54px; box-sizing: border-box; padding: 0 18px; border-radius: 10px; border: 1px solid color-mix(in srgb, var(--mc) 45%, transparent); background: color-mix(in srgb, var(--mc) 10%, transparent); font-weight: 700; font-size: 14px; text-decoration: none; }
 .fx-mc:hover { background: color-mix(in srgb, var(--mc) 18%, transparent); }
+.fx-live { gap: 8px; color: var(--red-ink); border-color: color-mix(in srgb, var(--red) 45%, transparent); background: color-mix(in srgb, var(--red) 8%, transparent); }
+.fx-live:hover { background: color-mix(in srgb, var(--red) 15%, transparent); }
+.fx-live span { display: grid; line-height: 1.15; }
+.fx-live small { font-weight: 600; font-size: 11.5px; opacity: .8; }
 .fx-rv > summary { display: flex; align-items: center; }
 .fx-lb { margin: 0; font-weight: 600; display: flex; align-items: center; }
 .fx-lb small { font-weight: 400; color: var(--muted); margin-left: .35em; }
@@ -795,7 +799,7 @@ footer p { margin: 0; max-width: 90ch; }
       <ol class="hp-steps">
         <li><p>Pick your team in the <b>Filters</b>, then open the <button class="link" data-tab="data">Data issues</button> tab. Each issue says what's wrong and in which match.</p>
           <div class="hp-mock" aria-hidden="true"><ul class="ilist"><li class="iss g0"><div class="iss-body"><p class="iss-t">J. Jansen c ? b P. de Vries: the catcher isn't recorded.</p><p class="iss-m">Sat 14 Jun · VCC 1 v Example CC</p></div><div class="iss-act"><span class="btn sm fixbtn primary">Fix it</span></div></li></ul></div></li>
-        <li><p>Press <b>Fix it</b>. The helper looks at the rest of the scorecard, suggests the most likely answer and lets you pick another. Check it against your scorebook.</p></li>
+        <li><p>Press <b>Fix it</b>. The helper looks at the rest of the scorecard, suggests the most likely answer and lets you pick another. Check it against your scorebook. Was the match streamed? The <b>Livestream</b> button at the top opens the video, so you can watch back what happened.</p></li>
         <li><p>Open <b>How to change it in ResultsVault</b> in the helper and follow the link (log in with your club account). Pick the Season, Round and Grade the helper shows and press <b>GO</b>.</p>
           <div class="hp-mock" aria-hidden="true"><div class="hp-rv"><span>Season <b>2026</b></span><span>Round <b>7</b></span><span>Grade <b>KNCB:…</b></span><span class="go">GO</span></div></div></li>
         <li><p>Change the value the helper tells you to, then press <b>SAVE</b> in ResultsVault. The helper's checks show beforehand whether ResultsVault will accept the match.</p></li>
@@ -2139,6 +2143,7 @@ footer p { margin: 0; max-width: 90ch; }
     trophy: '<path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6M18 9h1.5a2.5 2.5 0 0 0 0-5H18M4 22h16M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22M18 2H6v7a6 6 0 0 0 12 0V2Z"/>',
     hash: '<path d="M4 9h16M4 15h16M10 3 8 21M16 3l-2 18"/>',
     copy: '<rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>',
+    play: '<rect x="2" y="4" width="20" height="16" rx="4"/><path d="m10 9 5 3-5 3z"/>',
     wrench: '<path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/>',
     msg: '<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>',
     save: '<path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><path d="M17 21v-8H7v8M7 3v5h8"/>',
@@ -2862,7 +2867,7 @@ footer p { margin: 0; max-width: 90ch; }
       : `<label class="fx-name"><span>${ico('user')}Your name ${infoTip('Asked once, remembered on this device.')}</span><input type="text" data-fx-name maxlength="60" autocomplete="name" placeholder="First and last name"></label>`;
     const t = teamOf(m);
     // What a captain has to find and type in ResultsVault: big, and one click to copy.
-    const meta = `<div class="fx-meta"><span class="cv fx-mi">${ico('cal')}<small>Date</small><span>${esc(fmtDate(m.date))}</span></span>${copyChip('Round', m.round || '?', 'round')}${copyChip('League', t.grade, 'trophy')}${copyChip('Match ID', m.id, 'hash')}<a class="fx-mc" href="${scorecard(m)}" target="_blank" rel="noopener">Matchcentre</a></div>`;
+    const meta = `<div class="fx-meta"><span class="cv fx-mi">${ico('cal')}<small>Date</small><span>${esc(fmtDate(m.date))}</span></span>${copyChip('Round', m.round || '?', 'round')}${copyChip('League', t.grade, 'trophy')}${copyChip('Match ID', m.id, 'hash')}<a class="fx-mc" href="${scorecard(m)}" target="_blank" rel="noopener">Matchcentre</a>${(m.streams || []).map((v, n, all) => `<a class="fx-mc fx-live" href="https://www.youtube.com/watch?v=${encodeURIComponent(v)}" target="_blank" rel="noopener" title="The match was streamed: watch back what happened">${ico('play')}<span>Livestream${all.length > 1 ? ` ${n + 1}` : ''}<small>to check it</small></span></a>`).join('')}</div>`;
     const canned = CANNED.map((c, i) => `<button class="fx-cn" data-fx-canned="${i}">${esc(c)}</button>`).join('');
     const intro = spec.intro.replace(/<small class="fx-sub">([\s\S]*?)<\/small>/, (_, t) => infoTip(t.replace(/<[^>]+>/g, '')));
     $('#fix-body').innerHTML = `<header class="fx-top">
