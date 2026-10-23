@@ -3,8 +3,8 @@
  "fixes": [
   {
    "key": "7415316|no-bowler|C Montague (VOC) bowled \"b\", bowler is a player id without a name.",
-   "saved": "2026-10-23T17:21:51.111Z",
-   "updated": "2026-10-23T17:21:51.111Z",
+   "saved": "2026-10-23T21:15:06.015Z",
+   "updated": "2026-10-23T21:15:06.015Z",
    "captain": "Harold",
    "status": "saved",
    "matchId": "7415316",
@@ -18,7 +18,7 @@
    "issue": "C Montague (VOC) bowled \"b\", bowler is a player id without a name.",
    "fix": "Someone else: Aaditt Jain",
    "comment": "This match has been locked for further changes by competing teams.",
-   "steps": "Fix for Sat 13 Jun, VCC 1 v VOC (round 10, Topklasse Men, match ID 7415316)\nC Montague (VOC) bowled \"b\", bowler is a player id without a name.\n\n1. Open Enter Player Scores in ResultsVault and log in if asked.\n2. Pick Season 2026, Round 10 and Grade KNCB:Topklasse Men, then press GO. It's VCC v VOC, match ID 7415316.\n3. At Enter player scores for, pick VOC.\n4. In the row of Montague, Caleb, set Bowler to Jain, Aaditt.\n5. Press SAVE.\n\nhttps://admin-cricket.resultsvault.co.uk/common/pages/admin/framehost.aspx?fhid=%2fcommon%2fpages%2fadmin%2frv%2fcricket%2fEnterPlayerScores.aspx",
+   "steps": "Fix for Sat 13 Jun, VCC 1 v VOC (round 10, Topklasse Men, match ID 7415316)\nC Montague (VOC) bowled \"b\", bowler is a player id without a name.\n\n1. Open Enter Player Scores in ResultsVault and log in if asked. It opens on VCC v VOC, match ID 7415316.\n2. At Enter player scores for, pick VOC.\n3. In the row of Montague, Caleb, set Bowler to Jain, Aaditt.\n4. Press SAVE.\n\nhttps://admin-cricket.resultsvault.co.uk/common/pages/admin/framehost.aspx?fhid=%2Fcommon%2Fpages%2Fadmin%2Frv%2Fcricket%2FEnterPlayerScores.aspx%3Fmatchid%3D7415316",
    "edits": [
     {
      "op": "bowler",
