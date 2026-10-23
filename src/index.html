@@ -557,6 +557,12 @@ select.fx-fn { font: inherit; font-size: 15px; padding: 7px 8px; border: 1px sol
 .fx-rvl { --mc: #3979D5; gap: 6px; color: #3979D5; }
 .fx-rvl span, .fx-clip span { display: grid; line-height: 1.15; }
 .fx-rvl small, .fx-clip small { font-weight: 600; font-size: 10.5px; opacity: .8; }
+/* Watch Highlight in green; the match details you look up in ResultsVault in ResultsVault's blue */
+a.fx-mc.fx-clip { --mc: var(--win); color: var(--win); }
+.fx-meta .cv { border-color: color-mix(in srgb, #3979D5 35%, transparent); background: color-mix(in srgb, #3979D5 7%, var(--surface)); }
+.fx-meta .cv .i, .fx-meta .cv > span { color: #3979D5; }
+:root[data-theme="dark"] .fx-meta .cv .i, :root[data-theme="dark"] .fx-meta .cv > span { color: #8db4f0; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .fx-meta .cv .i, :root:not([data-theme="light"]) .fx-meta .cv > span { color: #8db4f0; } }
 .fx-live { gap: 6px; color: var(--red-ink); border-color: color-mix(in srgb, var(--red) 45%, transparent); background: color-mix(in srgb, var(--red) 8%, transparent); }
 .fx-live:hover { background: color-mix(in srgb, var(--red) 15%, transparent); }
 .fx-live span { display: grid; line-height: 1.15; }
@@ -805,7 +811,7 @@ footer p { margin: 0; max-width: 90ch; }
         <li><p>Pick your team in the <b>Filters</b>, then open the <button class="link" data-tab="data">Data issues</button> tab. Each issue says what's wrong and in which match.</p>
           <div class="hp-mock" aria-hidden="true"><ul class="ilist"><li class="iss g0"><div class="iss-body"><p class="iss-t">J. Jansen c ? b P. de Vries: the catcher isn't recorded.</p><p class="iss-m">Sat 14 Jun · VCC 1 v Example CC</p></div><div class="iss-act"><span class="btn sm fixbtn primary">Fix it</span></div></li></ul></div></li>
         <li><p>Press <b>Fix it</b>. The helper looks at the rest of the scorecard, suggests the most likely answer and lets you pick another. Check it against your scorebook. Was the match streamed? The <b>Livestream</b> button at the top opens the video, so you can watch back what happened. For a wicket that's on video, the <b>Highlight</b> button plays just that wicket.</p>
-          <div class="hp-mock" aria-hidden="true"><div class="fx-meta"><a class="fx-mc" href="https://matchcentre.kncb.nl/" tabindex="-1">Matchcentre</a><a class="fx-mc fx-clip" href="https://matchcentre.kncb.nl/" tabindex="-1"><span>Highlight<small>the wicket on video</small></span></a><a class="fx-mc fx-live" href="https://www.youtube.com/" tabindex="-1"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="4"/><path d="m10 9 5 3-5 3z"/></svg><span>Livestream<small>to check it</small></span></a></div></div></li>
+          <div class="hp-mock" aria-hidden="true"><div class="fx-meta"><a class="fx-mc" href="https://matchcentre.kncb.nl/" tabindex="-1">Matchcentre</a><a class="fx-mc fx-clip" href="https://matchcentre.kncb.nl/" tabindex="-1"><span>Watch Highlight<small>the wicket on video</small></span></a><a class="fx-mc fx-live" href="https://www.youtube.com/" tabindex="-1"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="4"/><path d="m10 9 5 3-5 3z"/></svg><span>Livestream<small>to check it</small></span></a></div></div></li>
         <li><p>Press the blue <b>ResultsVault</b> button at the top of the helper (log in with your club account). It opens the right screen on this match straight away. <b>How to change it in ResultsVault</b> lists what to change there.</p>
           <div class="hp-mock" aria-hidden="true"><div class="hp-rv"><span>Season <b>2026</b></span><span>Round <b>7</b></span><span>Grade <b>KNCB:…</b></span><span class="go">GO</span></div></div></li>
         <li><p>Change the value the helper tells you to, then press <b>SAVE</b> in ResultsVault. The helper's checks show beforehand whether ResultsVault will accept the match.</p></li>
@@ -2111,7 +2117,7 @@ footer p { margin: 0; max-width: 90ch; }
   const fmtStamp = s => new Date(s).toLocaleString('en-GB', { day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' });
   const ISSUE_GROUPS = [
     ['Who took the wicket', [
-      ['cqb', 'Caught "c ? b"', 'Caught, but the scorecard says "c ? b": the catcher was left open. It says "c ? b", but that doesn\'t necessarily mean caught and bowled. The catch counts for nobody.'],
+      ['cqb', 'Caught "c ? b"', 'Caught, but the scorecard says "c ? b": the catcher was left open. "c ? b" doesn\'t necessarily mean caught and bowled. The catch counts for nobody.'],
       ['no-catcher', 'Catcher missing', 'Caught, but the catcher isn\'t recorded. The catch counts for nobody.'],
       ['no-keeper', 'Wicketkeeper missing', 'Stumped, but the wicketkeeper isn\'t recorded. The stumping counts for nobody.'],
       ['no-runout-fielder', 'Run-out fielder missing', 'Run out without a fielder.'],
@@ -2404,7 +2410,7 @@ footer p { margin: 0; max-width: 90ch; }
     for (const e of edits || []) if (e.page !== 'none' && !seen.has(e.page + '|' + e.team)) seen.set(e.page + '|' + e.team, e);
     if (!edits) { const page = RV_DEFAULT[type] || 'card'; seen.set(page, { page, team: teamOf(m).teamName }); }
     const twoTeams = new Set([...seen.values()].filter(e => e.page === 'players').map(e => e.team)).size > 1;
-    return [...seen.values()].map(e => `<a class="fx-mc fx-rvl" href="${esc(rvUrl(m, e.page, e.team))}" target="_blank" rel="noopener" title="${esc(RV_PAGES[e.page][2])}">${ico('wrench')}<span>ResultsVault<small>${esc(RV_PAGES[e.page][3])}${twoTeams && e.page === 'players' ? ` · ${esc(e.team)}` : ''}</small></span></a>`).join('');
+    return [...seen.values()].map(e => `<a class="fx-mc fx-rvl" href="${esc(rvUrl(m, e.page, e.team))}" target="_blank" rel="noopener" title="${esc(RV_PAGES[e.page][2])}">${ico('wrench')}<span>Fix in ResultsVault<small>${esc(RV_PAGES[e.page][3])}${twoTeams && e.page === 'players' ? ` · ${esc(e.team)}` : ''}</small></span></a>`).join('');
   }
   // One fix can touch more than one screen: steps grouped per screen, in the order of the edits.
   function stepsFor(m, edits) {
@@ -2499,7 +2505,7 @@ footer p { margin: 0; max-width: 90ch; }
     const set = pid => [{ page: 'card', team: rvTeam(m, bs), text: `In the row of <b>${esc(rvName(r[0]))}</b>, set <b>${col}</b> to <b>${esc(rvName(pid))}</b>.`, data: { op: role === 'bowler' ? 'bowler' : 'fielder', inn: ref.inn, bat: ref.bat, pid: +pid } }];
     // A best guess where the rest of the card gives one away.
     let guess = null, why = '';
-    if (t === 'cqb' && r[11]) { guess = r[11]; why = 'Caught and bowled: the bowler took the catch. It says "c ? b", but that doesn\'t necessarily mean caught and bowled: check the scorebook or the video.'; }
+    if (t === 'cqb' && r[11]) { guess = r[11]; why = 'Caught and bowled: the bowler took the catch. "c ? b" doesn\'t necessarily mean caught and bowled: check the scorebook or the video.'; }
     if (t === 'no-keeper') {
       const k = inn.bat.find((o, i) => i !== ref.bat && o[6] === 5 && o[10]) || null;
       const f = (inn.field || []).find(f => f[2] > 0 || f[3] > 0);
@@ -2908,7 +2914,7 @@ footer p { margin: 0; max-width: 90ch; }
       : `<label class="fx-name"><span>${ico('user')}Your name ${infoTip('Asked once, remembered on this device.')}</span><input type="text" data-fx-name maxlength="60" autocomplete="name" placeholder="First and last name"></label>`;
     const t = teamOf(m), clip = clipOf(m, x);
     // What a captain has to find and type in ResultsVault: big, and one click to copy.
-    const meta = `<div class="fx-meta"><span class="cv fx-mi">${ico('cal')}<small>Date</small><span>${esc(fmtDate(m.date))}</span></span>${copyChip('Round', m.round || '?', 'round')}${copyChip('League', t.grade, 'trophy')}${copyChip('Match ID', m.id, 'hash')}<a class="fx-mc" href="${scorecard(m, issueInn(x))}" target="_blank" rel="noopener">Matchcentre</a>${clip ? `<a class="fx-mc fx-clip" href="${esc(clip.url)}" target="_blank" rel="noopener" title="${esc(clip.title)}"><span>Highlight<small>the wicket on video</small></span></a>` : ''}<span id="fx-rvlinks" class="fx-rvls"></span>${(m.streams || []).map((v, n, all) => `<a class="fx-mc fx-live" href="https://www.youtube.com/watch?v=${encodeURIComponent(v)}" target="_blank" rel="noopener" title="The match was streamed: watch back what happened">${ico('play')}<span>Livestream${all.length > 1 ? ` ${n + 1}` : ''}<small>to check it</small></span></a>`).join('')}</div>`;
+    const meta = `<div class="fx-meta"><span class="cv fx-mi">${ico('cal')}<small>Date</small><span>${esc(fmtDate(m.date))}</span></span>${copyChip('Round', m.round || '?', 'round')}${copyChip('League', t.grade, 'trophy')}${copyChip('Match ID', m.id, 'hash')}<a class="fx-mc" href="${scorecard(m, issueInn(x))}" target="_blank" rel="noopener">Matchcentre</a>${clip ? `<a class="fx-mc fx-clip" href="${esc(clip.url)}" target="_blank" rel="noopener" title="${esc(clip.title)}"><span>Watch Highlight<small>the wicket on video</small></span></a>` : ''}<span id="fx-rvlinks" class="fx-rvls"></span>${(m.streams || []).map((v, n, all) => `<a class="fx-mc fx-live" href="https://www.youtube.com/watch?v=${encodeURIComponent(v)}" target="_blank" rel="noopener" title="The match was streamed: watch back what happened">${ico('play')}<span>Livestream${all.length > 1 ? ` ${n + 1}` : ''}<small>to check it</small></span></a>`).join('')}</div>`;
     const canned = CANNED.map((c, i) => `<button class="fx-cn" data-fx-canned="${i}">${esc(c)}</button>`).join('');
     const intro = spec.intro.replace(/<small class="fx-sub">([\s\S]*?)<\/small>/, (_, t) => infoTip(t.replace(/<[^>]+>/g, '')));
     $('#fix-body').innerHTML = `<header class="fx-top">
