@@ -50,6 +50,26 @@
    "comment": "",
    "steps": "Fix for Thu 14 May, VCC Women v Rood en Wit (round 4, Inspire Women's T20 Topklasse, match ID 7659577)\nMedha Hariharan (VCC) is entered as a guest player, but has a Matchcentre profile. Counted as that player here.\n\n1. Open Select Teams in ResultsVault and log in if asked.\n2. Pick Season 2026, Round 4 and Grade KNCB:Inspire Women's T20 Topklasse, then press GO. It's VCC v Rood en Wit, match ID 7659577.\n3. Make sure the team is VCC.\n4. Under Selected Players, find the guest entry Medha Hariharan (it may show as \"Last, First\").\n5. Find Hariharan, Medha under Available Players (type the first name in the search box) and drag it onto that guest's slot.\n6. A Confirm score replacement box opens. On the row Medha Hariharan → Hariharan, Medha, choose Move scores, so the runs and wickets go along. Press Confirm.\n7. Press Save.\n\nhttps://admin-cricket.resultsvault.co.uk/common/pages/admin/rv/selectteam.aspx",
    "edits": []
+  },
+  {
+   "key": "7659577|guest-registered|Willemijn Mulder (VCC) is entered as a guest player, but has a Matchcentre profile. Counted as that player here.",
+   "saved": "2026-10-23T16:57:52.880Z",
+   "updated": "2026-10-23T16:57:52.880Z",
+   "captain": "Harold",
+   "status": "rv",
+   "matchId": "7659577",
+   "date": "2026-05-14",
+   "team": "VCC Women",
+   "opponent": "Rood en Wit",
+   "round": "4",
+   "grade": "Inspire Women's T20 Topklasse",
+   "side": "VCC",
+   "type": "Entered as guest, but has a profile",
+   "issue": "Willemijn Mulder (VCC) is entered as a guest player, but has a Matchcentre profile. Counted as that player here.",
+   "fix": "Swap to the profile of Willemijn Mulder",
+   "comment": "",
+   "steps": "Fix for Thu 14 May, VCC Women v Rood en Wit (round 4, Inspire Women's T20 Topklasse, match ID 7659577)\nWillemijn Mulder (VCC) is entered as a guest player, but has a Matchcentre profile. Counted as that player here.\n\n1. Open Select Teams in ResultsVault and log in if asked.\n2. Pick Season 2026, Round 4 and Grade KNCB:Inspire Women's T20 Topklasse, then press GO. It's VCC v Rood en Wit, match ID 7659577.\n3. Make sure the team is VCC.\n4. Under Selected Players, find the guest entry Willemijn Mulder (it may show as \"Last, First\").\n5. Find Mulder, Willemijn under Available Players (type the first name in the search box) and drag it onto that guest's slot.\n6. A Confirm score replacement box opens. On the row Willemijn Mulder → Mulder, Willemijn, choose Move scores, so the runs and wickets go along. Press Confirm.\n7. Press Save.\n\nhttps://admin-cricket.resultsvault.co.uk/common/pages/admin/rv/selectteam.aspx",
+   "edits": []
   }
  ]
 }
