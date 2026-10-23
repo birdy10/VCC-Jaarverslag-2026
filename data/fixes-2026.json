@@ -284,6 +284,37 @@
      "v": 19.5
     }
    ]
+  },
+  {
+   "key": "7616132|bowl-sum|VCC 2 108/2: bowlers' runs (111) + byes, leg byes and penalties (0) = 111, not 108.",
+   "saved": "2026-10-23T21:21:38.967Z",
+   "updated": "2026-10-23T21:21:38.967Z",
+   "captain": "Harold",
+   "status": "rv",
+   "matchId": "7616132",
+   "date": "2026-07-12",
+   "team": "VCC 2",
+   "opponent": "VOC 2",
+   "round": "2",
+   "grade": "Hoofdklasse T20 Men",
+   "side": "VOC 2",
+   "type": "Bowling runs",
+   "issue": "VCC 2 108/2: bowlers' runs (111) + byes, leg byes and penalties (0) = 111, not 108.",
+   "fix": "One bowler −3 runs conceded: Rohan Malik",
+   "comment": "",
+   "steps": "Fix for Sun 12 Jul, VCC 2 v VOC 2 (round 2, Hoofdklasse T20 Men, match ID 7616132)\nVCC 2 108/2: bowlers' runs (111) + byes, leg byes and penalties (0) = 111, not 108.\n\n1. Open Enter Player Scores in ResultsVault and log in if asked. It opens on VOC 2 v VCC 2, match ID 7616132.\n2. At Enter player scores for, pick VOC 2.\n3. In the bowling row of Malik, Rohan, set R to 30.\n4. Press SAVE.\n\nhttps://admin-cricket.resultsvault.co.uk/common/pages/admin/framehost.aspx?fhid=%2Fcommon%2Fpages%2Fadmin%2Frv%2Fcricket%2FEnterPlayerScores.aspx%3Fmatchid%3D7616132",
+   "edits": [
+    {
+     "op": "bowl",
+     "inn": [
+      "v",
+      1
+     ],
+     "pid": 11112670,
+     "field": "runs",
+     "v": 30
+    }
+   ]
   }
  ]
 }
