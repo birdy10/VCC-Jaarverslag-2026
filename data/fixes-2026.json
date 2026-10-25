@@ -366,6 +366,36 @@
      "no": 4
     }
    ]
+  },
+  {
+   "key": "7415288|no-runout-fielder|B Kooistra (VOC) run out, fielder not recorded.",
+   "saved": "2026-10-25T21:26:31.571Z",
+   "updated": "2026-10-25T21:26:31.571Z",
+   "captain": "Harold",
+   "status": "saved",
+   "matchId": "7415288",
+   "date": "2026-05-09",
+   "team": "VCC 1",
+   "opponent": "VOC",
+   "round": "3",
+   "grade": "Topklasse Men",
+   "side": "VCC",
+   "type": "Run-out fielder missing",
+   "issue": "B Kooistra (VOC) run out, fielder not recorded.",
+   "fix": "Pick the run-out fielder from the team list: Aarav Swaroop",
+   "comment": "Wie is rugnummer 7 (run out aan het levende wicket vanaf Mid off)?",
+   "steps": "Fix for Sat 9 May, VCC 1 v VOC (round 3, Topklasse Men, match ID 7415288)\nB Kooistra (VOC) run out, fielder not recorded.\n\n1. Open Enter Player Scores in ResultsVault and log in if asked. It opens on VOC v VCC, match ID 7415288.\n2. At Enter player scores for, pick VOC.\n3. In the row of Kooistra, Bart, set Fielder to Swaroop, Aarav.\n4. Press SAVE.\n\nhttps://admin-cricket.resultsvault.co.uk/common/pages/admin/framehost.aspx?fhid=%2Fcommon%2Fpages%2Fadmin%2Frv%2Fcricket%2FEnterPlayerScores.aspx%3Fmatchid%3D7415288",
+   "edits": [
+    {
+     "op": "fielder",
+     "inn": [
+      "o",
+      1
+     ],
+     "bat": 1,
+     "pid": 11403882
+    }
+   ]
   }
  ]
 }
