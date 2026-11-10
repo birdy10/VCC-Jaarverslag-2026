@@ -396,6 +396,36 @@
      "pid": 11403882
     }
    ]
+  },
+  {
+   "key": "7675517|cqb|N Paul (Groen-Geel ZA 1) \"c  ?  b J Scott\": Catcher unknown. \"c ? b\" doesn't necessarily mean caught and bowled.",
+   "saved": "2026-11-10T12:13:48.864Z",
+   "updated": "2026-11-10T12:13:48.864Z",
+   "captain": "Stefan de Graaff",
+   "status": "saved",
+   "matchId": "7675517",
+   "date": "2026-06-27",
+   "team": "VCC ZA 1",
+   "opponent": "Groen-Geel ZA 1",
+   "round": "9",
+   "grade": "Zami",
+   "side": "VCC",
+   "type": "Caught \"c ? b\"",
+   "issue": "N Paul (Groen-Geel ZA 1) \"c  ?  b J Scott\": Catcher unknown. \"c ? b\" doesn't necessarily mean caught and bowled.",
+   "fix": "Jason Scott",
+   "comment": "",
+   "steps": "Fix for Sat 27 Jun, VCC ZA 1 v Groen-Geel ZA 1 (round 9, Zami, match ID 7675517)\nN Paul (Groen-Geel ZA 1) \"c  ?  b J Scott\": Catcher unknown. \"c ? b\" doesn't necessarily mean caught and bowled.\n\n1. Open Enter Player Scores in ResultsVault and log in if asked. It opens on Groen-Geel ZA 1 v VCC ZA 1, match ID 7675517.\n2. At Enter player scores for, pick Groen-Geel ZA 1.\n3. In the row of Paul, Nilanjan, set Fielder to Scott, Jason.\n4. Press SAVE.\n\nhttps://admin-cricket.resultsvault.co.uk/common/pages/admin/framehost.aspx?fhid=%2Fcommon%2Fpages%2Fadmin%2Frv%2Fcricket%2FEnterPlayerScores.aspx%3Fmatchid%3D7675517",
+   "edits": [
+    {
+     "op": "fielder",
+     "inn": [
+      "o",
+      1
+     ],
+     "bat": 6,
+     "pid": 12206990
+    }
+   ]
   }
  ]
 }
