@@ -806,6 +806,26 @@
    "comment": "",
    "steps": "Fix for Sat 11 Jul, VCC 2 v RCC 2 (round 1, Hoofdklasse T20 Men, match ID 7616127)\nRCC 2 117/4: bowlers have 2 wickets, but 3 batters were out bowled, caught, lbw, stumped or hit wicket.\n\n1. Open Enter Player Scores in ResultsVault and log in if asked. It opens on RCC 2 v VCC 2, match ID 7616127.\n2. At Enter player scores for, pick RCC 2.\n3. Check the Bowler of every batter who was bowled, caught, lbw, stumped or hit wicket against the scorebook.\n4. Press SAVE.\n\nhttps://admin-cricket.resultsvault.co.uk/common/pages/admin/framehost.aspx?fhid=%2Fcommon%2Fpages%2Fadmin%2Frv%2Fcricket%2FEnterPlayerScores.aspx%3Fmatchid%3D7616127",
    "edits": []
+  },
+  {
+   "key": "7616127|bowl-wides|RCC 2 117/4: the bowlers' wides add up to 3, the wides in the total are 5.",
+   "saved": "2026-11-19T08:09:33.775Z",
+   "updated": "2026-11-19T08:09:33.775Z",
+   "captain": "Ricardo Goncalves",
+   "status": "saved",
+   "matchId": "7616127",
+   "date": "2026-07-11",
+   "team": "VCC 2",
+   "opponent": "RCC 2",
+   "round": "1",
+   "grade": "Hoofdklasse T20 Men",
+   "side": "VCC",
+   "type": "Bowlers' wides",
+   "issue": "RCC 2 117/4: the bowlers' wides add up to 3, the wides in the total are 5.",
+   "fix": "A bowler is missing from the bowling card",
+   "comment": "",
+   "steps": "Fix for Sat 11 Jul, VCC 2 v RCC 2 (round 1, Hoofdklasse T20 Men, match ID 7616127)\nRCC 2 117/4: the bowlers' wides add up to 3, the wides in the total are 5.\n\n1. Open Enter Player Scores in ResultsVault and log in if asked. It opens on RCC 2 v VCC 2, match ID 7616127.\n2. At Enter player scores for, pick VCC 2.\n3. Fill in the missing bowler's figures (about 11.4 overs and 86 runs conceded, plus M, W, Wd, Nb from the scorebook).\n4. Press SAVE.\n\nhttps://admin-cricket.resultsvault.co.uk/common/pages/admin/framehost.aspx?fhid=%2Fcommon%2Fpages%2Fadmin%2Frv%2Fcricket%2FEnterPlayerScores.aspx%3Fmatchid%3D7616127",
+   "edits": []
   }
  ]
 }
