@@ -429,9 +429,9 @@
   },
   {
    "key": "7616150|cqb|MA Raza (ACC) \"c  ?  b S Mulder\": Catcher unknown. \"c ? b\" doesn't necessarily mean caught and bowled.",
-   "saved": "2026-11-18T15:36:36.997Z",
-   "updated": "2026-11-18T15:36:36.997Z",
-   "captain": "Floris de Lange",
+   "saved": "2026-11-19T08:03:41.223Z",
+   "updated": "2026-11-19T08:03:41.223Z",
+   "captain": "Ricardo Goncalves",
    "status": "saved",
    "matchId": "7616150",
    "date": "2026-08-08",
@@ -442,9 +442,9 @@
    "side": "VCC",
    "type": "Caught \"c ? b\"",
    "issue": "MA Raza (ACC) \"c  ?  b S Mulder\": Catcher unknown. \"c ? b\" doesn't necessarily mean caught and bowled.",
-   "fix": "Someone else: Sameer Gaur",
+   "fix": "Steffen Mulder",
    "comment": "",
-   "steps": "Fix for Sat 8 Aug, VCC 2 v ACC (round 7, Hoofdklasse T20 Men, match ID 7616150)\nMA Raza (ACC) \"c  ?  b S Mulder\": Catcher unknown. \"c ? b\" doesn't necessarily mean caught and bowled.\n\n1. Open Enter Player Scores in ResultsVault and log in if asked. It opens on VCC 2 v ACC, match ID 7616150.\n2. At Enter player scores for, pick ACC.\n3. In the row of Raza, M. A. A, set Fielder to Gaur, Sameer.\n4. Press SAVE.\n\nhttps://admin-cricket.resultsvault.co.uk/common/pages/admin/framehost.aspx?fhid=%2Fcommon%2Fpages%2Fadmin%2Frv%2Fcricket%2FEnterPlayerScores.aspx%3Fmatchid%3D7616150",
+   "steps": "Fix for Sat 8 Aug, VCC 2 v ACC (round 7, Hoofdklasse T20 Men, match ID 7616150)\nMA Raza (ACC) \"c  ?  b S Mulder\": Catcher unknown. \"c ? b\" doesn't necessarily mean caught and bowled.\n\n1. Open Enter Player Scores in ResultsVault and log in if asked. It opens on VCC 2 v ACC, match ID 7616150.\n2. At Enter player scores for, pick ACC.\n3. In the row of Raza, M. A. A, set Fielder to Mulder, Steffen.\n4. Press SAVE.\n\nhttps://admin-cricket.resultsvault.co.uk/common/pages/admin/framehost.aspx?fhid=%2Fcommon%2Fpages%2Fadmin%2Frv%2Fcricket%2FEnterPlayerScores.aspx%3Fmatchid%3D7616150",
    "edits": [
     {
      "op": "fielder",
@@ -453,7 +453,7 @@
       1
      ],
      "bat": 0,
-     "pid": 12366658
+     "pid": 11392358
     }
    ]
   }
