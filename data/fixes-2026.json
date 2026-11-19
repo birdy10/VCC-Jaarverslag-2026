@@ -766,6 +766,26 @@
    "comment": "",
    "steps": "Fix for Sat 11 Jul, VCC 2 v RCC 2 (round 1, Hoofdklasse T20 Men, match ID 7616127)\nRCC 2 117/4: bowlers' runs (30) + byes, leg byes and penalties (1) = 31, not 117.\n\n1. Open Enter Player Scores in ResultsVault and log in if asked. It opens on RCC 2 v VCC 2, match ID 7616127.\n2. At Enter player scores for, pick VCC 2.\n3. Fill in the missing bowler's figures (about 11.4 overs and 86 runs conceded, plus M, W, Wd, Nb from the scorebook).\n4. Press SAVE.\n\nhttps://admin-cricket.resultsvault.co.uk/common/pages/admin/framehost.aspx?fhid=%2Fcommon%2Fpages%2Fadmin%2Frv%2Fcricket%2FEnterPlayerScores.aspx%3Fmatchid%3D7616127",
    "edits": []
+  },
+  {
+   "key": "7616127|bowl-overs|RCC 2 117/4: bowlers' overs add up to 7, the innings lasted 18.4 overs.",
+   "saved": "2026-11-19T08:09:16.377Z",
+   "updated": "2026-11-19T08:09:16.377Z",
+   "captain": "Ricardo Goncalves",
+   "status": "saved",
+   "matchId": "7616127",
+   "date": "2026-07-11",
+   "team": "VCC 2",
+   "opponent": "RCC 2",
+   "round": "1",
+   "grade": "Hoofdklasse T20 Men",
+   "side": "VCC",
+   "type": "Bowling overs",
+   "issue": "RCC 2 117/4: bowlers' overs add up to 7, the innings lasted 18.4 overs.",
+   "fix": "A bowler is missing from the bowling card",
+   "comment": "",
+   "steps": "Fix for Sat 11 Jul, VCC 2 v RCC 2 (round 1, Hoofdklasse T20 Men, match ID 7616127)\nRCC 2 117/4: bowlers' overs add up to 7, the innings lasted 18.4 overs.\n\n1. Open Enter Player Scores in ResultsVault and log in if asked. It opens on RCC 2 v VCC 2, match ID 7616127.\n2. At Enter player scores for, pick VCC 2.\n3. Fill in the missing bowler's figures (about 11.4 overs, plus M, R, W, Wd, Nb from the scorebook).\n4. Press SAVE.\n\nhttps://admin-cricket.resultsvault.co.uk/common/pages/admin/framehost.aspx?fhid=%2Fcommon%2Fpages%2Fadmin%2Frv%2Fcricket%2FEnterPlayerScores.aspx%3Fmatchid%3D7616127",
+   "edits": []
   }
  ]
 }
