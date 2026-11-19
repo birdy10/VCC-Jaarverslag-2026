@@ -516,6 +516,36 @@
      "pid": 11193558
     }
    ]
+  },
+  {
+   "key": "7622645|no-catcher|T Van den Hoven (Kampong 2) caught \"c\", catcher not recorded.",
+   "saved": "2026-11-19T08:06:20.130Z",
+   "updated": "2026-11-19T08:06:20.130Z",
+   "captain": "Ricardo Goncalves",
+   "status": "saved",
+   "matchId": "7622645",
+   "date": "2026-08-23",
+   "team": "VCC 2",
+   "opponent": "Kampong 2",
+   "round": "12",
+   "grade": "Hoofdklasse T20 Men",
+   "side": "VCC",
+   "type": "Catcher missing",
+   "issue": "T Van den Hoven (Kampong 2) caught \"c\", catcher not recorded.",
+   "fix": "Pick the catcher from the team list: Geronimo Nota",
+   "comment": "",
+   "steps": "Fix for Sun 23 Aug, VCC 2 v Kampong 2 (round 12, Hoofdklasse T20 Men, match ID 7622645)\nT Van den Hoven (Kampong 2) caught \"c\", catcher not recorded.\n\n1. Open Enter Player Scores in ResultsVault and log in if asked. It opens on Kampong 2 v VCC 2, match ID 7622645.\n2. At Enter player scores for, pick Kampong 2.\n3. In the row of Van den Hoven, Tiaan, set Fielder to Nota, Geronimo.\n4. Press SAVE.\n\nhttps://admin-cricket.resultsvault.co.uk/common/pages/admin/framehost.aspx?fhid=%2Fcommon%2Fpages%2Fadmin%2Frv%2Fcricket%2FEnterPlayerScores.aspx%3Fmatchid%3D7622645",
+   "edits": [
+    {
+     "op": "fielder",
+     "inn": [
+      "o",
+      1
+     ],
+     "bat": 8,
+     "pid": 11193441
+    }
+   ]
   }
  ]
 }
