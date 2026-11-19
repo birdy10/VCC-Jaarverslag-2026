@@ -456,6 +456,36 @@
      "pid": 11392358
     }
    ]
+  },
+  {
+   "key": "7616153|cqb|S Khan (Rood en Wit) \"c  ?  b A Anand\": Catcher unknown. \"c ? b\" doesn't necessarily mean caught and bowled.",
+   "saved": "2026-11-19T08:05:10.194Z",
+   "updated": "2026-11-19T08:05:10.194Z",
+   "captain": "Ricardo Goncalves",
+   "status": "saved",
+   "matchId": "7616153",
+   "date": "2026-08-08",
+   "team": "VCC 2",
+   "opponent": "Rood en Wit",
+   "round": "7",
+   "grade": "Hoofdklasse T20 Men",
+   "side": "VCC",
+   "type": "Caught \"c ? b\"",
+   "issue": "S Khan (Rood en Wit) \"c  ?  b A Anand\": Catcher unknown. \"c ? b\" doesn't necessarily mean caught and bowled.",
+   "fix": "Someone else: Farhaan Khawaja",
+   "comment": "",
+   "steps": "Fix for Sat 8 Aug, VCC 2 v Rood en Wit (round 7, Hoofdklasse T20 Men, match ID 7616153)\nS Khan (Rood en Wit) \"c  ?  b A Anand\": Catcher unknown. \"c ? b\" doesn't necessarily mean caught and bowled.\n\n1. Open Enter Player Scores in ResultsVault and log in if asked. It opens on VCC 2 v Rood en Wit, match ID 7616153.\n2. At Enter player scores for, pick Rood en Wit.\n3. In the row of Khan, Sadid, set Fielder to Khawaja, Farhaan.\n4. Press SAVE.\n\nhttps://admin-cricket.resultsvault.co.uk/common/pages/admin/framehost.aspx?fhid=%2Fcommon%2Fpages%2Fadmin%2Frv%2Fcricket%2FEnterPlayerScores.aspx%3Fmatchid%3D7616153",
+   "edits": [
+    {
+     "op": "fielder",
+     "inn": [
+      "o",
+      1
+     ],
+     "bat": 0,
+     "pid": 11193405
+    }
+   ]
   }
  ]
 }
