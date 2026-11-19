@@ -546,6 +546,36 @@
      "pid": 11193441
     }
    ]
+  },
+  {
+   "key": "7616176|no-catcher|A Arora (ACC) caught \"c\", catcher not recorded.",
+   "saved": "2026-11-19T08:06:56.928Z",
+   "updated": "2026-11-19T08:06:56.928Z",
+   "captain": "Ricardo Goncalves",
+   "status": "saved",
+   "matchId": "7616176",
+   "date": "2026-09-05",
+   "team": "VCC 2",
+   "opponent": "ACC",
+   "round": "15",
+   "grade": "Hoofdklasse T20 Men",
+   "side": "VCC",
+   "type": "Catcher missing",
+   "issue": "A Arora (ACC) caught \"c\", catcher not recorded.",
+   "fix": "Pick the catcher from the team list: Aryan Anand",
+   "comment": "",
+   "steps": "Fix for Sat 5 Sept, VCC 2 v ACC (round 15, Hoofdklasse T20 Men, match ID 7616176)\nA Arora (ACC) caught \"c\", catcher not recorded.\n\n1. Open Enter Player Scores in ResultsVault and log in if asked. It opens on ACC v VCC 2, match ID 7616176.\n2. At Enter player scores for, pick ACC.\n3. In the row of Arora, Akash, set Fielder to Anand, Aryan.\n4. Press SAVE.\n\nhttps://admin-cricket.resultsvault.co.uk/common/pages/admin/framehost.aspx?fhid=%2Fcommon%2Fpages%2Fadmin%2Frv%2Fcricket%2FEnterPlayerScores.aspx%3Fmatchid%3D7616176",
+   "edits": [
+    {
+     "op": "fielder",
+     "inn": [
+      "o",
+      1
+     ],
+     "bat": 1,
+     "pid": 12366655
+    }
+   ]
   }
  ]
 }
