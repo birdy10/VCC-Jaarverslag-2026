@@ -576,6 +576,36 @@
      "pid": 12366655
     }
    ]
+  },
+  {
+   "key": "7616153|no-bowler|A de Graaff (Rood en Wit) lbw \"lbw\", bowler is a player id without a name.",
+   "saved": "2026-11-19T08:07:13.521Z",
+   "updated": "2026-11-19T08:07:13.521Z",
+   "captain": "Ricardo Goncalves",
+   "status": "saved",
+   "matchId": "7616153",
+   "date": "2026-08-08",
+   "team": "VCC 2",
+   "opponent": "Rood en Wit",
+   "round": "7",
+   "grade": "Hoofdklasse T20 Men",
+   "side": "VCC",
+   "type": "Bowler missing",
+   "issue": "A de Graaff (Rood en Wit) lbw \"lbw\", bowler is a player id without a name.",
+   "fix": "Sameer Gaur",
+   "comment": "",
+   "steps": "Fix for Sat 8 Aug, VCC 2 v Rood en Wit (round 7, Hoofdklasse T20 Men, match ID 7616153)\nA de Graaff (Rood en Wit) lbw \"lbw\", bowler is a player id without a name.\n\n1. Open Enter Player Scores in ResultsVault and log in if asked. It opens on VCC 2 v Rood en Wit, match ID 7616153.\n2. At Enter player scores for, pick Rood en Wit.\n3. In the row of Graaff de, Alexander, set Bowler to Gaur, Sameer.\n4. Press SAVE.\n\nhttps://admin-cricket.resultsvault.co.uk/common/pages/admin/framehost.aspx?fhid=%2Fcommon%2Fpages%2Fadmin%2Frv%2Fcricket%2FEnterPlayerScores.aspx%3Fmatchid%3D7616153",
+   "edits": [
+    {
+     "op": "bowler",
+     "inn": [
+      "o",
+      1
+     ],
+     "bat": 3,
+     "pid": 12366658
+    }
+   ]
   }
  ]
 }
