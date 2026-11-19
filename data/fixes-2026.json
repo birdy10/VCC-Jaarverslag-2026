@@ -606,6 +606,36 @@
      "pid": 12366658
     }
    ]
+  },
+  {
+   "key": "7616154|no-bowler|S de Vos (VOC 2) bowled \"b\", bowler is a player id without a name.",
+   "saved": "2026-11-19T08:07:24.364Z",
+   "updated": "2026-11-19T08:07:24.364Z",
+   "captain": "Ricardo Goncalves",
+   "status": "saved",
+   "matchId": "7616154",
+   "date": "2026-08-15",
+   "team": "VCC 2",
+   "opponent": "VOC 2",
+   "round": "9",
+   "grade": "Hoofdklasse T20 Men",
+   "side": "VCC",
+   "type": "Bowler missing",
+   "issue": "S de Vos (VOC 2) bowled \"b\", bowler is a player id without a name.",
+   "fix": "Sameer Gaur",
+   "comment": "",
+   "steps": "Fix for Sat 15 Aug, VCC 2 v VOC 2 (round 9, Hoofdklasse T20 Men, match ID 7616154)\nS de Vos (VOC 2) bowled \"b\", bowler is a player id without a name.\n\n1. Open Enter Player Scores in ResultsVault and log in if asked. It opens on VCC 2 v VOC 2, match ID 7616154.\n2. At Enter player scores for, pick VOC 2.\n3. In the row of Vos de, Stijn, set Bowler to Gaur, Sameer.\n4. Press SAVE.\n\nhttps://admin-cricket.resultsvault.co.uk/common/pages/admin/framehost.aspx?fhid=%2Fcommon%2Fpages%2Fadmin%2Frv%2Fcricket%2FEnterPlayerScores.aspx%3Fmatchid%3D7616154",
+   "edits": [
+    {
+     "op": "bowler",
+     "inn": [
+      "o",
+      1
+     ],
+     "bat": 2,
+     "pid": 12366658
+    }
+   ]
   }
  ]
 }
